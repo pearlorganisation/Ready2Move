@@ -1,13 +1,275 @@
 'use client'
 import React from 'react'
+import { useState } from "react"
 import Link from "next/link"
-import { Play, Facebook, Twitter, Instagram, Phone, Mail, MapPin } from "lucide-react"
+// import { Play, Facebook, Twitter, Instagram, Phone, Mail, MapPin } from "lucide-react"
+import { ChevronDown, Facebook, Instagram, Twitter, MapPin, Phone, Mail, Play } from "lucide-react"
 
 
 const Footer = () => {
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
+
+  const toggleLanguage = () => {
+    setIsLanguageOpen(!isLanguageOpen)
+  }
+
   return (
     <div>
-      <footer className="bg-[#FFF7E6] pt-8 pb-4 text-gray-700 text-sm">
+      <footer className="bg-black text-white py-12 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          {/* Logo Column */}
+          <div>
+            <h2 className="text-3xl font-bold mb-8">Ready2Move</h2>
+            <p className="text-sm text-gray-300 mb-6">
+              Ready2move.co.in is a platform that prioritizes showcasing properties that are either ready to move in
+              (Ready2Move) or nearing possession, catering to individuals seeking immediate occupancy.
+            </p>
+            <p className="text-sm text-gray-300 mb-6">
+              Ready2move.co.in provides detailed project information, empowering buyers to make informed decisions based
+              on their specific needs and preferences.
+            </p>
+            <div className="flex space-x-4 mb-6">
+              <Link href="#" className="hover:text-gray-300">
+                <Play className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="hover:text-gray-300">
+                <Facebook className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="hover:text-gray-300">
+                <Twitter className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="hover:text-gray-300">
+                <Instagram className="w-5 h-5" />
+              </Link>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-start">
+                <Phone className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <span>+91 9545760001</span>
+              </div>
+              <div className="flex items-start">
+                <Mail className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <span>admin@ready2move.co.in</span>
+              </div>
+              <div className="flex items-start">
+                <MapPin className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
+                <span>8, SM Residential Complex, Andheri East, Mumbai</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Property In Maharashtra Column */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Property In Maharashtra</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Mumbai
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Navi Mumbai
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Thane
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Pune
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Palghar
+                </Link>
+              </li>
+            </ul>
+
+            <h3 className="text-lg font-semibold mt-8 mb-4">Property In UP</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Ayodhya
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Lucknow
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Varanasi
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Property In Gujarat Column */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Property In Gujarat</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Ahmedabad
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Surat
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Vadodara
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Vapi
+                </Link>
+              </li>
+            </ul>
+
+            <h3 className="text-lg font-semibold mt-8 mb-4">Property In MP</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Jabalpur
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Indore
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-gray-300">
+                  Bhopal
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Other Regions Column */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Property In Goa</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Property In Chhattisgarh
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Raipur
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Property In Delhi</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Property In Kerala
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Kochi
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Projects
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Properties
+                  </Link>
+                </li>
+                {/* <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    My Account
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-gray-300">
+                    Create Listing
+                  </Link>
+                </li> */}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="pt-8 border-t border-gray-700">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <div className="flex items-center space-x-4">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 5L5 20L20 35L35 20L20 5Z" fill="white" />
+              </svg>
+              <span className="text-sm">© 2025 Ready2Move. All rights reserved.</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              <div className="relative">
+                <button onClick={toggleLanguage} className="flex items-center space-x-1 hover:text-gray-300">
+                  <span>English</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                {isLanguageOpen && (
+                  <div className="absolute top-full left-0 mt-1 bg-gray-800 rounded shadow-lg py-2 w-40 z-10">
+                    <ul>
+                      {/* <li>
+                        <button className="px-4 py-1 w-full text-left hover:bg-gray-700">English</button>
+                      </li> */}
+                      <li>
+                        <button className="px-4 py-1 w-full text-left hover:bg-gray-700">Hindi</button>
+                      </li>
+                      {/* <li>
+                        <button className="px-4 py-1 w-full text-left hover:bg-gray-700">Marathi</button>
+                      </li>
+                      <li>
+                        <button className="px-4 py-1 w-full text-left hover:bg-gray-700">Gujarati</button>
+                      </li> */}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              <Link href="#" className="hover:text-gray-300">
+                Terms and Conditions
+              </Link>
+              <Link href="#" className="hover:text-gray-300">
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+      {/* <footer className="bg-[#FFF7E6] pt-8 pb-4 text-gray-700 text-sm">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1">
@@ -92,7 +354,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
+    </footer> */}
     </div>
   )
 }

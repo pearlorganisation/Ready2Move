@@ -1,10 +1,13 @@
 import Image from "next/image";
+import FAQ from "./FAQ/page";
 
 export default function Home() {
   return (
      <>
      <div className="min-h-screen">
-      Home Page
+      
+
+      <FAQ/>
      </div>
      </>
   );
