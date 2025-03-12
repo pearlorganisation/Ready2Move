@@ -169,7 +169,7 @@ const PropertiesPage = () => {
               className="w-full accent-blue-500 mt-2"
             />
             <p className="text-gray-700 text-sm font-medium mt-2">
-              ${priceRange[0].toLocaleString()} - $
+              Rs. {priceRange[0].toLocaleString()} - $
               {priceRange[1].toLocaleString()}
             </p>
           </div>
@@ -237,7 +237,7 @@ const PropertiesPage = () => {
                   </h3>
                   <p className="text-gray-600 mt-1">📍 {property.location}</p>
                   <p className="text-gray-800 mt-1 font-medium">
-                    💰 ${property.price.toLocaleString()}
+                    💰 Rs. {property.price.toLocaleString()}
                   </p>
                   <p className="text-gray-800 mt-1">
                     🛏 {property.bedrooms} Bedrooms | 🛁 {property.bathrooms}{" "}
