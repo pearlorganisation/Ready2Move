@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import FAQ from "./FAQ/page";
 
 export default function Home() {
