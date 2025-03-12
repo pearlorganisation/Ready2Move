@@ -138,7 +138,6 @@ const PropertiesPage = () => {
       </div>
 
       <div className="grid md:grid-cols-[20%_auto] gap-6">
-       
         <aside className="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
           <h2 className="text-xl font-bold mb-5 text-gray-800">Filters</h2>
 

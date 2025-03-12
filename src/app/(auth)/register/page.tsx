@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -72,7 +71,6 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-xl rounded-2xl flex flex-col md:flex-row w-full max-w-4xl overflow-hidden">
-        {/* Left Side - Image */}
         <div className="w-full md:w-1/2 hidden md:flex items-center justify-center bg-blue-500">
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDY_U-8UPH2q-AKgA3mTRhzHVtl9FF7VrICQ&s"
@@ -81,7 +79,6 @@ const RegisterPage = () => {
           />
         </div>
 
-        {/* Right Side - Form */}
         <div className="w-full md:w-1/2 p-6 sm:p-8">
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
             Create an Account
@@ -179,7 +176,6 @@ const RegisterPage = () => {
                   </p>
                 )}
 
-                {/* Dynamic Password Requirements Display */}
                 {passwordValue && (
                   <ul className="text-xs text-gray-600 mt-2">
                     {getPasswordErrors(passwordValue).map((err, idx) => (
