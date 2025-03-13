@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { registerUser } from "../actions/authAction"
-
-const initialState = {
+interface AuthState {
+  isLoading: boolean;
+  isError: boolean;
+  isSuccess: boolean;
+}
+const initialState:AuthState = {
     isLoading : false,
     isError: false,
     isSuccess: false,
