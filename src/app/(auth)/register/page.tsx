@@ -26,7 +26,7 @@ const getPasswordErrors = (password: string) => {
 
 // Validation Schema
 const schema = yup.object().shape({
-  accountType: yup
+  role: yup
     .string()
     .oneOf(Object.values(AccountType), "Invalid account type")
     .required("Account Type is required"),
@@ -91,7 +91,7 @@ const RegisterPage = () => {
                 Account Type
               </label>
               <select
-                {...register("accountType")}
+                {...register("role")}
                 className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Account Type</option>
@@ -101,9 +101,9 @@ const RegisterPage = () => {
                   </option>
                 ))}
               </select>
-              {errors.accountType && (
+              {errors.role && (
                 <p className="text-red-500 text-sm">
-                  {errors.accountType.message}
+                  {errors.role.message}
                 </p>
               )}
             </div>
