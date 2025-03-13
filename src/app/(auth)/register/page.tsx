@@ -5,7 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
-
+import { registerUser } from "@/lib/redux/actions/authAction";
+import { useAppDispatch } from "@/lib/hooks/dispatchHook";
 enum AccountType {
   AGENT = "AGENT",
   BUILDER = "BUILDER",
@@ -54,6 +55,7 @@ const schema = yup.object().shape({
 });
 
 const RegisterPage = () => {
+  const dispatch =  useAppDispatch()
   const {
     register,
     handleSubmit,
@@ -65,7 +67,7 @@ const RegisterPage = () => {
   const passwordValue = watch("password", ""); // Watch password field
 
   const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+    dispatch(registerUser(data))
   };
 
   return (
