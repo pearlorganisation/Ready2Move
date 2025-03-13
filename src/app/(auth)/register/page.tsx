@@ -7,7 +7,6 @@ import * as yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/lib/redux/actions/authAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
-import { RootState } from "@/lib/redux/store"; 
 enum AccountType {
   AGENT = "AGENT",
   BUILDER = "BUILDER",
