@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { loginUser } from "@/lib/redux/actions/userAction";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -21,17 +23,20 @@ const schema = yup.object().shape({
 });
 
 const LoginPage = () => {
+const dispatch = useAppDispatch()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
-
+const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (data: any) => {
+    dispatch(loginUser(data))
     console.log("Form Data:", data);
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">

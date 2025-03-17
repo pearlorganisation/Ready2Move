@@ -1,12 +1,14 @@
 "use client"
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook';
 import { verifyOtp } from '@/lib/redux/actions/otpAction';
+import { resetRegister } from '@/lib/redux/slice/authSlice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 const VerificationPage = () => {
   const dispatch = useAppDispatch()
+
   const { isSuccess, isError, isLoading} = useAppSelector(state=> state.otp)
   const router = useRouter()
   interface FormData {
@@ -21,11 +23,12 @@ const VerificationPage = () => {
      console.log(data);  
   };
 
-  useEffect(()=>{
-    if(isSuccess){
-       router.push("/",{scroll:true})
-    }
-  },[])
+   useEffect(()=>{
+     if(isSuccess){
+      dispatch(resetRegister())
+      router.push("/",{scroll:true})
+     }
+ },[isSuccess])
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
