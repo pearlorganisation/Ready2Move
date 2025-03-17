@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/lib/redux/actions/authAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { useRouter } from "next/navigation";
 enum AccountType {
   AGENT = "AGENT",
   BUILDER = "BUILDER",
@@ -56,6 +57,7 @@ const schema = yup.object().shape({
 
 const RegisterPage = () => {
   const dispatch =  useAppDispatch()
+  const router = useRouter()
  const { isSuccess, isError, isLoading } = useAppSelector((state) => state.auth);
  console.log("the states are", isSuccess, isError, isLoading)
   const {
@@ -65,6 +67,13 @@ const RegisterPage = () => {
     watch,
   } = useForm({ resolver: yupResolver(schema) });
 
+
+  useEffect(()=>{
+   if(isSuccess){
+    router.push('/otpverification', {scroll:true})
+   }
+  },[isSuccess])
+  
   const [showPassword, setShowPassword] = useState(false);
   const passwordValue = watch("password", ""); // Watch password field
 
