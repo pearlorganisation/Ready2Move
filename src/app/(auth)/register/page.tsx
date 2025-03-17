@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
-
+import { registerUser } from "@/lib/redux/actions/authAction";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 enum AccountType {
   AGENT = "AGENT",
   BUILDER = "BUILDER",
@@ -25,7 +26,7 @@ const getPasswordErrors = (password: string) => {
 
 // Validation Schema
 const schema = yup.object().shape({
-  accountType: yup
+  role: yup
     .string()
     .oneOf(Object.values(AccountType), "Invalid account type")
     .required("Account Type is required"),
@@ -54,6 +55,9 @@ const schema = yup.object().shape({
 });
 
 const RegisterPage = () => {
+  const dispatch =  useAppDispatch()
+ const { isSuccess, isError, isLoading } = useAppSelector((state) => state.auth);
+ console.log("the states are", isSuccess, isError, isLoading)
   const {
     register,
     handleSubmit,
@@ -65,7 +69,7 @@ const RegisterPage = () => {
   const passwordValue = watch("password", ""); // Watch password field
 
   const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
+    dispatch(registerUser(data))
   };
 
   return (
@@ -89,7 +93,7 @@ const RegisterPage = () => {
                 Account Type
               </label>
               <select
-                {...register("accountType")}
+                {...register("role")}
                 className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Account Type</option>
@@ -99,9 +103,9 @@ const RegisterPage = () => {
                   </option>
                 ))}
               </select>
-              {errors.accountType && (
+              {errors.role && (
                 <p className="text-red-500 text-sm">
-                  {errors.accountType.message}
+                  {errors.role.message}
                 </p>
               )}
             </div>
