@@ -75,7 +75,7 @@ const RegisterPage = () => {
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDY_U-8UPH2q-AKgA3mTRhzHVtl9FF7VrICQ&s"
             alt="Register"
-            className="object-cover w-full h-full"
+            className="object-fit w-full h-full"
           />
         </div>
 
