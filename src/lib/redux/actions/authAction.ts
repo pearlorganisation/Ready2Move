@@ -10,6 +10,7 @@ export const registerUser=createAsyncThunk(
                 }
             }
             const data = await axiosInstance.post(`/api/v1/auth/register`, userData, config)
+            return data
         } catch (error) {
             return rejectWithValue(error)
         }

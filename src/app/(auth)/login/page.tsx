@@ -1,14 +1,13 @@
-
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Eye, EyeOff } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { loginUser } from "@/lib/redux/actions/userAction";
+import { useRouter } from "next/navigation";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -24,7 +23,8 @@ const schema = yup.object().shape({
 
 const LoginPage = () => {
 const dispatch = useAppDispatch()
-  const {
+const router = useRouter()  
+const {
     register,
     handleSubmit,
     formState: { errors },
@@ -37,6 +37,11 @@ const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
     console.log("Form Data:", data);
   };
 
+  useEffect(()=>{
+          if(isSuccess){
+            router.push("/",{scroll:true})
+          }
+  },[isSuccess])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">

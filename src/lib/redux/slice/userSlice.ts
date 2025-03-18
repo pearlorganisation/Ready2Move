@@ -5,6 +5,7 @@ interface Login {
     isLoading: boolean,
     isSuccess: boolean,
     isError: boolean,
+    isLoggedIn: boolean,
     userData: {
         _id: string,
         name: string,
@@ -18,6 +19,7 @@ const initialState: Login={
   isLoading: false,
   isSuccess:false,
   isError:false,
+  isLoggedIn:false,
   userData: {
     _id:"",
     name: '',
@@ -38,11 +40,13 @@ const logInUserSlice = createSlice({
             state.isLoading=true
             state.isSuccess= false
             state.isError= false
+            state.isLoggedIn= false
         })
         .addCase(loginUser.rejected,(state,action)=>{
             state.isError= true
             state.isSuccess= false
             state.isLoading= false
+            state.isLoggedIn= false
             state.userData ={_id:"", 
                             name: '',
                             email: '',
@@ -54,6 +58,7 @@ const logInUserSlice = createSlice({
             state.isError= false
             state.isSuccess= true
             state.isLoading= false
+            state.isLoggedIn= true
             state.userData = action.payload.user
         })
     }
