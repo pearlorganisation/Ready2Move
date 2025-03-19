@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useAppSelector } from "@/lib/hooks/dispatchHook";
 
 const Header = () => {
-  const { userData, isLoggedIn } = useAppSelector((state)=> state.user)
-
+  const { userData, isLoggedIn } = useAppSelector((state)=> state?.user)
+console.log("is logged in", isLoggedIn)
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <nav className="max-w-screen-xl mx-auto px-4 py-3 flex justify-between items-center">

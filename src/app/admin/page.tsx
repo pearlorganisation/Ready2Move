@@ -1,26 +1,28 @@
 "use client"
+import { useEffect } from "react";
 import { useAppSelector } from "@/lib/hooks/dispatchHook";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
- 
+
 const Dashboard = () => {
   const router = useRouter();
-  const { userData }= useAppSelector((state) => state.user); // Get user from Redux state
+  const { userData } = useAppSelector((state) => state.user);
 
-//   useEffect(() => {
-//     if (!userData?.role) {
-//       router.push("/login");
-//     } else if (userData.role === "AGENT") {
-//       router.push("/admin/agent");
-//     } else if (userData.role === "BUILDER") {
-//       router.push("/admin/builder");
-//     } else {
-//       router.push("/admin/user");
-//     }
-//   }, [userData, router]);
+  useEffect(() => {
+    if (!userData?.role) {
+      router.push("/login");
+    }
+  }, [userData, router]);
 
-  return (<div>Loading...</div>);
+  if (!userData?.role) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      {/* Render the dashboard based on user role */}
+      <p>Welcome, {userData.role}</p>
+    </div>
+  );
 };
 
-
-export default Dashboard
+export default Dashboard;
