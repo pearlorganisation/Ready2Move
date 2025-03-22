@@ -74,7 +74,11 @@ const BlogPage = () => {
   const [page, setPage] = useState(1);
   const postsPerPage = 3;
 
-  const handleChange = (event, value) => {
+  interface HandleChangeEvent {
+    target: EventTarget;
+  }
+
+  const handleChange = (event: HandleChangeEvent, value: number): void => {
     setPage(value);
   };
 
@@ -99,7 +103,7 @@ const BlogPage = () => {
     <h1 className="text-white text-3xl md:text-5xl font-bold">Our Properties For Sale</h1>
     </div>
    
-    <p className="text-white mt-2 text-2xl font-bold"> you can find here  as per your location
+    <p className="text-white mt-2 text-2xl font-bold">you can find here as per your location
         </p>
   </div>
 </div>

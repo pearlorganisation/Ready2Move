@@ -5,6 +5,9 @@ import { MessageCircle } from "lucide-react";
 import SearchBar from "./searchbar";
 import banner from "../../assets/city.jpg";
 import PropertyCard from "./PropertyCard";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { useEffect } from "react";
+import { getBanner } from "@/lib/redux/actions/bannerAction";
 
 // TypeScript types for props passed into PropertyCard
 interface PropertyCardProps {
@@ -19,6 +22,13 @@ interface PropertyCardProps {
 }
 
 export default function HeroSection() {
+  const dispatch = useAppDispatch()
+  const { bannerData } = useAppSelector(state=> state.banner)
+
+  useEffect(()=>{
+      dispatch(getBanner())
+  },[])
+  console.log("the banner data is", banner)
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -67,7 +77,7 @@ export default function HeroSection() {
       <section className="relative h-[500px] flex items-center justify-center">
         <div className="absolute inset-0 z-0">
           <Image
-            src={banner}
+            src={bannerData.bgImage?.secure_url}
             alt="City skyline"
             fill
             className="object-cover"
@@ -78,13 +88,11 @@ export default function HeroSection() {
 
         <div className="container mx-auto px-4 z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            WELCOME TO READY2MOVE.CO.IN
+             {bannerData?.headline}
           </h1>
           <p className="text-white text-lg md:text-xl max-w-4xl mx-auto mb-12">
-            "I will forever believe that buying a home is a great investment.
-            Why? Because you can't live in a stock certificate. You can't live
-            in a mutual fund." - Oprah Winfrey
-          </p>
+             {bannerData?.quote}
+           </p>
 
           <SearchBar />
         </div>
