@@ -38,6 +38,20 @@ const logInUserSlice = createSlice({
             state.isSuccess = false
             state.isLoading= false
             state.isError=false
+        },
+        logoutUser : (state)=>{
+            state.isSuccess = false
+            state.isLoading= false
+            state.isLoggedIn= false
+            state.isError = false
+            state.userData ={
+                  _id:"",
+                    name: '',
+                    email: '',
+                    phoneNumber: '',
+                    role: '',
+                    isVerified: ''
+            }
         }
     },
     extraReducers:(builder)=>{
@@ -70,5 +84,5 @@ const logInUserSlice = createSlice({
     }
 })
 
-export const { resetLogin } = logInUserSlice.actions
+export const { resetLogin, logoutUser } = logInUserSlice.actions
 export default logInUserSlice.reducer

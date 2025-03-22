@@ -2,10 +2,15 @@
 import Image from "next/image";
 import logo from "../assets/logo.png";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/hooks/dispatchHook";
-
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { logoutUser } from "@/lib/redux/slice/userSlice";
+ 
 const Header = () => {
+  const dispatch = useAppDispatch()
   const { userData, isLoggedIn } = useAppSelector((state)=> state?.user)
+   const HandleLogout = ()=>{
+       dispatch(logoutUser())   
+  }
 console.log("is logged in", isLoggedIn)
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
@@ -62,7 +67,11 @@ console.log("is logged in", isLoggedIn)
             About Us
           </Link>
          { isLoggedIn ? (
-          <Link href={`/admin/${userData?.role.toLowerCase()}`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>):<>          
+          <div>
+            <Link href={`/admin/${userData?.role.toLowerCase()}`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>
+            <button onClick={()=> HandleLogout()}> Logout </button>
+          </div>
+           ):<>          
          <Link
             href="/login"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
