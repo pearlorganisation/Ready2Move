@@ -14,7 +14,11 @@ const initialState:AuthState = {
 const registerSlice = createSlice({
     name: "registerUser",
     initialState,
-    reducers: {},
+    reducers: {
+        resetRegister :(state)=>{
+            Object.assign(state, initialState)
+        }
+    },
     extraReducers:(builder)=>{
         builder
         .addCase(registerUser.pending, state=>{
@@ -35,5 +39,5 @@ const registerSlice = createSlice({
     }
 })
 
-
+export const { resetRegister } = registerSlice.actions;
 export default registerSlice.reducer

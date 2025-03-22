@@ -1,8 +1,17 @@
+"use client"
 import Image from "next/image";
 import logo from "../assets/logo.png";
 import Link from "next/link";
-
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { logoutUser } from "@/lib/redux/slice/userSlice";
+ 
 const Header = () => {
+  const dispatch = useAppDispatch()
+  const { userData, isLoggedIn } = useAppSelector((state)=> state?.user)
+   const HandleLogout = ()=>{
+       dispatch(logoutUser())   
+  }
+console.log("is logged in", isLoggedIn)
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <nav className="max-w-screen-xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -46,18 +55,33 @@ const Header = () => {
             Properties
           </Link>
           <Link
+            href="blog"
+            className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+          >
+   blog
+          </Link>
+          <Link
             href="/about"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >
             About Us
           </Link>
-          <Link
+         { isLoggedIn ? (
+          <div>
+            <Link href={`/admin/${userData?.role.toLowerCase()}`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>
+            <button onClick={()=> HandleLogout()}> Logout </button>
+          </div>
+           ):<>          
+         <Link
             href="/login"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >
             Login
           </Link>
-          <button className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition w-full md:w-auto">
+         </>}
+    
+
+           <button className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition w-full md:w-auto">
             Create Listing
           </button>
         </div>
