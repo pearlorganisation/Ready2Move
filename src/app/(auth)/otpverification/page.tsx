@@ -19,7 +19,7 @@ const VerificationPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
   const onSubmit = (data:FormData) => {
-     dispatch(verifyOtp(data))
+     dispatch(verifyOtp({ ...data, type: "REGISTER" }))
      console.log(data);  
   };
 

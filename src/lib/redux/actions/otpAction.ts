@@ -4,6 +4,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 interface verification {
     otp: number,
     email:string
+    type:string
 }
 export const verifyOtp = createAsyncThunk(
     "verify/otp",async(userData:verification,{rejectWithValue})=>{
