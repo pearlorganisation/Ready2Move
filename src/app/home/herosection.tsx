@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import SearchBar from "./searchbar";
-import banner from "../../assets/heroimg.png";
+import banner from "../../assets/city.jpg";
 import PropertyCard from "./PropertyCard";
 
 // TypeScript types for props passed into PropertyCard
@@ -73,7 +73,7 @@ export default function HeroSection() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-blue-900/60"></div>
+          <div className="absolute inset-0 bg-red-300/50"></div>
         </div>
 
         <div className="container mx-auto px-4 z-10 text-center">

@@ -50,6 +50,12 @@ const Header = () => {
             Properties
           </Link>
           <Link
+            href="blog"
+            className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+          >
+   blog
+          </Link>
+          <Link
             href="/about"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >

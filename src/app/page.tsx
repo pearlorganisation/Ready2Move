@@ -1,6 +1,6 @@
+
 import FAQ from "./FAQ/page";
 import HeroSection from "./home/herosection";
-import PropertyCard from "./home/PropertyCard";
 
 export default function Home() {
   return (
@@ -9,6 +9,7 @@ export default function Home() {
         <HeroSection />
 
         <FAQ />
+        
       </div>
     </>
   );
