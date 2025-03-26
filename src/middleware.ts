@@ -8,17 +8,24 @@ export default function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Redirect based on the userRole
-  if (userRole === "AGENT" && req.nextUrl.pathname !== "/admin/agent") {
-    return NextResponse.redirect(new URL("/admin/agent", req.url));
+  const { pathname } = req.nextUrl;
+
+  // Redirect users to their respective dashboards only if they are at `/admin`
+  if (pathname === "/admin") {
+    if (userRole === "AGENT") {
+      return NextResponse.redirect(new URL("/admin/agent", req.url));
+    }
+    if (userRole === "BUILDER") {
+      return NextResponse.redirect(new URL("/admin/builder", req.url));
+    }
+    if (userRole === "USER") {
+      return NextResponse.redirect(new URL("/admin/user", req.url));
+    }
   }
 
-  if (userRole === "BUILDER" && req.nextUrl.pathname !== "/admin/builder") {
-    return NextResponse.redirect(new URL("/admin/builder", req.url));
-  }
-
-  if (userRole === "USER" && req.nextUrl.pathname !== "/admin/user") {
-    return NextResponse.redirect(new URL("/admin/user", req.url));
+  // Restrict access to `/admin/builder/*` only to BUILDER
+  if (pathname.startsWith("/admin/builder") && userRole !== "BUILDER") {
+    return NextResponse.redirect(new URL("/admin", req.url)); // Redirect unauthorized users
   }
 
   // Allow the request to continue
@@ -27,5 +34,5 @@ export default function middleware(req: NextRequest) {
 
 // Config to limit middleware execution to paths under `/admin/*`
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ["/admin/:path*"],
 };
