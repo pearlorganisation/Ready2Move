@@ -60,12 +60,12 @@ console.log("the form data before is", userdata)
 
       // ✅ Append Amenities (Array)
       // ✅ Append Amenities (Array or Single Value)
-      if (Array.isArray(userdata?.aminities)) {
-        userdata.aminities.forEach((amenity) => {
-          formData.append("aminities", amenity);
+      if (Array.isArray(userdata?.amenities)) {
+        userdata.amenities.forEach((amenity) => {
+          formData.append("amenities", amenity);
         });
-      } else if (userdata?.aminities) {
-        formData.append("aminities", userdata.aminities);
+      } else if (userdata?.amenities) {
+        formData.append("amenities", userdata.amenities);
       }
 
       // ✅ Append Bank Approvals (Array or Single Value)
@@ -86,3 +86,4 @@ console.log("the formdata after is", formData)
     }
   }
 );
+

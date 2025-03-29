@@ -26,7 +26,7 @@ export type ProjectFormInputs = {
   reraNumber: string;
   availability: string;
   reraPossessionDate: string;
-  aminities?: string[];
+  amenities?: string[];
   bankOfApproval?: string[];
   imageGallary?: File[];
   isFeatured?: boolean;
@@ -69,7 +69,7 @@ const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
   },[title])
 
   const submitForm = (data: ProjectFormInputs) => {
-    const formData = {...data, id:userData?._id, 
+    const formData = {...data, id:userData?._id,
         areaRange:{min:data.areaRangeMin, max:data.areaRangeMax}, 
         priceRange:{
         min: data.priceRangeMin,
@@ -273,26 +273,19 @@ const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-gray-800">Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {featureData?.map((category) =>
-                {
-                  console.log("the category data is", category)
-                  return (
-                <fieldset key={category.type} className="border border-gray-300 rounded-md p-4">
-                    <legend className="px-2 font-medium text-gray-700">{category.type.replace("_", " ")}</legend>
-                    {/* Uncomment when ready to display features */}
-                    {category.features.map((feature) => (
-                    <label key={feature._id} className="flex items-center space-x-2 py-1">
-                        <input 
-                        type="checkbox" 
-                        {...register("aminities")} 
-                        value={feature._id} 
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" 
-                        /> 
-                        <span>{feature.name}</span>
-                    </label>
-                    ))}
-                </fieldset>
-                )})}
+            {featureData?.filter((item)=> item?.type ==="AMENITIES")?.flatMap((item)=>
+            item?.features?.map((amenities)=>(
+              <label key={amenities?._id} className="flex items-center space-x-2 py-1">
+                <input
+                  type="checkbox"
+                  {...register("amenities")}
+                  value={amenities?._id}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <span>{amenities?.name}</span>
+                </label>
+            ))
+            )}
           </div>
         </div>
          <div className="space-y-4">
