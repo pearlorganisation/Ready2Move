@@ -48,12 +48,15 @@ const createProject = () => {
   const { userData } = useAppSelector(state=> state.user)
   const [previewImages, setPreviewImages] = useState<string[]>([]);
 const [selectedImages, setSelectedImages] = useState<File[]>([]);
+console.log(previewImages,"images")
+console.log(selectedImages,"imges")
 
 // Handle image preview
 const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
     const files = Array.from(e.target.files) as File[];
+
     setSelectedImages(files);
 
     const previews = files.map((file) => URL.createObjectURL(file));
