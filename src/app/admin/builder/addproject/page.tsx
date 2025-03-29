@@ -26,7 +26,7 @@ export type ProjectFormInputs = {
   reraNumber: string;
   availability: string;
   reraPossessionDate: string;
-  amenities?: string[];
+  aminities?: string[];
   bankOfApproval?: string[];
   imageGallary?: File[];
   isFeatured?: boolean;
@@ -281,7 +281,7 @@ const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
               <label key={amenities?._id} className="flex items-center space-x-2 py-1">
                 <input
                   type="checkbox"
-                  {...register("amenities")}
+                  {...register("aminities")}
                   value={amenities?._id}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />

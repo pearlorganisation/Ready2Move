@@ -31,7 +31,7 @@ export type ProjectFormInputs = {
   reraPossessionDate: string
   aminities?: string[]
   bankOfApproval?: string[]
-  imageGallery?: File[]
+  imageGallary?: File[]
   isFeatured?: boolean
   youtubeLink?: string
 }
@@ -86,7 +86,7 @@ const CreateProject = () => {
         min: data.priceRangeMin,
         max: data.priceRangeMax,
       },
-      imageGallery: selectedImages,
+      imageGallary: selectedImages,
     }
     try {
       dispatch(createProjectsByBuilder({ userdata: formData }))
@@ -649,8 +649,10 @@ const CreateProject = () => {
                           multiple
                           accept="image/*"
                           className="hidden"
-                          ref={fileInputRef}
-                          {...register("imageGallary")}
+                          ref={(e) => {
+                            fileInputRef.current = e;
+                            register("imageGallary").ref(e);
+                          }}
                           onChange={handleImagePreview}
                         />
                         <label

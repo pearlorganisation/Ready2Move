@@ -15,9 +15,9 @@ console.log("the form data before is", userdata)
       const formData = new FormData();
 
       // ✅ Append Image Gallery
-      if (Array.isArray(userdata?.imageGallery)) {
-        userdata.imageGallery.forEach((file) => {
-          formData.append("imageGallery", file);
+      if (Array.isArray(userdata?.imageGallary)) {
+        userdata.imageGallary.forEach((file) => {
+          formData.append("imageGallary", file);
         });
       }
       
@@ -59,16 +59,16 @@ console.log("the form data before is", userdata)
         formData.append("youtubeLink", userdata.youtubeLink);
       }
 
-      // ✅ Append Amenities (Array)
+    
       // ✅ Append Amenities (Array or Single Value)
-      if (Array.isArray(userdata?.amenities)) {
-        userdata.amenities.forEach((amenity) => {
-          formData.append("amenities", amenity);
+      if (Array.isArray(userdata?.aminities)) {
+        userdata.aminities.forEach((amenity) => {
+          formData.append("aminities", amenity);
         });
-      } else if (userdata?.amenities) {
-        formData.append("amenities", userdata.amenities);
+      } else if (userdata?.aminities) {
+        formData.append("aminities", userdata.aminities);
       }
-
+ 
       // ✅ Append Bank Approvals (Array or Single Value)
       if (Array.isArray(userdata?.bankOfApproval)) {
         userdata.bankOfApproval.forEach((bank) => {
