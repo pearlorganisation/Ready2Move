@@ -15,11 +15,12 @@ console.log("the form data before is", userdata)
       const formData = new FormData();
 
       // ✅ Append Image Gallery
-      if (Array.isArray(userdata?.imageGallary)) {
-        userdata.imageGallary.forEach((file) => {
-          formData.append("imageGallary", file);
+      if (Array.isArray(userdata?.imageGallery)) {
+        userdata.imageGallery.forEach((file) => {
+          formData.append("imageGallery", file);
         });
       }
+      
 
       // ✅ Append Basic Data with Optional Chaining
       formData.append("user", userdata?.id || "");

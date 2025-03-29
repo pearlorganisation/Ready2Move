@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { registerUser } from "../actions/authAction"
+import { loginUser, registerUser } from "../actions/authAction"
 interface AuthState {
   isLoading: boolean;
   isError: boolean;
@@ -32,6 +32,21 @@ const registerSlice = createSlice({
             state.isError= true
         })
         .addCase(registerUser.fulfilled,(state,action)=>{
+            state.isLoading= false
+            state.isSuccess= true
+            state.isError= false
+        })
+        .addCase(loginUser.pending, state=>{
+            state.isLoading= true
+            state.isSuccess= false
+            state.isError= false
+        })
+        .addCase(loginUser.rejected,(state,action)=>{
+            state.isLoading= false
+            state.isSuccess= false
+            state.isError= true
+        })
+        .addCase(loginUser.fulfilled,(state,action)=>{
             state.isLoading= false
             state.isSuccess= true
             state.isError= false
