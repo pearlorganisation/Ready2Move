@@ -69,7 +69,7 @@ console.log("is logged in", isLoggedIn)
          { isLoggedIn ? (
           <div>
             <Link href={`/admin/${userData?.role.toLowerCase()}`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>
-            <button onClick={()=> HandleLogout()}> Logout </button>
+            {/* <button onClick={()=> HandleLogout()}> Logout </button> */}
           </div>
            ):<>          
          <Link

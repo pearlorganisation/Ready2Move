@@ -15,8 +15,8 @@ console.log("the form data before is", userdata)
       const formData = new FormData();
 
       // ✅ Append Image Gallery
-      if (Array.isArray(userdata?.imageGallery)) {
-        userdata.imageGallery.forEach((file) => {
+      if (Array.isArray(userdata?.imageGallary)) {
+        userdata.imageGallary.forEach((file) => {
           formData.append("imageGallery", file);
         });
       }
