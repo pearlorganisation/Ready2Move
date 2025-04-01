@@ -5,7 +5,7 @@ interface BadgeProps {
   variant?: "default" | "success" | "warning" | "error";
 }
 
-export function Badge({ children, variant = "default" }: BadgeProps) {
+export function Badge({ children, variant  }: BadgeProps) {
   const getBadgeStyle = () => {
     switch (variant) {
       case "success":

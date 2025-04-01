@@ -17,11 +17,11 @@ export function TableRow({ children }: { children: React.ReactNode }) {
 }
 
 
-export function TableHead({ children }: { children: React.ReactNode }) {
+export function TableHead({ children, className }: { children: React.ReactNode; className?: string | undefined }) {
   return <th className="p-2 text-left font-medium text-gray-700">{children}</th>;
 }
 
-export function TableCell({ children }: { children: React.ReactNode }) {
+export function TableCell({ children, className }: { children: React.ReactNode, className?:string |undefined }) {
   return <td className="p-2">{children}</td>;
 }
 

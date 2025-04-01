@@ -3,11 +3,11 @@ export function Card({ children, className }: { children: React.ReactNode; class
     return <div className={`rounded-lg border bg-white shadow-sm p-4 ${className}`}>{children}</div>
   }
   
-  export function CardHeader({ children }: { children: React.ReactNode }) {
+  export function CardHeader({ children , className}: { children: React.ReactNode; className?:string }) {
     return <div className="border-b pb-2 mb-2">{children}</div>
   }
   
-  export function CardTitle({ children }: { children: React.ReactNode }) {
+  export function CardTitle({ children, className }: { children: React.ReactNode; className?:string }) {
     return <h2 className="text-lg font-semibold">{children}</h2>
   }
   

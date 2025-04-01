@@ -103,7 +103,56 @@ export default function PropertyForm() {
   const [selectedBedrooms, setSelectedBedrooms] = useState(0);
 
   // Initialize form state based on schema
-  const [formData, setFormData] = useState({
+  type FormData = {
+    title: string;
+    slug: string;
+    subTitle: string;
+    description: string;
+    service: "SELL" | "RENT";
+    property: "RESIDENTIAL" | "COMMERCIAL";
+    propertyType: string;
+    apartmentName: string;
+    apartmentNo: string;
+    locality: string;
+    city: string;
+    state: string;
+    area: { name: string; area: number; areaMeasurement: string }[];
+    landArea: { area: number; measurement: string };
+    propertyFloor: number;
+    totalFloors: number;
+    roadWidth: number;
+    reraNumber: string;
+    reraPossessionDate: Date;
+    noOfBedrooms: number;
+    noOfBathrooms: number;
+    noOfBalconies: number;
+    parking: string;
+    furnishing: string;
+    entranceFacing: string;
+    availability: string;
+    propertyAge: string;
+    isOCAvailable: boolean;
+    isCCAvailable: boolean;
+    ownership: string;
+    expectedPrice: number;
+    isPriceNegotiable: boolean;
+    isBrokerageCharge: boolean;
+    brokerage: number;
+    maintenanceCharge: number;
+    maintenanceFrequency: string;
+    bankOfApproval: string[];
+    amenities: string[];
+    waterSource: string;
+    otherFeatures: string[];
+    propertyFlooring: string;
+    powerBackup: string;
+    nearbyLandmarks: string[];
+    imageGallery: { secure_url: string; public_id: string }[];
+    youtubeEmbedLink: string;
+    isFeatured: boolean;
+  };
+  
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     slug: "",
     subTitle: "",
@@ -169,7 +218,7 @@ export default function PropertyForm() {
     // Media
     imageGallery: [] as { secure_url: string; public_id: string }[],
     youtubeEmbedLink: "",
-    isFeatured: "",
+    isFeatured: false,
   });
 
   const steps = [
@@ -222,20 +271,20 @@ export default function PropertyForm() {
     }
   };
 
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    console.log(`Updating ${field}:`, value);
-    setFormData((prev) => {
-      const updatedData = {
-        ...prev,
-        [field]: value,
-        ...(field === "title" && {
-          slug: slugify(value, { lower: true, strict: true, trim: true }),
-        }),
-      };
-      console.log("Updated Form Data:", updatedData);
-      return updatedData;
-    });
-  };
+  const handleInputChange = (field: keyof FormData, value: string | Date | number | boolean) => {
+      console.log(`Updating ${String(field)}:`, value);
+      setFormData((prev) => {
+        const updatedData = {
+          ...prev,
+          [field]: value instanceof Date ? value.toISOString() : value,
+          ...(field === "title" as keyof FormData && {
+            slug: slugify(value as string, { lower: true, strict: true, trim: true }),
+          }),
+        };
+        console.log("Updated Form Data:", updatedData);
+        return updatedData;
+      });
+    };
 
   const handleArrayToggle = (field: string, id: string) => {
     setFormData((prev) => {

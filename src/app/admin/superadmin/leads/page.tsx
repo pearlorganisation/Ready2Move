@@ -39,7 +39,7 @@ export default function LeadsPage() {
           <div className="flex justify-between mb-4">
             <div className="flex items-center space-x-2">
               <Input placeholder="Search leads..." className="w-64" />
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" data="hello">
                 Search
               </Button>
             </div>
@@ -123,7 +123,16 @@ export default function LeadsPage() {
   );
 }
 
-function LeadRow({ Sno, name, email, phone, AssignedTo, status, date }) {
+ interface LeadInterface{
+  Sno?: string | undefined,
+  name?: string | undefined,
+  email?:string | undefined,
+  phone?:string | undefined,
+  AssignedTo?: string | undefined,
+  status?: string | undefined,
+  date?: string | undefined
+ }
+function LeadRow({ Sno, name, email, phone, AssignedTo, status, date }: LeadInterface) {
   return (
     <TableRow>
       <TableCell className="font-medium">{Sno}</TableCell>
@@ -140,12 +149,12 @@ function LeadRow({ Sno, name, email, phone, AssignedTo, status, date }) {
       <TableCell className="font-medium">{phone}</TableCell>
       <TableCell>{AssignedTo}</TableCell>
       <TableCell>
-        <Badge
+         <Badge
           variant={
             status === "New"
-              ? "outline"
+              ? "warning"
               : status === "qualified"
-              ? "secondary"
+              ? "error"
               : status === "pending"
               ? "default"
               : "success"
