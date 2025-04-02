@@ -16,7 +16,7 @@ async function decodeToken(token:string) {
 }
 export default async function middleware(req: NextRequest) {
   const token = req.cookies.get("access_token")?.value;
-  let userData
+  let userData = null
   console.log("the token in middleware is", token)
  if(token){
     userData = await decodeToken(token);
