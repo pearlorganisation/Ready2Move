@@ -5,15 +5,15 @@ async function decodeToken(token:string) {
     if (parts.length !== 3) {
       throw new Error("Invalid token format");
     }
-    
-    const payload = JSON.parse(atob(parts[1])); // Decode payload
+
+    // Use Buffer to decode base64 (Edge-compatible)
+    const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
     return payload;
   } catch (error) {
     console.error("Token decoding failed:", error);
     return null;
   }
 }
-
 export default async function middleware(req: NextRequest) {
   const token = req.cookies.get("access_token")?.value;
   let userData
@@ -28,16 +28,16 @@ export default async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
   if (pathname === "/admin") {
-    if (  userData.role === "AGENT") {
+    if (userData.role === "AGENT") {
       return NextResponse.redirect(new URL("/admin/agent", req.url));
     }
-    if (  userData.role === "BUILDER") {
+    if (userData.role === "BUILDER") {
       return NextResponse.redirect(new URL("/admin/builder", req.url));
     }
-    if (  userData.role === "USER") {
+    if (userData.role === "USER") {
       return NextResponse.redirect(new URL("/admin/user", req.url));
     }
-    if(  userData.role ==="ADMIN"){
+    if(userData.role ==="ADMIN"){
       return NextResponse.redirect(new URL("/admin/superadmin", req.url));
     }
   }
@@ -50,7 +50,7 @@ export default async function middleware(req: NextRequest) {
   if (pathname.startsWith("/admin/agent") && userData.role !== "AGENT") {
     return NextResponse.redirect(new URL("/admin", req.url));  
   }
-  if (pathname.startsWith("/admin/user") && userData !== "USER") {
+  if (pathname.startsWith("/admin/user") && userData.role !== "USER") {
     return NextResponse.redirect(new URL("/admin", req.url));  
   }
   return NextResponse.next();
