@@ -1,47 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
+async function decodeToken(token:string) {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+      throw new Error("Invalid token format");
+    }
+    
+    const payload = JSON.parse(atob(parts[1])); // Decode payload
+    return payload;
+  } catch (error) {
+    console.error("Token decoding failed:", error);
+    return null;
+  }
+}
 
-export default function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const userRole = req.cookies.get("user_role")?.value; 
   const token = req.cookies.get("access_token")?.value;
-  
+  let userData
   console.log("the token in middleware is", token)
   if (!userRole) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
+ if(token){
+    userData = await decodeToken(token);
+  console.log("the userdata is ", userData)
+ }else{
+  console.log(token)
+ }
+
+
   const { pathname } = req.nextUrl;
   if (pathname === "/admin") {
-    if (userRole === "AGENT") {
+    if (  userData.role === "AGENT") {
       return NextResponse.redirect(new URL("/admin/agent", req.url));
     }
-    if (userRole === "BUILDER") {
+    if (  userData.role === "BUILDER") {
       return NextResponse.redirect(new URL("/admin/builder", req.url));
     }
-    if (userRole === "USER") {
+    if (  userData.role === "USER") {
       return NextResponse.redirect(new URL("/admin/user", req.url));
     }
-    if( userRole ==="ADMIN"){
+    if(  userData.role ==="ADMIN"){
       return NextResponse.redirect(new URL("/admin/superadmin", req.url));
     }
   }
-  if (pathname.startsWith("/admin/builder") && userRole !== "BUILDER") {
+  if (pathname.startsWith("/admin/builder") && userData.role !== "BUILDER") {
     return NextResponse.redirect(new URL("/admin", req.url));  
   }
-    if (pathname.startsWith("/admin/superadmin") && userRole !== "ADMIN") {
+    if (pathname.startsWith("/admin/superadmin") && userData.role !== "ADMIN") {
     return NextResponse.redirect(new URL("/admin", req.url));  
   }
-  if (pathname.startsWith("/admin/agent") && userRole !== "AGENT") {
+  if (pathname.startsWith("/admin/agent") && userData.role !== "AGENT") {
     return NextResponse.redirect(new URL("/admin", req.url));  
   }
-  if (pathname.startsWith("/admin/user") && userRole !== "USER") {
+  if (pathname.startsWith("/admin/user") && userData !== "USER") {
     return NextResponse.redirect(new URL("/admin", req.url));  
   }
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/admin/:path*", "/admin/superadmin/:path*"],
-};
-
-
+  matcher: ["/admin/:path*", "/admin/superadmin/:path*"]
+ };
+ 
 /**
  * future try tomorrow
  * import { NextRequest, NextResponse } from "next/server";

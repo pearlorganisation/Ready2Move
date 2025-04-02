@@ -1,19 +1,19 @@
-import { jwtVerify }  from "jose"
+import jwt from "jsonwebtoken";
 
-export async function tokenVerify(token: string){
- try {
-    // Option 1: JWT Verification
-
-    console.log("my secret key in the backend is", process.env.JWT_SECRET_KEY)
+export function tokenVerify(token:string) {
+  try {
     const secret = process.env.JWT_SECRET_KEY;
     if (!secret) {
-      throw new Error('JWT secret key is not defined');
+      throw new Error("JWT secret key is not defined");
     }
-    console.log("the secret key will be", secret);
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
-    console.log("the payload inn the end is", payload)
-    return payload as { role: string, userId: string };
+    const decoded = jwt.verify(token, secret);
+    console.log("the decoded user in the token verify is", decoded)
+    if (!decoded) {
+      throw new Error("Failed to decode");
+    }
+    return decoded;
   } catch (error) {
-    throw new Error('Authentication failed');
+    console.error("Token verification failed:", error);
+    return null; // Return null instead of throwing to prevent breaking middleware
   }
 }
