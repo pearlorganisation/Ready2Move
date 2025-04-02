@@ -15,13 +15,9 @@ async function decodeToken(token:string) {
 }
 
 export default async function middleware(req: NextRequest) {
-  const userRole = req.cookies.get("user_role")?.value; 
   const token = req.cookies.get("access_token")?.value;
   let userData
   console.log("the token in middleware is", token)
-  if (!userRole) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
  if(token){
     userData = await decodeToken(token);
   console.log("the userdata is ", userData)
