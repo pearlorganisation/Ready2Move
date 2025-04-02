@@ -27,7 +27,7 @@ export default async function middleware(req: NextRequest) {
 
 
   const { pathname } = req.nextUrl;
-  if (pathname === "/admin") {
+  if (userData!= null) {
     if (userData.role === "AGENT") {
       return NextResponse.redirect(new URL("/admin/agent", req.url));
     }
