@@ -1,9 +1,71 @@
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+// Interface for the structure within the 'area' array
+interface AreaDetail {
+  name: string;
+  area: number;
+  areaMeasurement: string;
+}
 
+// Interface for the 'landArea' object
+interface LandAreaDetail {
+  area: number;
+  measurement: string;
+}
+
+// Main interface for the userdata object
+interface UserData {
+  id?: string;
+  title?: string;
+  slug?: string;
+  subTitle?: string;
+  description?: string;
+  service?: string;
+  property?: string;
+  propertyType?: string;
+  apartmentName?: string;
+  apartmentNo?: string;
+  locality?: string;
+  city?: string;
+  state?: string;
+  area?: AreaDetail[]; // Array of AreaDetail objects
+  landArea?: LandAreaDetail; // LandAreaDetail object
+  propertyFloor?: number;
+  totalFloors?: number;
+  roadWidth?: number;
+  reraNumber?: string;
+  reraPossessionDate?: Date; // Using the built-in Date type
+  noOfBedrooms?: number;
+  noOfBathrooms?: number;
+  noOfBalconies?: number;
+  parking?: string;
+  furnishing?: string;
+  entranceFacing?: string;
+  availability?: string;
+  propertyAge?: string;
+  isOCAvailable?: boolean;
+  isCCAvailable?: boolean;
+  ownership?: string;
+  expectedPrice?: number;
+  isPriceNegotiable?: boolean;
+  isBrokerageCharge?: boolean;
+  brokerage?: number;
+  maintenanceCharge?: number;
+  maintenanceFrequency?: string;
+  bankOfApproval?: string[]; // Array of strings
+  amenities?: string[]; // Array of strings
+  waterSource?: string;
+  otherFeatures?: string[]; // Array of strings
+  propertyFlooring?: string;
+  powerBackup?: string;
+  nearbyLandmarks?: string[]; // Array of strings
+  imageGallery?: File[]; // Array of File objects (assuming standard browser File API)
+  youtubeEmbedLink?: string;
+  isFeatured?: boolean;
+}
 export const createPropertyByAdmin = createAsyncThunk(
     "create/project",
-    async ({ userdata }: { userdata: FormData }, { rejectWithValue }) => {
+    async ({ userdata }:{userdata: UserData}, { rejectWithValue }) => {
       try {
         const config = {
           headers: {

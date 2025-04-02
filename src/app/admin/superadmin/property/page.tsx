@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use, useEffect } from "react";
 
 import { useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -10,6 +10,7 @@ import { CalendarIcon, Check } from "lucide-react";
 import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
+import { getFeatures } from "@/lib/redux/actions/featuresAction";
 
 
 type FormData = {
@@ -571,8 +572,8 @@ export default function PropertyForm() {
   const title = watch("title");
   const isBrokerageCharge = watch("isBrokerageCharge");
   const selectedBedrooms = watch("noOfBedrooms");
-const selectedBathroom= watch("noOfBathrooms");
-const selectedBalconies=watch("noOfBalconies")
+  const selectedBathroom= watch("noOfBathrooms");
+  const selectedBalconies=watch("noOfBalconies")
   // Update slug when title changes
   const handleTitleChange = (value: string) => {
     setValue("title", value);
@@ -600,6 +601,10 @@ const selectedBalconies=watch("noOfBalconies")
     dispatch(createPropertyByAdmin({ userdata: formData }));
     alert("Property form submitted successfully!");
   }
+
+  useEffect(()=>{
+   dispatch(getFeatures())
+  },[])
 
   return (
     <div className="flex min-h-screen bg-slate-50">
