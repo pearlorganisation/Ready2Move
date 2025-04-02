@@ -1,224 +1,532 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
+
+import { useState, useRef } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { format } from "date-fns";
 import slugify from "slugify";
+import { CalendarIcon, Check } from "lucide-react";
+import { cn } from "@/lib/util/cn";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
 
-// Mock data for features (would come from API in real implementation)
-const features = {
-  propertyTypes: [
-    { id: "1", name: "Flat" },
-    { id: "2", name: "Villa" },
-    { id: "3", name: "Plot" },
-    { id: "4", name: "Office" },
-    { id: "5", name: "Godown" },
-    { id: "6", name: "Showroom" },
-    { id: "7", name: "Shop" },
-    { id: "8", name: "Duplex" },
-  ],
-  parkingTypes: [
-    { id: "p1", name: "Stilt Parking" },
-    { id: "p2", name: "Covered Parking" },
-    { id: "p3", name: "Open Parking" },
-    { id: "p4", name: "No Parking" },
-  ],
-  furnishingTypes: [
-    { id: "f1", name: "Fully Furnished" },
-    { id: "f2", name: "Semi Furnished" },
-    { id: "f3", name: "Unfurnished" },
-  ],
-  entranceFacings: [
-    { id: "e1", name: "East" },
-    { id: "e2", name: "North" },
-    { id: "e3", name: "West" },
-    { id: "e4", name: "South" },
-    { id: "e5", name: "North-East" },
-    { id: "e6", name: "North-West" },
-    { id: "e7", name: "South-East" },
-    { id: "e8", name: "South-West" },
-  ],
-  availabilityTypes: [
-    { id: "a1", name: "Ready2move" },
-    { id: "a2", name: "Under Construction" },
-    { id: "a3", name: "More Than 10 Years" },
-  ],
-  propertyAgeTypes: [
-    { id: "pa1", name: "New Construction" },
-    { id: "pa2", name: "1 To 5 Years" },
-    { id: "pa3", name: "6 To 10 Years" },
-    { id: "pa4", name: "More Than 10 Years" },
-  ],
-  ownershipTypes: [
-    { id: "o1", name: "Free Hold" },
-    { id: "o2", name: "Leasehold" },
-    { id: "o3", name: "Pagdi System" },
-  ],
-  bankApprovals: [
-    { id: "b1", name: "SBI" },
-    { id: "b2", name: "HDFC" },
-    { id: "b3", name: "ICICI" },
-    { id: "b4", name: "Axis Bank" },
-    { id: "b5", name: "PNB" },
-  ],
-  amenities: [
-    { id: "am1", name: "Kids Play area" },
-    { id: "am2", name: "Garden" },
-    { id: "am3", name: "Gymnasium" },
-    { id: "am4", name: "Multi-purpose Hall" },
-    { id: "am5", name: "Security" },
-    { id: "am6", name: "CC TV Surveillance" },
-    { id: "am7", name: "Star Gazing Deck" },
-    { id: "am8", name: "Indoor Games" },
-    { id: "am9", name: "Outdoor Games" },
-    { id: "am10", name: "Swimming Pool" },
-    { id: "am11", name: "Clubhouse" },
-  ],
-  waterSources: [
-    { id: "w1", name: "24 Hours Water Supply" },
-    { id: "w2", name: "Borewell" },
-    { id: "w3", name: "Municipal Corporation" },
-    { id: "w4", name: "Tanker Water Supply" },
-  ],
-  otherFeatures: [
-    { id: "of1", name: "Prime Location" },
-    { id: "of2", name: "Good Connectivity" },
-    { id: "of3", name: "Builder Subvention Plan" },
-    { id: "of4", name: "Near School" },
-    { id: "of5", name: "Near Hospital" },
-    { id: "of6", name: "Near Market" },
-  ],
-  flooringTypes: [
-    { id: "fl1", name: "Marble" },
-    { id: "fl2", name: "Vitrified Tiles" },
-    { id: "fl3", name: "Wooden" },
-    { id: "fl4", name: "Granite" },
-    { id: "fl5", name: "Ceramic Tiles" },
-  ],
+
+type FormData = {
+  title: string;
+  slug: string;
+  subTitle: string;
+  description: string;
+  service: "SELL" | "RENT";
+  property: "RESIDENTIAL" | "COMMERCIAL";
+  propertyType: string;
+
+  // Location Details
+  apartmentName: string;
+  apartmentNo: string;
+  locality: string;
+  city: string;
+  state: string;
+
+  // Property Size & Configuration
+  area: {
+    name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
+    area: number;
+    areaMeasurement: "SQ_FT" | "SQ_M";
+  }[];
+  landArea: { area: number; measurement: string };
+  propertyFloor: number;
+  totalFloors: number;
+  roadWidth: number;
+
+  // Legal & Registration
+  reraNumber: string;
+  reraPossessionDate: Date | null;
+
+  // Property Features
+  noOfBedrooms: number;
+  noOfBathrooms: number;
+  noOfBalconies: number;
+  parking: string;
+  furnishing: string;
+  entranceFacing: string;
+  availability: string;
+  propertyAge: string;
+  isOCAvailable: boolean;
+  isCCAvailable: boolean;
+  ownership: string;
+
+  // Pricing & Charges
+  expectedPrice: number;
+  isPriceNegotiable: boolean;
+  isBrokerageCharge: boolean;
+  brokerage: number;
+  maintenanceCharge: number;
+  maintenanceFrequency: string;
+
+  // Financial & Legal
+  bankOfApproval: string[];
+
+  // Amenities & Features
+  amenities: string[];
+  waterSource: string;
+  otherFeatures: string[];
+  propertyFlooring: string;
+  powerBackup: string;
+  nearbyLandmarks: string[];
+
+  // Media
+  imageGallery: File[];
+  youtubeEmbedLink: string;
+  isFeatured: boolean;
+};
+
+// Custom Input component
+const CustomInput = ({
+  id,
+  label,
+  type = "text",
+  placeholder,
+  error,
+  className = "",
+  prefix,
+  ...props
+}: {
+  id: string;
+  label?: string;
+  type?: string;
+  placeholder?: string;
+  error?: string;
+  className?: string;
+  prefix?: React.ReactNode;
+} & React.InputHTMLAttributes<HTMLInputElement>) => (
+  <div className="space-y-2">
+    {label && (
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
+    )}
+    <div className={`relative ${prefix ? "flex items-center" : ""}`}>
+      {prefix && (
+        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+          {prefix}
+        </span>
+      )}
+      <input
+        id={id}
+        type={type}
+        className={cn(
+          "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+          error && "border-red-500 focus:ring-red-500 focus:border-red-500",
+          prefix && "pl-8",
+          className
+        )}
+        placeholder={placeholder}
+        {...props}
+      />
+    </div>
+    {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+  </div>
+);
+
+// Custom Textarea component
+const CustomTextarea = ({
+  id,
+  label,
+  placeholder,
+  error,
+  className = "",
+  ...props
+}: {
+  id: string;
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  className?: string;
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>) => (
+  <div className="space-y-2">
+    {label && (
+      <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
+    )}
+    <textarea
+      id={id}
+      className={cn(
+        "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm",
+        error && "border-red-500 focus:ring-red-500 focus:border-red-500",
+        className
+      )}
+      placeholder={placeholder}
+      {...props}
+    />
+    {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+  </div>
+);
+
+// Custom Button component
+const CustomButton = ({
+  children,
+  variant = "default",
+  size = "default",
+  className = "",
+  ...props
+}: {
+  children: React.ReactNode;
+  variant?: "default" | "outline" | "destructive";
+  size?: "default" | "sm" | "lg";
+  className?: string;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const variantClasses = {
+    default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    outline:
+      "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500",
+    destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+  };
+
+  const sizeClasses = {
+    default: "px-4 py-2 text-sm",
+    sm: "px-2 py-1 text-xs",
+    lg: "px-6 py-3 text-base",
+  };
+
+  return (
+    <button
+      className={cn(
+        "font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center transition-colors",
+        variantClasses[variant],
+        sizeClasses[size],
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
+
+// Custom Checkbox component
+const CustomCheckbox = ({
+  id,
+  label,
+  checked,
+  onChange,
+  className = "",
+}: {
+  id: string;
+  label?: string;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  className?: string;
+}) => (
+  <div className={cn("flex items-center", className)}>
+    <input
+      id={id}
+      type="checkbox"
+      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+      checked={checked}
+      onChange={(e) => onChange?.(e.target.checked)}
+    />
+    {label && (
+      <label htmlFor={id} className="ml-2 block text-sm text-gray-700">
+        {label}
+      </label>
+    )}
+  </div>
+);
+
+// Custom Radio component
+const CustomRadio = ({
+  id,
+  name,
+  value,
+  label,
+  checked,
+  onChange,
+  className = "",
+}: {
+  id: string;
+  name: string;
+  value: string;
+  label?: string;
+  checked?: boolean;
+  onChange?: (value: string) => void;
+  className?: string;
+}) => (
+  <div className={cn("flex items-center", className)}>
+    <input
+      id={id}
+      type="radio"
+      name={name}
+      value={value}
+      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+      checked={checked}
+      onChange={(e) => onChange?.(e.target.value)}
+    />
+    {label && (
+      <label htmlFor={id} className="ml-2 block text-sm text-gray-700">
+        {label}
+      </label>
+    )}
+  </div>
+);
+
+// Custom Calendar component
+const CustomCalendar = ({
+  selected,
+  onSelect,
+}: {
+  selected?: Date;
+  onSelect: (date: Date | undefined) => void;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(selected || new Date());
+
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (year: number, month: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const handleDateSelect = (day: number) => {
+    const newDate = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      day
+    );
+    onSelect(newDate);
+    setIsOpen(false);
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
+    );
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+    );
+  };
+
+  const monthName = currentMonth.toLocaleString("default", { month: "long" });
+  const year = currentMonth.getFullYear();
+  const daysInMonth = getDaysInMonth(year, currentMonth.getMonth());
+  const firstDayOfMonth = getFirstDayOfMonth(year, currentMonth.getMonth());
+
+  const days = [];
+  for (let i = 0; i < firstDayOfMonth; i++) {
+    days.push(null);
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push(i);
+  }
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+        {selected ? (
+          format(selected, "PPP")
+        ) : (
+          <span className="text-gray-400">Pick a date</span>
+        )}
+        <CalendarIcon className="h-4 w-4 text-gray-400" />
+      </button>
+
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 p-2">
+          <div className="flex justify-between items-center mb-2">
+            <button
+              type="button"
+              onClick={handlePrevMonth}
+              className="p-1 rounded-md hover:bg-gray-100"
+            >
+              &lt;
+            </button>
+            <div className="font-medium">
+              {monthName} {year}
+            </div>
+            <button
+              type="button"
+              onClick={handleNextMonth}
+              className="p-1 rounded-md hover:bg-gray-100"
+            >
+              &gt;
+            </button>
+          </div>
+
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500">
+            <div>Su</div>
+            <div>Mo</div>
+            <div>Tu</div>
+            <div>We</div>
+            <div>Th</div>
+            <div>Fr</div>
+            <div>Sa</div>
+          </div>
+
+          <div className="grid grid-cols-7 gap-1 mt-1">
+            {days.map((day, i) => (
+              <div key={i} className="text-center">
+                {day !== null ? (
+                  <button
+                    type="button"
+                    onClick={() => handleDateSelect(day)}
+                    className={cn(
+                      "w-8 h-8 rounded-full text-sm hover:bg-gray-100 focus:outline-none",
+                      selected &&
+                        selected.getDate() === day &&
+                        selected.getMonth() === currentMonth.getMonth() &&
+                        selected.getFullYear() === currentMonth.getFullYear()
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "text-gray-700"
+                    )}
+                  >
+                    {day}
+                  </button>
+                ) : (
+                  <div className="w-8 h-8"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Custom Popover component
+const CustomPopover = ({
+  trigger,
+  content,
+  isOpen,
+  setIsOpen,
+}: {
+  trigger: React.ReactNode;
+  content: React.ReactNode;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}) => {
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Close popover when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, setIsOpen]);
+
+  return (
+    <div className="relative" ref={popoverRef}>
+      <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
+
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-auto bg-white shadow-lg rounded-md border border-gray-200">
+          {content}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default function PropertyForm() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedBedrooms, setSelectedBedrooms] = useState(0);
+  const { featureData } = useAppSelector((state) => state.features)
+  const { userData } = useAppSelector((state) => state.user)
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const dispatch = useAppDispatch()
 
-  // Initialize form state based on schema
-  type FormData = {
-    title: string;
-    slug: string;
-    subTitle: string;
-    description: string;
-    service: "SELL" | "RENT";
-    property: "RESIDENTIAL" | "COMMERCIAL";
-    propertyType: string;
-    apartmentName: string;
-    apartmentNo: string;
-    locality: string;
-    city: string;
-    state: string;
-    area: { name: string; area: number; areaMeasurement: string }[];
-    landArea: { area: number; measurement: string };
-    propertyFloor: number;
-    totalFloors: number;
-    roadWidth: number;
-    reraNumber: string;
-    reraPossessionDate: Date;
-    noOfBedrooms: number;
-    noOfBathrooms: number;
-    noOfBalconies: number;
-    parking: string;
-    furnishing: string;
-    entranceFacing: string;
-    availability: string;
-    propertyAge: string;
-    isOCAvailable: boolean;
-    isCCAvailable: boolean;
-    ownership: string;
-    expectedPrice: number;
-    isPriceNegotiable: boolean;
-    isBrokerageCharge: boolean;
-    brokerage: number;
-    maintenanceCharge: number;
-    maintenanceFrequency: string;
-    bankOfApproval: string[];
-    amenities: string[];
-    waterSource: string;
-    otherFeatures: string[];
-    propertyFlooring: string;
-    powerBackup: string;
-    nearbyLandmarks: string[];
-    imageGallery: { secure_url: string; public_id: string }[];
-    youtubeEmbedLink: string;
-    isFeatured: boolean;
-  };
-  
-  const [formData, setFormData] = useState<FormData>({
-    title: "",
-    slug: "",
-    subTitle: "",
-    description: "",
-    service: "SELL", // SELL or RENT
-    property: "RESIDENTIAL", // RESIDENTIAL or COMMERCIAL
-    propertyType: "", // ID reference
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      title: "",
+      slug: "",
+      subTitle: "",
+      description: "",
+      service: "SELL",
+      property: "RESIDENTIAL",
+      propertyType: "",
 
-    // Location Details
-    apartmentName: "",
-    apartmentNo: "",
-    locality: "",
-    city: "",
-    state: "",
+      apartmentName: "",
+      apartmentNo: "",
+      locality: "",
+      city: "",
+      state: "",
 
-    // Property Size & Configuration
-    area: [
-      { name: "CARPET_AREA", area: 0, areaMeasurement: "SQ_FT" },
-      { name: "BUILT_UP_AREA", area: 0, areaMeasurement: "SQ_FT" },
-      { name: "SUPER_AREA", area: 0, areaMeasurement: "SQ_FT" },
-    ],
-    landArea: { area: 0, measurement: "SQ_FT" }, // ✅ ADDED
-    propertyFloor: 0, // ✅ ADDED
-    totalFloors: 0, // ✅ ADDED
-    roadWidth: 0, // ✅ ADDED
+      area: [
+        { name: "CARPET_AREA", area: 0, areaMeasurement: "SQ_FT" },
+        { name: "BUILT_UP_AREA", area: 0, areaMeasurement: "SQ_FT" },
+        { name: "SUPER_AREA", area: 0, areaMeasurement: "SQ_FT" },
+      ],
+      landArea: { area: 0, measurement: "SQ_FT" },
+      propertyFloor: 0,
+      totalFloors: 0,
+      roadWidth: 0,
 
-    // Legal & Registration
-    reraNumber: "",
-    reraPossessionDate: new Date(),
+      reraNumber: "",
+      reraPossessionDate: null,
 
-    // Property Features
-    noOfBedrooms: 0,
-    noOfBathrooms: 0,
-    noOfBalconies: 0,
-    parking: "", // ID reference
-    furnishing: "", // ID reference
-    entranceFacing: "", // ID reference
-    availability: "", // ID reference
-    propertyAge: "", // ID reference
-    isOCAvailable: false,
-    isCCAvailable: false,
-    ownership: "", // ID reference
+      noOfBedrooms: 0,
+      noOfBathrooms: 0,
+      noOfBalconies: 0,
+      parking: "",
+      furnishing: "",
+      entranceFacing: "",
+      availability: "",
+      propertyAge: "",
+      isOCAvailable: false,
+      isCCAvailable: false,
+      ownership: "",
 
-    // Pricing & Charges
-    expectedPrice: 0,
-    isPriceNegotiable: false,
-    isBrokerageCharge: false,
-    brokerage: 0,
-    maintenanceCharge: 0, // ✅ ADDED
-    maintenanceFrequency: "Monthly", // ✅ ADDED
+      expectedPrice: 0,
+      isPriceNegotiable: false,
+      isBrokerageCharge: false,
+      brokerage: 0,
+      maintenanceCharge: 0,
+      maintenanceFrequency: "Monthly",
 
-    // Financial & Legal
-    bankOfApproval: [] as string[], // Array of ID references
+      bankOfApproval: [],
 
-    // Amenities & Features
-    amenities: [] as string[], // Array of ID references
-    waterSource: "", // ID reference
-    otherFeatures: [] as string[], // Array of ID references
-    propertyFlooring: "", // ID reference
-    powerBackup: "No Backup", // ✅ ADDED
-    nearbyLandmarks: [] as string[], // ✅ ADDED
+      amenities: [],
+      waterSource: "",
+      otherFeatures: [],
+      propertyFlooring: "",
+      powerBackup: "No Backup",
+      nearbyLandmarks: [],
 
-    // Media
-    imageGallery: [] as { secure_url: string; public_id: string }[],
-    youtubeEmbedLink: "",
-    isFeatured: false,
+      imageGallery: [],
+      youtubeEmbedLink: "",
+      isFeatured: false,
+    },
   });
 
   const steps = [
@@ -259,209 +567,44 @@ export default function PropertyForm() {
     },
   ];
 
+  // Watch form values for dynamic updates
+  const title = watch("title");
+  const isBrokerageCharge = watch("isBrokerageCharge");
+  const selectedBedrooms = watch("noOfBedrooms");
+const selectedBathroom= watch("noOfBathrooms");
+const selectedBalconies=watch("noOfBalconies")
+  // Update slug when title changes
+  const handleTitleChange = (value: string) => {
+    setValue("title", value);
+    setValue("slug", slugify(value, { lower: true, strict: true, trim: true }));
+  };
+
+  // Handle image upload
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setValue("imageGallery", files);
+    setPreviewImages(files.map((file) => URL.createObjectURL(file)));
+  };
+
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
+    if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
-  const handleInputChange = (field: keyof FormData, value: string | Date | number | boolean) => {
-      console.log(`Updating ${String(field)}:`, value);
-      setFormData((prev) => {
-        const updatedData = {
-          ...prev,
-          [field]: value instanceof Date ? value.toISOString() : value,
-          ...(field === "title" as keyof FormData && {
-            slug: slugify(value as string, { lower: true, strict: true, trim: true }),
-          }),
-        };
-        console.log("Updated Form Data:", updatedData);
-        return updatedData;
-      });
-    };
-
-  const handleArrayToggle = (field: string, id: string) => {
-    setFormData((prev) => {
-      const currentArray = [...(prev[field as keyof typeof prev] as string[])];
-      const index = currentArray.indexOf(id);
-
-      if (index === -1) {
-        currentArray.push(id);
-      } else {
-        currentArray.splice(index, 1);
-      }
-
-      return { ...prev, [field]: currentArray };
-    });
-  };
-
-  const handleAreaChange = (index: number, field: string, value: any) => {
-    setFormData((prev) => {
-      const areas = [...prev.area];
-      areas[index] = { ...areas[index], [field]: value };
-      return { ...prev, area: areas };
-    });
-  };
-
-  const handleSubmit = async () => {
-    // Generate slug from title
-
-    // Mock API call
-    try {
-      // const response = await fetch('/api/properties', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(propertyData),
-      // })
-      // const data = await response.json()
-      alert("Property submitted successfully!");
-    } catch (error) {
-      console.error("Error submitting property:", error);
-      alert("Error submitting property. Please try again.");
-    }
-  };
-
-  // Simple calendar component
-  const Calendar = ({
-    date,
-    onChange,
-  }: {
-    date: Date | undefined;
-    onChange: (date: Date) => void;
-  }) => {
-    const [currentMonth, setCurrentMonth] = useState(date || new Date());
-
-    const daysInMonth = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth() + 1,
-      0
-    ).getDate();
-    const firstDayOfMonth = new Date(
-      currentMonth.getFullYear(),
-      currentMonth.getMonth(),
-      1
-    ).getDay();
-
-    const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-    const emptyDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
-
-    const prevMonth = () => {
-      setCurrentMonth(
-        new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
-      );
-    };
-
-    const nextMonth = () => {
-      setCurrentMonth(
-        new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-      );
-    };
-
-    const isSelectedDate = (day: number) => {
-      return (
-        date?.getDate() === day &&
-        date?.getMonth() === currentMonth.getMonth() &&
-        date?.getFullYear() === currentMonth.getFullYear()
-      );
-    };
-
-    return (
-      <div className="bg-white rounded-lg shadow p-4 w-full max-w-xs">
-        <div className="flex justify-between items-center mb-4">
-          <button
-            type="button"
-            onClick={prevMonth}
-            className="p-1 rounded-full hover:bg-gray-100"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-          <div className="font-semibold">
-            {currentMonth.toLocaleString("default", { month: "long" })}{" "}
-            {currentMonth.getFullYear()}
-          </div>
-          <button
-            type="button"
-            onClick={nextMonth}
-            className="p-1 rounded-full hover:bg-gray-100"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-        <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500">
-          <div>Su</div>
-          <div>Mo</div>
-          <div>Tu</div>
-          <div>We</div>
-          <div>Th</div>
-          <div>Fr</div>
-          <div>Sa</div>
-        </div>
-        <div className="grid grid-cols-7 gap-1 mt-2">
-          {emptyDays.map((_, index) => (
-            <div key={`empty-${index}`} className="h-8"></div>
-          ))}
-          {days.map((day) => (
-            <button
-              key={day}
-              type="button"
-              onClick={() => {
-                onChange(
-                  new Date(
-                    currentMonth.getFullYear(),
-                    currentMonth.getMonth(),
-                    day
-                  )
-                );
-                setShowCalendar(false);
-              }}
-              className={`h-8 w-8 rounded-full flex items-center justify-center text-sm ${
-                isSelectedDate(day)
-                  ? "bg-[#86e5e7] text-white"
-                  : "hover:bg-gray-100"
-              }`}
-            >
-              {day}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
+  const onSubmit = (data: any) => {
+    const formData = { ...data, id: userData?._id };
+    dispatch(createPropertyByAdmin({ userdata: formData }));
+    alert("Property form submitted successfully!");
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar */}
-      <div className="w-64 bg-white border-r border-slate-200 p-4">
+      <div className="w-64 bg-white border-r border-slate-200 p-4 hidden md:block">
         <div className="space-y-6">
           {steps.map((step, index) => (
             <div
@@ -469,20 +612,16 @@ export default function PropertyForm() {
               className={`relative border-l-4 pb-6 ${
                 index === steps.length - 1 ? "border-transparent" : ""
               } ${
-                currentStep === index ? "border-[#1073F7]" : "border-slate-200"
+                currentStep === index ? "border-blue-600" : "border-slate-200"
               }`}
             >
               <div
-              // className={`absolute left-[-5px] top-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-              //   currentStep === index ? "bg-[#1073F7] text-white" : "bg-slate-100 text-slate-500"
-              // }`}
+                className="ml-4 hover:bg-slate-100 p-2 rounded-md cursor-pointer"
+                onClick={() => setCurrentStep(index)}
               >
-                {/* {index + 1} */}
-              </div>
-              <div className="ml-4  hover:bg-blue-100">
                 <h3
                   className={`font-medium text-sm ${
-                    currentStep === index ? "text-[#1073F7]" : "text-slate-500"
+                    currentStep === index ? "text-blue-600" : "text-slate-500"
                   }`}
                 >
                   {step.title}
@@ -494,1328 +633,1148 @@ export default function PropertyForm() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-sm border border-slate-200">
-          {/* Step Content */}
-          <div className="p-6">
-            {currentStep === 0 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    Basic Details
-                  </h2>
-                  <p className="text-slate-500 text-sm">Add basic details</p>
-                </div>
+      {/* Mobile Steps Indicator */}
+      <div className="md:hidden p-4 bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-10">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold">{steps[currentStep].title}</h2>
+          <div className="text-sm text-slate-500">
+            Step {currentStep + 1} of {steps.length}
+          </div>
+        </div>
+      </div>
 
-                <div className="space-y-4">
+      {/* Main Content */}
+      <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-lg shadow">
+            {/* Step Content */}
+            <div className="p-6">
+              {currentStep === 0 && (
+                <div className="space-y-6">
                   <div>
-                    <label
-                      htmlFor="title"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Property Title
-                    </label>
-                    <input
-                      id="title"
-                      type="text"
-                      placeholder="e.g. 2 BHK Apartment for Sale in Rustomjee Global City"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                    focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.title}
-                      onChange={(e) =>
-                        handleInputChange("title", e.target.value)
-                      }
-                    />
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      Basic Details
+                    </h2>
+                    <p className="text-slate-500 text-sm">Add basic details</p>
                   </div>
 
-                  <div className="mt-4">
-                    <label
-                      htmlFor="slug"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Slug
-                    </label>
-                    <input
+                  <div className="space-y-4">
+                    <CustomInput
+                      id="title"
+                      label="Property Title"
+                      placeholder="e.g. 2 BHK Apartment for Sale in Rustomjee Global City"
+                      error={errors.title?.message}
+                      {...register("title", { required: "Title is required" })}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                    />
+
+                    <CustomInput
                       id="slug"
-                      type="text"
+                      label="Slug"
                       placeholder="slug"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                    focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.slug}
+                      className="bg-slate-50"
+                      {...register("slug")}
                       readOnly
                     />
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="subTitle"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Property Subtitle (optional)
-                    </label>
-                    <input
+                    <CustomInput
                       id="subTitle"
-                      type="text"
+                      label="Property Subtitle (optional)"
                       placeholder="e.g. Kandivali West, Mumbai, Mahavir Nagar"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.subTitle}
-                      onChange={(e) =>
-                        handleInputChange("subTitle", e.target.value)
-                      }
+                      {...register("subTitle")}
                     />
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="description"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Property Description
-                    </label>
-                    <textarea
+                    <CustomTextarea
                       id="description"
+                      label="Property Description"
                       placeholder="Describe your property in detail"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7] min-h-[100px]"
-                      value={formData.description}
-                      onChange={(e) =>
-                        handleInputChange("description", e.target.value)
-                      }
+                      className="min-h-[100px]"
+                      error={errors.description?.message}
+                      {...register("description", {
+                        required: "Description is required",
+                      })}
                     />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-slate-700 mb-2">
-                      You're looking to
-                    </h3>
 
-                    <div className="flex space-x-3">
-                      <button
-                        type="button"
-                        className={`px-4 py-2 rounded-md text-sm font-medium ${
-                          formData.service === "SELL"
-                            ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                            : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        }`}
-                        onClick={() => handleInputChange("service", "SELL")}
-                      >
-                        SELL
-                      </button>
-                      <button
-                        type="button"
-                        className={`px-4 py-2 rounded-md text-sm font-medium ${
-                          formData.service === "RENT"
-                            ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                            : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        }`}
-                        onClick={() => handleInputChange("service", "RENT")}
-                      >
-                        RENT
-                      </button>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        You're looking to
+                      </label>
+                      <Controller
+                        name="service"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex space-x-3">
+                            <CustomButton
+                              type="button"
+                              variant={
+                                field.value === "SELL" ? "default" : "outline"
+                              }
+                              onClick={() => field.onChange("SELL")}
+                            >
+                              SELL
+                            </CustomButton>
+                            <CustomButton
+                              type="button"
+                              variant={
+                                field.value === "RENT" ? "default" : "outline"
+                              }
+                              onClick={() => field.onChange("RENT")}
+                            >
+                              RENT
+                            </CustomButton>
+                          </div>
+                        )}
+                      />
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-slate-700 mb-2">
-                      Property
-                    </h3>
-                    <div className="flex space-x-3">
-                      <button
-                        type="button"
-                        className={`px-4 py-2 rounded-md text-sm font-medium ${
-                          formData.property === "RESIDENTIAL"
-                            ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                            : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        }`}
-                        onClick={() =>
-                          handleInputChange("property", "RESIDENTIAL")
-                        }
-                      >
-                        RESIDENTIAL
-                      </button>
-                      <button
-                        type="button"
-                        className={`px-4 py-2 rounded-md text-sm font-medium ${
-                          formData.property === "COMMERCIAL"
-                            ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                            : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        }`}
-                        onClick={() =>
-                          handleInputChange("property", "COMMERCIAL")
-                        }
-                      >
-                        COMMERCIAL
-                      </button>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Property
+                      </label>
+                      <Controller
+                        name="property"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex space-x-3">
+                            <CustomButton
+                              type="button"
+                              variant={
+                                field.value === "RESIDENTIAL"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={() => field.onChange("RESIDENTIAL")}
+                            >
+                              RESIDENTIAL
+                            </CustomButton>
+                            <CustomButton
+                              type="button"
+                              variant={
+                                field.value === "COMMERCIAL"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={() => field.onChange("COMMERCIAL")}
+                            >
+                              COMMERCIAL
+                            </CustomButton>
+                          </div>
+                        )}
+                      />
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-slate-700 mb-2">
-                      Property Type
-                    </h3>
-                    <div className="grid grid-cols-3 gap-2">
-                      {features.propertyTypes.slice(0).map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`px-4 py-2 rounded-md text-sm font-medium ${
-                            formData.propertyType === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("propertyType", type.id)
-                          }
-                        >
-                          {type.name}
-                        </button>
-                      ))}
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Property Type
+                      </label>
+                      <Controller
+                        name="propertyType"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {featureData.filter((item)=>item.type==="PROPERTY_TYPE").flatMap((category)=>category.features).map((type) => (
+                              <CustomButton
+                                key={type._id}
+                                type="button"
+                                variant={
+                                  field.value === type._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(type._id)}
+                              >
+                                {type.name}
+                              </CustomButton>
+                            ))}
+                          </div>
+                        )}
+                      />
                     </div>
-                    {/* <div className="grid grid-cols-3 gap-3 mt-3">
-                      {features.propertyTypes.slice(5).map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`px-4 py-2 rounded-md text-sm font-medium ${
-                            formData.propertyType === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() => handleInputChange("propertyType", type.id)}
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div> */}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {currentStep === 1 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    Property Location
-                  </h2>
-                  <p className="text-slate-500 text-sm">
-                    Where is your property located?
-                  </p>
-                </div>
-
-                <div className="space-y-4">
+              {currentStep === 1 && (
+                <div className="space-y-6">
                   <div>
-                    <label
-                      htmlFor="apartmentName"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Apartment/Society Name
-                    </label>
-                    <input
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      Property Location
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Where is your property located?
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <CustomInput
                       id="apartmentName"
-                      type="text"
+                      label="Apartment/Society Name"
                       placeholder="Name of apartment or society"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.apartmentName}
-                      onChange={(e) =>
-                        handleInputChange("apartmentName", e.target.value)
-                      }
+                      {...register("apartmentName")}
                     />
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="apartmentNo"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Flat No. / Apartment No.
-                    </label>
-                    <input
+                    <CustomInput
                       id="apartmentNo"
-                      type="text"
+                      label="Flat No. / Apartment No."
                       placeholder="Flat or house number"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.apartmentNo}
-                      onChange={(e) =>
-                        handleInputChange("apartmentNo", e.target.value)
-                      }
+                      {...register("apartmentNo")}
                     />
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="locality"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Locality
-                    </label>
-                    <input
+                    <CustomInput
                       id="locality"
-                      type="text"
+                      label="Locality"
                       placeholder="Eg: Andheri"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.locality}
-                      onChange={(e) =>
-                        handleInputChange("locality", e.target.value)
-                      }
+                      error={errors.locality?.message}
+                      {...register("locality", {
+                        required: "Locality is required",
+                      })}
                     />
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="city"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      City
-                    </label>
-                    <input
+                    <CustomInput
                       id="city"
-                      type="text"
+                      label="City"
                       placeholder="Enter city name"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.city}
-                      onChange={(e) =>
-                        handleInputChange("city", e.target.value)
-                      }
+                      error={errors.city?.message}
+                      {...register("city", { required: "City is required" })}
                     />
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="state"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      State
-                    </label>
-                    <input
+                    <CustomInput
                       id="state"
-                      type="text"
+                      label="State"
                       placeholder="Enter state name"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.state}
-                      onChange={(e) =>
-                        handleInputChange("state", e.target.value)
-                      }
+                      error={errors.state?.message}
+                      {...register("state", { required: "State is required" })}
                     />
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {currentStep === 2 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    Property Details
-                  </h2>
-                  <p className="text-slate-500 text-sm">
-                    Tell us about your property
-                  </p>
-                </div>
-
-                <div className="space-y-4">
+              {currentStep === 2 && (
+                <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Carpet Area
-                    </label>
-                    <div className="flex mt-1">
-                      <input
-                        type="number"
-                        placeholder="e.g. 1000"
-                        className="block w-full px-3 py-2 bg-white border border-slate-300 rounded-l-md text-sm shadow-sm placeholder-slate-400
-                          focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                        value={formData.area[0].area || ""}
-                        onChange={(e) =>
-                          handleAreaChange(0, "area", Number(e.target.value))
-                        }
-                      />
-                      <div className="relative">
-                        <select
-                          className="block w-[120px] px-3 py-2 bg-white border border-slate-300 rounded-r-md text-sm shadow-sm
-                            focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7] appearance-none"
-                          value={formData.area[0].areaMeasurement}
-                          onChange={(e) =>
-                            handleAreaChange(
-                              0,
-                              "areaMeasurement",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value="SQ_FT">Sq. Ft</option>
-                          <option value="SQ_M">Sq. Mt</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      Property Details
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Tell us about your property
+                    </p>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Buildup Area
-                    </label>
-                    <div className="flex mt-1">
-                      <input
-                        type="number"
-                        placeholder="Buildup area"
-                        className="block w-full px-3 py-2 bg-white border border-slate-300 rounded-l-md text-sm shadow-sm placeholder-slate-400
-                          focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                        value={formData.area[1].area || ""}
-                        onChange={(e) =>
-                          handleAreaChange(1, "area", Number(e.target.value))
-                        }
-                      />
-                      <div className="relative">
-                        <select
-                          className="block w-[120px] px-3 py-2 bg-white border border-slate-300 rounded-r-md text-sm shadow-sm
-                            focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7] appearance-none"
-                          value={formData.area[1].areaMeasurement}
-                          onChange={(e) =>
-                            handleAreaChange(
-                              1,
-                              "areaMeasurement",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value="SQ_FT">Sq. Ft</option>
-                          <option value="SQ_M">Sq. Mt</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                          </svg>
-                        </div>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Carpet Area
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="e.g. 1000"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          {...register("area.0.area", { valueAsNumber: true })}
+                        />
+                        <Controller
+                          name="area.0.areaMeasurement"
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              <option value="SQ_FT">Sq. Ft</option>
+                              <option value="SQ_M">Sq. Mt</option>
+                            </select>
+                          )}
+                        />
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Super Area
-                    </label>
-                    <div className="flex mt-1">
-                      <input
-                        type="number"
-                        placeholder="Super area"
-                        className="block w-full px-3 py-2 bg-white border border-slate-300 rounded-l-md text-sm shadow-sm placeholder-slate-400
-                          focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                        value={formData.area[2].area || ""}
-                        onChange={(e) =>
-                          handleAreaChange(2, "area", Number(e.target.value))
-                        }
-                      />
-                      <div className="relative">
-                        <select
-                          className="block w-[120px] px-3 py-2 bg-white border border-slate-300 rounded-r-md text-sm shadow-sm
-                            focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7] appearance-none"
-                          value={formData.area[2].areaMeasurement}
-                          onChange={(e) =>
-                            handleAreaChange(
-                              2,
-                              "areaMeasurement",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value="SQ_FT">Sq. Ft</option>
-                          <option value="SQ_M">Sq. Mt</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <svg
-                            className="fill-current h-4 w-4"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                          >
-                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                          </svg>
-                        </div>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Buildup Area
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="Buildup area"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          {...register("area.1.area", { valueAsNumber: true })}
+                        />
+                        <Controller
+                          name="area.1.areaMeasurement"
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              <option value="SQ_FT">Sq. Ft</option>
+                              <option value="SQ_M">Sq. Mt</option>
+                            </select>
+                          )}
+                        />
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <label
-                      htmlFor="reraNumber"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      RERA Number
-                    </label>
-                    <input
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Super Area
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          placeholder="Super area"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          {...register("area.2.area", { valueAsNumber: true })}
+                        />
+                        <Controller
+                          name="area.2.areaMeasurement"
+                          control={control}
+                          render={({ field }) => (
+                            <select
+                              className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              <option value="SQ_FT">Sq. Ft</option>
+                              <option value="SQ_M">Sq. Mt</option>
+                            </select>
+                          )}
+                        />
+                      </div>
+                    </div>
+
+                    <CustomInput
                       id="reraNumber"
-                      type="text"
+                      label="RERA Number"
                       placeholder="Enter RERA Number"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.reraNumber}
-                      onChange={(e) =>
-                        handleInputChange("reraNumber", e.target.value)
-                      }
+                      error={errors.reraNumber?.message}
+                      {...register("reraNumber", {
+                        required: "RERA Number is required",
+                      })}
                     />
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        RERA Possession Date
+                      </label>
+                      <Controller
+                        name="reraPossessionDate"
+                        control={control}
+                        render={({ field }) => (
+                          <CustomPopover
+                            isOpen={calendarOpen}
+                            setIsOpen={setCalendarOpen}
+                            trigger={
+                              <button
+                                type="button"
+                                className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span className="text-gray-400">
+                                    Pick a date
+                                  </span>
+                                )}
+                                <CalendarIcon className="h-4 w-4 text-gray-400" />
+                              </button>
+                            }
+                            content={
+                              <div className="p-2">
+                                <CustomCalendar
+                                  selected={field.value || undefined}
+                                  onSelect={(date) => {
+                                    field.onChange(date);
+                                    setCalendarOpen(false);
+                                  }}
+                                />
+                              </div>
+                            }
+                          />
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        No. of Bedrooms
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {[0, 1, 2, 3].map((num) => (
+                          <Controller
+                            key={num}
+                            name="noOfBedrooms"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === num ? "default" : "outline"
+                                }
+                                onClick={() => field.onChange(num)}
+                              >
+                                {num}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                        <input
+                          type="number"
+                          placeholder="you can enter"
+                          className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          value={selectedBedrooms > 3 ? selectedBedrooms : ""}
+                          onChange={(e) =>
+                            setValue(
+                              "noOfBedrooms",
+                              Number.parseInt(e.target.value) || 0
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        No. of Balconies
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {[0, 1, 2, 3].map((num) => (
+                          <Controller
+                            key={num}
+                            name="noOfBalconies"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === num ? "default" : "outline"
+                                }
+                                onClick={() => field.onChange(num)}
+                              >
+                                {num}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                  <input
+  type="number"
+  placeholder="you can enter"
+  className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+  value={selectedBalconies ? selectedBalconies : ""}
+  onChange={(e) => setValue("noOfBalconies", parseInt(e.target.value))}
+  onWheel={(e) => e.preventDefault()} // Prevent scroll from changing the value
+/>
+
+                     
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        No. of Bathrooms
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {[0, 1, 2, 3].map((num) => (
+                          <Controller
+                            key={num}
+                            name="noOfBathrooms"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === num ? "default" : "outline"
+                                }
+                                onClick={() => field.onChange(num)}
+                              >
+                                {num}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                           <input 
+                              placeholder="you can enter"
+                          className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                           
+                           type="number" value={selectedBathroom>3? selectedBathroom:""} onChange={(e)=>{
+                            setValue("noOfBathrooms",parseInt(e.target.value))
+                           }} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Parking
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {featureData?.filter((item)=>item.type==="PARKING").flatMap((category)=>category.features).map((type) => (
+                          <Controller
+                            key={type._id}
+                            name="parking"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === type._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(type._id)}
+                              >
+                                {type.name}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Furnishing
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {featureData.filter((item)=>item.type==="FURNISHING").flatMap((category)=>category.features).map((type) => (
+                          <Controller
+                            key={type._id}
+                            name="furnishing"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === type._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(type._id)}
+                              >
+                                {type.name}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      More Property Details
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Tell us about your property
+                    </p>
                   </div>
 
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Entrance Facing
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {featureData.filter((item)=>item.type ==="ENTRANCE_FACING").flatMap((category)=>category.features).map((facing) => (
+                          <Controller
+                            key={facing._id}
+                            name="entranceFacing"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === facing._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(facing._id)}
+                              >
+                                {facing.name}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Availability Status
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {featureData.filter((item)=>item.type==="AVAILABILITY").flatMap((category)=>category.features).map((avail) => (
+                          <Controller
+                            key={avail._id}
+                            name="availability"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === avail._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(avail._id)}
+                              >
+                                {avail.name}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Age of property
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {featureData.filter((item)=>item.type ==="PROPERTY_AGE").flatMap((category)=>category.features).map((type) => (
+                          <Controller
+                            key={type._id}
+                            name="propertyAge"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === type._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(type._id)}
+                              >
+                                {type.name}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <Controller
+                      name="isOCAvailable"
+                      control={control}
+                      render={({ field }) => (
+                        <CustomCheckbox
+                          id="ocAvailable"
+                          label="OC Available"
+                          checked={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name="isCCAvailable"
+                      control={control}
+                      render={({ field }) => (
+                        <CustomCheckbox
+                          id="ccAvailable"
+                          label="CC Available"
+                          checked={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 4 && (
+                <div className="space-y-6">
                   <div>
-                    <label
-                      htmlFor="reraPossessionDate"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      RERA Possession Date
-                    </label>
-                    <div className="relative mt-1">
-                      <button
-                        type="button"
-                        onClick={() => setShowCalendar(!showCalendar)}
-                        className="w-full flex justify-start items-center px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
-                          focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      Price Details
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Add pricing and details
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Ownership
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {featureData.filter((item)=>item.type==="OWNERSHIP").flatMap((category)=>category.features).map((type) => (
+                          <Controller
+                            key={type._id}
+                            name="ownership"
+                            control={control}
+                            render={({ field }) => (
+                              <CustomButton
+                                type="button"
+                                variant={
+                                  field.value === type._id
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() => field.onChange(type._id)}
+                              >
+                                {type.name}
+                              </CustomButton>
+                            )}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    <CustomInput
+                      id="expectedPrice"
+                      label="Expected Price"
+                      type="number"
+                      placeholder="Expected price"
+                      prefix="₹"
+                      error={errors.expectedPrice?.message}
+                      {...register("expectedPrice", {
+                        required: "Expected price is required",
+                        valueAsNumber: true,
+                      })}
+                    />
+
+                    <Controller
+                      name="isPriceNegotiable"
+                      control={control}
+                      render={({ field }) => (
+                        <CustomCheckbox
+                          id="priceNegotiable"
+                          label="Price negotiable"
+                          checked={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Do you charge brokerage?
+                      </label>
+                      <Controller
+                        name="isBrokerageCharge"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex space-x-4">
+                            <CustomRadio
+                              id="brokerageYes"
+                              name="brokerage"
+                              value="true"
+                              label="Yes"
+                              checked={field.value === true}
+                              onChange={(value) =>
+                                field.onChange(value === "true")
+                              }
+                            />
+                            <CustomRadio
+                              id="brokerageNo"
+                              name="brokerage"
+                              value="false"
+                              label="No"
+                              checked={field.value === false}
+                              onChange={(value) =>
+                                field.onChange(value === "true")
+                              }
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+
+                    {isBrokerageCharge && (
+                      <CustomInput
+                        id="brokerage"
+                        label="Brokerage Amount"
+                        type="number"
+                        placeholder="Brokerage amount"
+                        prefix="₹"
+                        {...register("brokerage", { valueAsNumber: true })}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 5 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      Amenities Details
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Add amenities / unique features
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Bank Approval
+                      </label>
+                      <Controller
+                        name="bankOfApproval"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex flex-wrap gap-2">
+                            {featureData?.filter((item)=>item.type==="BANKS").flatMap((category)=>category.features).map((bank) => (
+                              <CustomButton
+                                key={bank._id}
+                                type="button"
+                                variant="outline"
+                                className={cn(
+                                  field.value.includes(bank._id) &&
+                                    "bg-gray-200 text-gray-800"
+                                )}
+                                onClick={() => {
+                                  const newValue = [...field.value];
+                                  const index = newValue.indexOf(bank._id);
+                                  if (index === -1) {
+                                    newValue.push(bank._id);
+                                  } else {
+                                    newValue.splice(index, 1);
+                                  }
+                                  field.onChange(newValue);
+                                }}
+                              >
+                                {field.value.includes(bank._id) && (
+                                  <Check className="mr-2 h-4 w-4" />
+                                )}
+                                {bank.name}
+                              </CustomButton>
+                            ))}
+                          </div>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Amenities
+                      </label>
+                      <Controller
+                        name="amenities"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {featureData
+  ?.filter((item) => item?.type === "AMENITIES") // Select only amenities
+  ?.flatMap((category) => category.features) // Flatten to get individual features
+  ?.map((amenity) => (
+    <CustomButton
+      key={amenity._id} // Use the correct ID
+      type="button"
+      variant="outline"
+      className={cn(
+        "justify-start",
+        field.value.includes(amenity._id) && "bg-gray-200 text-gray-800"
+      )}
+      onClick={() => {
+        const newValue = [...field.value];
+        const index = newValue.indexOf(amenity._id);
+        if (index === -1) {
+          newValue.push(amenity._id);
+        } else {
+          newValue.splice(index, 1);
+        }
+        field.onChange(newValue);
+      }}
+    >
+      {field.value.includes(amenity._id) && (
+        <Check className="mr-2 h-4 w-4" />
+      )}
+      {amenity.name}
+    </CustomButton>
+  ))}
+
+                          </div>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Water Source
+                      </label>
+                      <Controller
+                        name="waterSource"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex flex-wrap gap-2">
+                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {featureData
+  ?.filter((item) => item?.type === "WATER_SOURCE") // Select only amenities
+  ?.flatMap((category) => category.features) // Flatten to get individual features
+  ?.map((source) => (
+    <CustomButton
+      key={source._id} // Use the correct ID
+      type="button"
+      variant="outline"
+      className={cn(
+        "justify-start",
+        field.value.includes(source._id) && "bg-gray-200 text-gray-800"
+      )}
+      onClick={() => {
+        const newValue = [...field.value];
+        const index = newValue.indexOf(source._id);
+        if (index === -1) {
+          newValue.push(source._id);
+        } else {
+          newValue.splice(index, 1);
+        }
+        field.onChange(newValue);
+      }}
+    >
+      {field.value.includes(source._id) && (
+        <Check className="mr-2 h-4 w-4" />
+      )}
+      {source.name}
+    </CustomButton>
+  ))}
+
+                          </div>
+                          </div>
+                        )}
+                      />
+                    </div>
+
+               
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Other Features
+                      </label>
+                      <Controller
+                        name="otherFeatures"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex flex-wrap gap-2">
+                            {featureData.filter((item)=>item.type==="OTHER_FEATURES").flatMap((category)=>category.features).map((feature) => (
+                              <CustomButton
+                                key={feature._id}
+                                type="button"
+                                variant="outline"
+                                className={cn(
+                                  field.value.includes(feature._id) &&
+                                    "bg-gray-200 text-gray-800"
+                                )}
+                                onClick={() => {
+                                  const newValue = [...field.value];
+                                  const index = newValue.indexOf(feature._id);
+                                  if (index === -1) {
+                                    newValue.push(feature._id);
+                                  } else {
+                                    newValue.splice(index, 1);
+                                  }
+                                  field.onChange(newValue);
+                                }}
+                              >
+                                {field.value.includes(feature._id) && (
+                                  <Check className="mr-2 h-4 w-4" />
+                                )}
+                                {feature.name}
+                              </CustomButton>
+                            ))}
+                          </div>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="propertyFlooring"
+                        className="block text-sm font-medium text-gray-700"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
-                      </button>
-                      {showCalendar && (
-                        <div className="absolute z-10 mt-1">
-                          <Calendar
-                            date={date}
-                            onChange={(date) => {
-                              setDate(date);
-                              handleInputChange("reraPossessionDate", date);
-                            }}
-                          />
+                        Type of flooring
+                      </label>
+                      <Controller
+                        name="propertyFlooring"
+                        control={control}
+                        render={({ field }) => (
+                          <select
+                            id="propertyFlooring"
+                            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            value={field.value}
+                            onChange={field.onChange}
+                          >
+                            <option value="">Select...</option>
+                            {featureData.filter((item)=>item.type ==="FLOORING").flatMap((category)=>category.features).map((floor) => (
+                              <option key={floor._id} value={floor._id}>
+                                {floor.name}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 6 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-slate-800">
+                      Photo Gallery
+                    </h2>
+                    <p className="text-slate-500 text-sm">
+                      Add photos of your property
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <CustomInput
+                      id="youtubeEmbedLink"
+                      label="Youtube Embed Link"
+                      placeholder="Youtube Link"
+                      {...register("youtubeEmbedLink")}
+                    />
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Featured Property
+                      </label>
+                      <Controller
+                        name="isFeatured"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex space-x-4">
+                            <CustomRadio
+                              id="featuredYes"
+                              name="featured"
+                              value="true"
+                              label="Yes"
+                              checked={field.value === true}
+                              onChange={(value) =>
+                                field.onChange(value === "true")
+                              }
+                            />
+                            <CustomRadio
+                              id="featuredNo"
+                              name="featured"
+                              value="false"
+                              label="No"
+                              checked={field.value === false}
+                              onChange={(value) =>
+                                field.onChange(value === "true")
+                              }
+                            />
+                          </div>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Image Gallery
+                      </label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
+                        <input
+                          type="file"
+                          id="imageGallery"
+                          multiple
+                          accept="image/*"
+                          className="hidden"
+                          ref={fileInputRef}
+                          onChange={handleImageUpload}
+                        />
+                        <div className="flex flex-col items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-8 w-8 text-gray-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                            />
+                          </svg>
+                          <p className="mt-2 text-sm text-gray-500">
+                            Drag and drop some files here, or click to select
+                            files
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Maximum 8 images allowed
+                          </p>
+                          <CustomButton
+                            type="button"
+                            variant="outline"
+                            className="mt-4"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            Select Files
+                          </CustomButton>
+                        </div>
+                      </div>
+
+                      {/* Preview uploaded images */}
+                      {previewImages.length > 0 && (
+                        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {previewImages.map((src, index) => (
+                            <div key={index} className="relative group">
+                              <img
+                                src={src || "/placeholder.svg"}
+                                alt={`property-${index}`}
+                                className="h-24 w-full object-cover rounded-md"
+                              />
+                              <CustomButton
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => {
+                                  const newPreviews = [...previewImages];
+                                  newPreviews.splice(index, 1);
+                                  setPreviewImages(newPreviews);
+
+                                  const files = watch("imageGallery");
+                                  const newFiles = [...files];
+                                  newFiles.splice(index, 1);
+                                  setValue("imageGallery", newFiles);
+                                }}
+                              >
+                                ×
+                              </CustomButton>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      No. of Bedrooms
-                    </label>
-                    <div className="flex space-x-2 mt-1">
-                      {[0, 1, 2, 3, 4].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          className={`flex-1 px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.noOfBedrooms === num
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() => handleInputChange("noOfBedrooms", num)}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-medium text-slate-700 mb-2">
-                      No. of Bedrooms
-                    </h3>
-                    <div className="flex space-x-3">
-  {[0, 1, 2, 3].map((option) => (
-    <button
-      key={option}
-      type="button"
-      className={`flex-1 px-3 py-2 rounded-md text-sm font-medium ${
-        selectedBedrooms == option
-          ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-          : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-      }`}
-      onClick={() => setSelectedBedrooms(option)}
-    >
-      {option}
-    </button>
-  ))}
-
-  {/* Custom Input Field */}
-  <input
-    type="number"
-    placeholder="Input Here"
-    className="flex-1 px-3 py-2 rounded-md text-sm font-medium border border-slate-300 text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#1073F7]"
-    value={selectedBedrooms > 3 ? selectedBedrooms : ""}
-    onChange={(e) => setSelectedBedrooms(Number(e.target.value))}
-  />
-</div>
-
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      No. of Balconies
-                    </label>
-                    <div className="flex space-x-2 mt-1">
-                      {[0, 1, 2, 3, 4].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          className={`flex-1 px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.noOfBalconies === num
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("noOfBalconies", num)
-                          }
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      No. of Bathrooms
-                    </label>
-                    <div className="flex space-x-2 mt-1">
-                      {[0, 1, 2, 3, 4].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          className={`flex-1 px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.noOfBathrooms === num
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("noOfBathrooms", num)
-                          }
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Parking
-                    </label>
-                    <div className="grid grid-cols-2 gap-2 mt-1">
-                      {features.parkingTypes.map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.parking === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() => handleInputChange("parking", type.id)}
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Furnishing
-                    </label>
-                    <div className="flex space-x-2 mt-1">
-                      {features.furnishingTypes.map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`flex-1 px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.furnishing === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("furnishing", type.id)
-                          }
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
-            {currentStep === 3 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    More Property Details
-                  </h2>
-                  <p className="text-slate-500 text-sm">
-                    Tell us about your property
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Entrance Facing
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.entranceFacings.map((facing) => (
-                        <button
-                          key={facing.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.entranceFacing === facing.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("entranceFacing", facing.id)
-                          }
-                        >
-                          {facing.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Availability Status
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.availabilityTypes.map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.availability === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("availability", type.id)
-                          }
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Age of property
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.propertyAgeTypes.map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.propertyAge === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("propertyAge", type.id)
-                          }
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="ocAvailable"
-                      className="h-4 w-4 text-[#1073F7] focus:ring-[#1073F7] border-gray-300 rounded"
-                      checked={formData.isOCAvailable}
-                      onChange={(e) =>
-                        handleInputChange("isOCAvailable", e.target.checked)
-                      }
-                    />
-                    <label
-                      htmlFor="ocAvailable"
-                      className="text-sm text-slate-700"
-                    >
-                      OC Available
-                    </label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="ccAvailable"
-                      className="h-4 w-4 text-[#1073F7] focus:ring-[#1073F7] border-gray-300 rounded"
-                      checked={formData.isCCAvailable}
-                      onChange={(e) =>
-                        handleInputChange("isCCAvailable", e.target.checked)
-                      }
-                    />
-                    <label
-                      htmlFor="ccAvailable"
-                      className="text-sm text-slate-700"
-                    >
-                      CC Available
-                    </label>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 4 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    Price Details
-                  </h2>
-                  <p className="text-slate-500 text-sm">
-                    Add pricing and details
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Ownership
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.ownershipTypes.map((type) => (
-                        <button
-                          key={type.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.ownership === type.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("ownership", type.id)
-                          }
-                        >
-                          {type.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="price"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Expected Price
-                    </label>
-                    <div className="relative mt-1">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
-                        ₹
-                      </span>
-                      <input
-                        id="price"
-                        type="number"
-                        placeholder="Expected price"
-                        className="block w-full pl-8 pr-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                          focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                        value={formData.expectedPrice || ""}
-                        onChange={(e) =>
-                          handleInputChange(
-                            "expectedPrice",
-                            Number(e.target.value)
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="priceNegotiable"
-                      className="h-4 w-4 text-[#1073F7] focus:ring-[#1073F7] border-gray-300 rounded"
-                      checked={formData.isPriceNegotiable}
-                      onChange={(e) =>
-                        handleInputChange("isPriceNegotiable", e.target.checked)
-                      }
-                    />
-                    <label
-                      htmlFor="priceNegotiable"
-                      className="text-sm text-slate-700"
-                    >
-                      Price negotiable
-                    </label>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Do you charge brokerage?
-                    </label>
-                    <div className="flex space-x-4 mt-1">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          id="brokerageYes"
-                          name="brokerage"
-                          className="h-4 w-4 text-[#1073F7] focus:ring-[#1073F7] border-gray-300"
-                          checked={formData.isBrokerageCharge}
-                          onChange={() =>
-                            handleInputChange("isBrokerageCharge", true)
-                          }
-                        />
-                        <label
-                          htmlFor="brokerageYes"
-                          className="text-sm text-slate-700"
-                        >
-                          Yes
-                        </label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="radio"
-                          id="brokerageNo"
-                          name="brokerage"
-                          className="h-4 w-4 text-[#1073F7] focus:ring-[#1073F7] border-gray-300"
-                          checked={!formData.isBrokerageCharge}
-                          onChange={() =>
-                            handleInputChange("isBrokerageCharge", false)
-                          }
-                        />
-                        <label
-                          htmlFor="brokerageNo"
-                          className="text-sm text-slate-700"
-                        >
-                          No
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
-                  {formData.isBrokerageCharge && (
-                    <div>
-                      <label
-                        htmlFor="brokerage"
-                        className="block text-sm font-medium text-slate-700"
-                      >
-                        Brokerage Amount
-                      </label>
-                      <div className="relative mt-1">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
-                          ₹
-                        </span>
-                        <input
-                          id="brokerage"
-                          type="number"
-                          placeholder="Brokerage amount"
-                          className="block w-full pl-8 pr-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                            focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                          value={formData.brokerage || ""}
-                          onChange={(e) =>
-                            handleInputChange(
-                              "brokerage",
-                              Number(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {currentStep === 5 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    Amenities Details
-                  </h2>
-                  <p className="text-slate-500 text-sm">
-                    Add amenities / unique features
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Bank Approval
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.bankApprovals.map((bank) => (
-                        <button
-                          key={bank.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium border ${
-                            formData.bankOfApproval.includes(bank.id)
-                              ? "bg-purple-100 border-purple-200 text-[#1073F7]"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleArrayToggle("bankOfApproval", bank.id)
-                          }
-                        >
-                          {formData.bankOfApproval.includes(bank.id) && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 inline mr-2"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          )}
-                          {bank.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Amenities
-                    </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-1">
-                      {features.amenities.map((amenity) => (
-                        <button
-                          key={amenity.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium border text-left ${
-                            formData.amenities.includes(amenity.id)
-                              ? "bg-purple-100 border-purple-200 text-[#1073F7]"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleArrayToggle("amenities", amenity.id)
-                          }
-                        >
-                          {formData.amenities.includes(amenity.id) && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 inline mr-2"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          )}
-                          {amenity.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Water Source
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.waterSources.map((source) => (
-                        <button
-                          key={source.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium ${
-                            formData.waterSource === source.id
-                              ? "bg-[#1073F7] text-white hover:bg-[#1073F7]"
-                              : "border border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleInputChange("waterSource", source.id)
-                          }
-                        >
-                          {source.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Other Features
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {features.otherFeatures.map((feature) => (
-                        <button
-                          key={feature.id}
-                          type="button"
-                          className={`px-3 py-2 rounded-md text-sm font-medium border ${
-                            formData.otherFeatures.includes(feature.id)
-                              ? "bg-purple-100 border-purple-200 text-[#1073F7]"
-                              : "border-slate-300 text-slate-700 hover:bg-slate-50"
-                          }`}
-                          onClick={() =>
-                            handleArrayToggle("otherFeatures", feature.id)
-                          }
-                        >
-                          {formData.otherFeatures.includes(feature.id) && (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 inline mr-2"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          )}
-                          {feature.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="flooring"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Type of flooring
-                    </label>
-                    <div className="relative mt-1">
-                      <select
-                        id="flooring"
-                        className="block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
-                          focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7] appearance-none"
-                        value={formData.propertyFlooring}
-                        onChange={(e) =>
-                          handleInputChange("propertyFlooring", e.target.value)
-                        }
-                      >
-                        <option value="">Select...</option>
-                        {features.flooringTypes.map((type) => (
-                          <option key={type.id} value={type.id}>
-                            {type.name}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg
-                          className="fill-current h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 6 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-semibold text-slate-800">
-                    Photo Gallery
-                  </h2>
-                  <p className="text-slate-500 text-sm">
-                    Add photos of your property
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="youtubeLink"
-                      className="block text-sm font-medium text-slate-700"
-                    >
-                      Youtube Embed Link
-                    </label>
-                    <input
-                      id="youtubeLink"
-                      type="text"
-                      placeholder="Youtube Link"
-                      className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-                        focus:outline-none focus:border-[#1073F7] focus:ring-1 focus:ring-[#1073F7]"
-                      value={formData.youtubeEmbedLink}
-                      onChange={(e) =>
-                        handleInputChange("youtubeEmbedLink", e.target.value)
-                      }
-                    />
-                  </div>
-                  <label className="block text-sm font-medium text-slate-700">
-                    Featured Properties
-                  </label>
-                  <div>
-                    <label>
-                      <input
-                        type="radio"
-                        name="isFeatured"
-                        value="true"
-                        checked={formData.isFeatured === true}
-                        onChange={() =>
-                          setFormData({ ...formData, isFeatured: true })
-                        }
-                      />
-                      Yes
-                    </label>
-
-                    <label>
-                      <input
-                        type="radio"
-                        name="isFeatured"
-                        value="false"
-                        checked={formData.isFeatured === false}
-                        onChange={() =>
-                          setFormData({ ...formData, isFeatured: false })
-                        }
-                      />
-                      No
-                    </label>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700">
-                      Image Gallery
-                    </label>
-                    <div className="mt-1 border-2 border-dashed border-slate-200 rounded-lg p-12 text-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-8 w-8 mx-auto text-slate-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        />
-                      </svg>
-                      <p className="mt-2 text-sm text-slate-500">
-                        Drag and drop some files here, or click to select files
-                      </p>
-                      <p className="text-xs text-slate-400 mt-1">
-                        Maximum 8 images allowed
-                      </p>
-                      <button
-                        type="button"
-                        className="mt-4 px-4 py-2 border border-purple-200 bg-purple-50 text-[#1073F7] rounded-md text-sm font-medium hover:bg-purple-100"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4 inline mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                          />
-                        </svg>
-                        Select Files
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Navigation */}
-          <div className="flex justify-between items-center p-6 border-t border-slate-200">
-            <button
-              type="button"
-              onClick={handleBack}
-              disabled={currentStep === 0}
-              className={`px-4 py-2 border border-slate-300 rounded-md text-sm font-medium ${
-                currentStep === 0
-                  ? "opacity-50 cursor-not-allowed"
-                  : "text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 inline mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              Back
-            </button>
-
-            {currentStep === steps.length - 1 ? (
-              <button
+            {/* Navigation */}
+            <div className="flex justify-between items-center p-6 border-t border-slate-200">
+              <CustomButton
                 type="button"
-                className="px-4 py-2 bg-[#1073F7] text-white rounded-md text-sm font-medium hover:bg-[#1073F7]"
-                onClick={handleSubmit}
+                variant="outline"
+                onClick={handleBack}
+                disabled={currentStep === 0}
               >
-                Publish
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="px-4 py-2 bg-[#1073F7] text-white rounded-md text-sm font-medium hover:bg-[#1073F7]"
-                onClick={handleNext}
-              >
-                Next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 inline ml-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            )}
+                Back
+              </CustomButton>
+
+              {currentStep === steps.length - 1 ? (
+                <CustomButton type="submit">Publish</CustomButton>
+              ) : (
+                <CustomButton type="button" onClick={handleNext}>
+                  Next
+                </CustomButton>
+              )}
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

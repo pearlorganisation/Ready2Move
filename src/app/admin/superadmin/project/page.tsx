@@ -8,7 +8,6 @@ import { createProjectsByBuilder } from "@/lib/redux/actions/projectAction"
 import { useEffect, useState, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
 import slugify from "slugify"
-
 export type ProjectFormInputs = {
   id: string
   user: string
@@ -31,7 +30,7 @@ export type ProjectFormInputs = {
   reraPossessionDate: string
   aminities?: string[]
   bankOfApproval?: string[]
-  imageGallary?: File[]
+  imageGallary?: File[];
   isFeatured?: boolean
   youtubeLink?: string
 }
@@ -640,67 +639,24 @@ const CreateProject = () => {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Image Gallery</label>
-                      <div className="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center">
-                        <input
-                          type="file"
-                          id="imageGallary"
-                          multiple
-                          accept="image/*"
-                          className="hidden"
-                          ref={(e) => {
-                            fileInputRef.current = e;
-                            register("imageGallary").ref(e);
-                          }}
-                          onChange={handleImagePreview}
-                        />
-                        <label
-                          htmlFor="imageGallary"
-                          className="cursor-pointer flex flex-col items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-10 w-10 text-slate-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            />
-                          </svg>
-                          <p className="mt-2 text-sm text-slate-500">
-                            Drag and drop some files here, or click to select files
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="mt-4 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                          >
-                            Select Files
-                          </button>
-                        </label>
-                      </div>
-
-                      {/* Preview uploaded images */}
-                      {previewImages.length > 0 && (
-                        <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                          {previewImages.map((src, index) => (
-                            <div key={index} className="relative group">
-                              <img
-                                src={src || "/placeholder.svg"}
-                                alt="Property"
-                                className="h-24 w-full object-cover rounded-md"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">Add images</h2>
+           <input
+                type="file"
+                multiple
+                {...register("imageGallary", { required: "At least one image is required" })}
+                className="w-full border p-2 rounded mt-1"
+                onChange={(e) => {
+                    handleImagePreview(e);
+                }}
+            />
+             {/* Image Preview */}
+                <div className="flex gap-2 mt-2">
+                    {previewImages.map((src, index) => (
+                        <img key={index} src={src} alt="Preview" className="w-16 h-16 rounded-md object-cover" />
+                    ))}
+                </div>
+          </div>
                   </div>
                 </div>
               )}
