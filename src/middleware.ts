@@ -15,49 +15,49 @@ async function decodeToken(token:string) {
   }
 }
 export default async function middleware(req: NextRequest) {
-  const token = req.cookies.get("access_token")?.value;
-  let userData = null
-  console.log("the token in middleware is", token)
- if(token){
-    userData = await decodeToken(token);
-  console.log("the userdata is ", userData)
- }else{
-  console.log(token)
- }
+//   const token = req.cookies.get("access_token")?.value;
+//   let userData = null
+//   console.log("the token in middleware is", token)
+//  if(token){
+//     userData = await decodeToken(token);
+//   console.log("the userdata is ", userData)
+//  }else{
+//   console.log(token)
+//  }
 
 
-  const { pathname } = req.nextUrl;
-  if (userData!= null) {
-    if (userData.role === "AGENT") {
-      return NextResponse.redirect(new URL("/admin/agent", req.url));
-    }
-    if (userData.role === "BUILDER") {
-      return NextResponse.redirect(new URL("/admin/builder", req.url));
-    }
-    if (userData.role === "USER") {
-      return NextResponse.redirect(new URL("/admin/user", req.url));
-    }
-    if(userData.role ==="ADMIN"){
-      return NextResponse.redirect(new URL("/admin/superadmin", req.url));
-    }
-  }
-  if (pathname.startsWith("/admin/builder") && userData.role !== "BUILDER") {
-    return NextResponse.redirect(new URL("/admin", req.url));  
-  }
-    if (pathname.startsWith("/admin/superadmin") && userData.role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/admin", req.url));  
-  }
-  if (pathname.startsWith("/admin/agent") && userData.role !== "AGENT") {
-    return NextResponse.redirect(new URL("/admin", req.url));  
-  }
-  if (pathname.startsWith("/admin/user") && userData.role !== "USER") {
-    return NextResponse.redirect(new URL("/admin", req.url));  
-  }
-  return NextResponse.next();
+  // const { pathname } = req.nextUrl;
+  // if (userData!= null) {
+  //   if (userData.role === "AGENT") {
+  //     return NextResponse.redirect(new URL("/admin/agent", req.url));
+  //   }
+  //   if (userData.role === "BUILDER") {
+  //     return NextResponse.redirect(new URL("/admin/builder", req.url));
+  //   }
+  //   if (userData.role === "USER") {
+  //     return NextResponse.redirect(new URL("/admin/user", req.url));
+  //   }
+  //   if(userData.role ==="ADMIN"){
+  //     return NextResponse.redirect(new URL("/admin/superadmin", req.url));
+  //   }
+  // }
+  // if (pathname.startsWith("/admin/builder") && userData.role !== "BUILDER") {
+  //   return NextResponse.redirect(new URL("/admin", req.url));  
+  // }
+  //   if (pathname.startsWith("/admin/superadmin") && userData.role !== "ADMIN") {
+  //   return NextResponse.redirect(new URL("/admin", req.url));  
+  // }
+  // if (pathname.startsWith("/admin/agent") && userData.role !== "AGENT") {
+  //   return NextResponse.redirect(new URL("/admin", req.url));  
+  // }
+  // if (pathname.startsWith("/admin/user") && userData.role !== "USER") {
+  //   return NextResponse.redirect(new URL("/admin", req.url));  
+  // }
+  // return NextResponse.next();
 }
-export const config = {
-  matcher: ["/admin/:path*", "/admin/superadmin/:path*"]
- };
+// export const config = {
+//   matcher: ["/admin/:path*", "/admin/superadmin/:path*"]
+//  };
  
 /**
  * future try tomorrow
