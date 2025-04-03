@@ -1,63 +1,63 @@
 import { NextRequest, NextResponse } from "next/server";
-async function decodeToken(token:string) {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) {
-      throw new Error("Invalid token format");
+// async function decodeToken(token:string) {
+//   try {
+//     const parts = token.split(".");
+//     if (parts.length !== 3) {
+//       throw new Error("Invalid token format");
+//     }
+
+//     // Use Buffer to decode base64 (Edge-compatible)
+//     const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
+//     return payload;
+//   } catch (error) {
+//     console.error("Token decoding failed:", error);
+//     return null;
+//   }
+// }
+export default function middleware(req: NextRequest) {
+  const token = req.cookies.get("access_token")?.value;
+  const userRole = req.cookies.get("user_role")?.value;
+  console.log("the user role is", userRole);
+
+  const { pathname } = req.nextUrl;
+
+  if (userRole) {
+    // Redirect only if the user is NOT on their designated page
+    if (userRole === "AGENT" && !pathname.startsWith("/admin/agent")) {
+      return NextResponse.redirect(new URL("/admin/agent", req.url));
     }
-
-    // Use Buffer to decode base64 (Edge-compatible)
-    const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
-    return payload;
-  } catch (error) {
-    console.error("Token decoding failed:", error);
-    return null;
+    if (userRole === "BUILDER" && !pathname.startsWith("/admin/builder")) {
+      return NextResponse.redirect(new URL("/admin/builder", req.url));
+    }
+    if (userRole === "USER" && !pathname.startsWith("/admin/user")) {
+      return NextResponse.redirect(new URL("/admin/user", req.url));
+    }
+    if (userRole === "ADMIN" && !pathname.startsWith("/admin/superadmin")) {
+      return NextResponse.redirect(new URL("/admin/superadmin", req.url));
+    }
   }
-}
-export default async function middleware(req: NextRequest) {
-//   const token = req.cookies.get("access_token")?.value;
-//   let userData = null
-//   console.log("the token in middleware is", token)
-//  if(token){
-//     userData = await decodeToken(token);
-//   console.log("the userdata is ", userData)
-//  }else{
-//   console.log(token)
-//  }
 
+  // Prevent unauthorized access to restricted pages
+  if (pathname.startsWith("/admin/builder") && userRole !== "BUILDER") {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
+  if (pathname.startsWith("/admin/superadmin") && userRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
+  if (pathname.startsWith("/admin/agent") && userRole !== "AGENT") {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
+  if (pathname.startsWith("/admin/user") && userRole !== "USER") {
+    return NextResponse.redirect(new URL("/admin", req.url));
+  }
 
-  // const { pathname } = req.nextUrl;
-  // if (userData!= null) {
-  //   if (userData.role === "AGENT") {
-  //     return NextResponse.redirect(new URL("/admin/agent", req.url));
-  //   }
-  //   if (userData.role === "BUILDER") {
-  //     return NextResponse.redirect(new URL("/admin/builder", req.url));
-  //   }
-  //   if (userData.role === "USER") {
-  //     return NextResponse.redirect(new URL("/admin/user", req.url));
-  //   }
-  //   if(userData.role ==="ADMIN"){
-  //     return NextResponse.redirect(new URL("/admin/superadmin", req.url));
-  //   }
-  // }
-  // if (pathname.startsWith("/admin/builder") && userData.role !== "BUILDER") {
-  //   return NextResponse.redirect(new URL("/admin", req.url));  
-  // }
-  //   if (pathname.startsWith("/admin/superadmin") && userData.role !== "ADMIN") {
-  //   return NextResponse.redirect(new URL("/admin", req.url));  
-  // }
-  // if (pathname.startsWith("/admin/agent") && userData.role !== "AGENT") {
-  //   return NextResponse.redirect(new URL("/admin", req.url));  
-  // }
-  // if (pathname.startsWith("/admin/user") && userData.role !== "USER") {
-  //   return NextResponse.redirect(new URL("/admin", req.url));  
-  // }
-  // return NextResponse.next();
+  return NextResponse.next();
 }
-// export const config = {
-//   matcher: ["/admin/:path*", "/admin/superadmin/:path*"]
-//  };
+
+export const config = {
+  matcher: ["/admin/:path*"],
+};
+
  
 /**
  * future try tomorrow
