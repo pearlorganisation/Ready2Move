@@ -7,6 +7,8 @@
 //       throw new Error("Invalid token format");
 //     }
 
+import { NextRequest } from "next/server";
+
 //     // Use Buffer to decode base64 (Edge-compatible)
 //     const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
 //     return payload;
@@ -246,3 +248,7 @@ export const config = {
 // export const config = {
 //   matcher: ["/admin/:path*", "/admin/superadmin/:path*"],
 // };
+
+export default function middleware(req:NextRequest){
+  
+}
