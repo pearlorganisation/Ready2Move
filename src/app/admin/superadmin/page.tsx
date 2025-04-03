@@ -1,7 +1,14 @@
 "use client"
+
+import { Sidebar } from "@/components/sidebar"
+
 const page = () => {
   return (
-    <div>Super Admin Page</div>
+    <div> 
+      <div>
+        <Sidebar />
+      </div>
+    </div>
   )
 }
 

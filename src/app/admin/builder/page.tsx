@@ -1,17 +1,16 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-const BuilderPage = () => {
+import { FC } from "react";
+import Link from "next/link";
+
+const BuilderPage: FC = () => {
   return (
     <div>
-      <div className="w-full flex justify-end">
-        <Link href={`/admin/builder/addproject`} >
-        Add a Project
-        </Link>
-       </div>
-     </div>
-  )
-}
+      <div className="w-full flex justify-end mr-6">
+        <Link href="/admin/builder/addproject" className="mr-6">Add a Project</Link>
+      </div>
+    </div>
+  );
+};
 
-export default BuilderPage
+export default BuilderPage;
