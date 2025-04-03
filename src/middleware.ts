@@ -128,61 +128,121 @@ export const config = {
  
   // Create this utility
 
+// export default async function middleware(req: NextRequest) {
+//   // Get session token instead of directly using role cookie
+//   const sessionToken = req.cookies.get("access_token")?.value;
+  
+//   if (!sessionToken) {
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+  
+//   // Verify the token and get the user's role from a trusted source
+//   try {
+//     // This should verify JWT or session token and return user data from DB or cache
+//     const userData = await tokenVerify(sessionToken);
+//     const userRole =  userData;
+    
+//     console.log("th e userrole is", userRole)
+//     const { pathname } = req.nextUrl;
+    
+//     // Handle /admin path redirects based on role
+//     if (pathname === "/admin") {
+//       if (typeof userRole === "object" && userRole?.role === "AGENT") {
+//         return NextResponse.redirect(new URL("/admin/agent", req.url));
+//       }
+//       if (typeof userRole === "object" && userRole?.role === "BUILDER") {
+//         return NextResponse.redirect(new URL("/admin/builder", req.url));
+//       }
+//       if (typeof userRole === "object" && userRole?.role === "USER") {
+//         return NextResponse.redirect(new URL("/admin/user", req.url));
+//       }
+//       if (typeof userRole === "object" && userRole?.role === "ADMIN") {
+//         return NextResponse.redirect(new URL("/admin/superadmin", req.url));
+//       }
+//     }
+    
+//     // Protect role-specific paths
+//     if (pathname.startsWith("/admin/builder") && (typeof userRole !== "object" || userRole?.role !== "BUILDER")) {
+//       return NextResponse.redirect(new URL("/admin", req.url));
+//     }
+//     if (pathname.startsWith("/admin/superadmin") && (typeof userRole !== "object" || userRole?.role !== "ADMIN")) {
+//       return NextResponse.redirect(new URL("/admin", req.url));
+//     }
+//     if (pathname.startsWith("/admin/agent") && (typeof userRole !== "object" || userRole?.role !== "AGENT")) {
+//       return NextResponse.redirect(new URL("/admin", req.url));
+//     }
+//     if (pathname.startsWith("/admin/user") && (typeof userRole !== "object" || userRole?.role !== "USER")) {
+//       return NextResponse.redirect(new URL("/admin", req.url));
+//     }
+    
+//     return NextResponse.next();
+//   } catch (error) {
+//     // Token verification failed - redirect to login
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+// }
+
+// export const config = {
+//   matcher: ["/admin/:path*","/admin/superadmin/:path*"],
+//   // runtime:"nodejs"
+// };
+
 export default async function middleware(req: NextRequest) {
-  // Get session token instead of directly using role cookie
+  // Log all cookies received by middleware
+  console.log("🍪 All Cookies in Middleware:", req.cookies.getAll());
+
   const sessionToken = req.cookies.get("access_token")?.value;
-  
+  const { pathname } = req.nextUrl;
+
   if (!sessionToken) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    console.error("🚨 No access token found in middleware.");
+    return new Response(JSON.stringify({ 
+      error: "No token found", 
+      path: pathname, 
+      cookies: req.cookies.getAll() // Log all received cookies
+    }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-  
-  // Verify the token and get the user's role from a trusted source
+
   try {
-    // This should verify JWT or session token and return user data from DB or cache
     const userData = await tokenVerify(sessionToken);
-    const userRole =  userData;
-    
-    console.log("the userrole is", userRole)
-    const { pathname } = req.nextUrl;
-    
-    // Handle /admin path redirects based on role
-    if (pathname === "/admin") {
-      if (typeof userRole === "object" && userRole?.role === "AGENT") {
-        return NextResponse.redirect(new URL("/admin/agent", req.url));
-      }
-      if (typeof userRole === "object" && userRole?.role === "BUILDER") {
-        return NextResponse.redirect(new URL("/admin/builder", req.url));
-      }
-      if (typeof userRole === "object" && userRole?.role === "USER") {
-        return NextResponse.redirect(new URL("/admin/user", req.url));
-      }
-      if (typeof userRole === "object" && userRole?.role === "ADMIN") {
-        return NextResponse.redirect(new URL("/admin/superadmin", req.url));
-      }
+
+    if (!userData || (typeof userData !== "object" || !("role" in userData))) {
+      return new Response(JSON.stringify({ 
+        error: "Invalid token or missing role", 
+        path: pathname, 
+        tokenData: userData 
+      }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
     }
-    
-    // Protect role-specific paths
-    if (pathname.startsWith("/admin/builder") && (typeof userRole !== "object" || userRole?.role !== "BUILDER")) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
-    if (pathname.startsWith("/admin/superadmin") && (typeof userRole !== "object" || userRole?.role !== "ADMIN")) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
-    if (pathname.startsWith("/admin/agent") && (typeof userRole !== "object" || userRole?.role !== "AGENT")) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
-    if (pathname.startsWith("/admin/user") && (typeof userRole !== "object" || userRole?.role !== "USER")) {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
-    
-    return NextResponse.next();
+
+    const userRole = userData.role;
+
+    return new Response(JSON.stringify({ 
+      message: "Token verified successfully", 
+      role: userRole, 
+      path: pathname 
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (error) {
-    // Token verification failed - redirect to login
-    return NextResponse.redirect(new URL("/login", req.url));
+    return new Response(JSON.stringify({ 
+      error: "Token verification failed", 
+      details: error, 
+      path: pathname 
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
 export const config = {
   matcher: ["/admin/:path*", "/admin/superadmin/:path*"],
-  // runtime:"nodejs"
 };
