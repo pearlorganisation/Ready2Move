@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { tokenVerify } from "./lib/util/verifyToken";
+// import { NextRequest, NextResponse } from "next/server";
+// import { tokenVerify } from "./lib/util/verifyToken";
 // async function decodeToken(token:string) {
 //   try {
 //     const parts = token.split(".");
@@ -187,62 +187,62 @@ export const config = {
 //   // runtime:"nodejs"
 // };
 
-export default async function middleware(req: NextRequest) {
-  // Log all cookies received by middleware
-  console.log("🍪 All Cookies in Middleware:", req.cookies.getAll());
+// export default async function middleware(req: NextRequest) {
+//   // Log all cookies received by middleware
+//   console.log("🍪 All Cookies in Middleware:", req.cookies.getAll());
 
-  const sessionToken = req.cookies.get("access_token")?.value;
-  const { pathname } = req.nextUrl;
+//   const sessionToken = req.cookies.get("access_token")?.value;
+//   const { pathname } = req.nextUrl;
 
-  if (!sessionToken) {
-    console.error("🚨 No access token found in middleware.");
-    return new Response(JSON.stringify({ 
-      error: "No token found", 
-      path: pathname, 
-      cookies: req.cookies.getAll() // Log all received cookies
-    }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+//   if (!sessionToken) {
+//     console.error("🚨 No access token found in middleware.");
+//     return new Response(JSON.stringify({ 
+//       error: "No token found", 
+//       path: pathname, 
+//       cookies: req.cookies.getAll() // Log all received cookies
+//     }), {
+//       status: 401,
+//       headers: { "Content-Type": "application/json" },
+//     });
+//   }
 
-  try {
-    const userData = await tokenVerify(sessionToken);
+//   try {
+//     const userData = await tokenVerify(sessionToken);
 
-    if (!userData || (typeof userData !== "object" || !("role" in userData))) {
-      return new Response(JSON.stringify({ 
-        error: "Invalid token or missing role", 
-        path: pathname, 
-        tokenData: userData 
-      }), {
-        status: 403,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+//     if (!userData || (typeof userData !== "object" || !("role" in userData))) {
+//       return new Response(JSON.stringify({ 
+//         error: "Invalid token or missing role", 
+//         path: pathname, 
+//         tokenData: userData 
+//       }), {
+//         status: 403,
+//         headers: { "Content-Type": "application/json" },
+//       });
+//     }
 
-    const userRole = userData.role;
+//     const userRole = userData.role;
 
-    return new Response(JSON.stringify({ 
-      message: "Token verified successfully", 
-      role: userRole, 
-      path: pathname 
-    }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+//     return new Response(JSON.stringify({ 
+//       message: "Token verified successfully", 
+//       role: userRole, 
+//       path: pathname 
+//     }), {
+//       status: 200,
+//       headers: { "Content-Type": "application/json" },
+//     });
 
-  } catch (error) {
-    return new Response(JSON.stringify({ 
-      error: "Token verification failed", 
-      details: error, 
-      path: pathname 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-}
+//   } catch (error) {
+//     return new Response(JSON.stringify({ 
+//       error: "Token verification failed", 
+//       details: error, 
+//       path: pathname 
+//     }), {
+//       status: 500,
+//       headers: { "Content-Type": "application/json" },
+//     });
+//   }
+// }
 
-export const config = {
-  matcher: ["/admin/:path*", "/admin/superadmin/:path*"],
-};
+// export const config = {
+//   matcher: ["/admin/:path*", "/admin/superadmin/:path*"],
+// };
