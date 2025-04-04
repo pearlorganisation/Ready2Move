@@ -11,7 +11,7 @@ interface FeatureItem {
   slug: string
 }
 
-const FeatureListing: FC = () => {
+const Page: FC = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [selectedType, setSelectedType] = useState<string>("Parking")
 
@@ -25,6 +25,10 @@ const dispatch= useAppDispatch()
   useEffect(()=>{
     dispatch(getFeatures())
   },[])
+
+
+  
+
 
 
   const [newFeatureName, setNewFeatureName] = useState("")
@@ -179,5 +183,5 @@ const dispatch= useAppDispatch()
   )
 }
 
-export default FeatureListing
+export default Page
 
