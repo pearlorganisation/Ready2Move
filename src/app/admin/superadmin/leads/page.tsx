@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useForm } from "react-hook-form";
+import { Lead } from "@/lib/redux/slice/leadSlice";
 
 const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
 
@@ -142,7 +143,7 @@ export default function LeadsPage() {
         {/* Pagination */}
         <Pagination
           currentPage={currentPage}
-          totalPages={pagination?.pages || 1}
+          totalPages={Array.isArray(pagination?.pages) ? pagination.pages[0] : pagination?.pages || 1}
           onPageChange={(page) => setCurrentPage(page)}
         />
   
@@ -161,7 +162,7 @@ function LeadRow({
   phoneNumber,
   assignedTo,
   assignedRole,
-  status,
+  status, 
   createdAt,
 }: {
   Sno: number;

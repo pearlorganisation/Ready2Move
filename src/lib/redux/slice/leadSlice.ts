@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { deleteLeadById, getAllLeads, GetUserByRoles } from "../actions/leadsAction";
 
 
-interface Lead {
+export interface Lead {
     _id: string;
     name: string;
     email: string;
@@ -11,6 +11,7 @@ interface Lead {
     message: string;
     status: "PENDING" | "CALLING" | "QUALIFIED" | "UNQUALIFIED";
     assignedTo?: string;
+    assignedRole?: string;
     feedBack?: string;
     project?: string;
     property?: string;
@@ -75,8 +76,6 @@ interface Lead {
         .addCase(deleteLeadById.fulfilled, (state, action) => {
           state.loading = false;
           state.leads = state.leads.filter((lead)=>lead._id!==action.meta.arg);
-          
-        
         })
         .addCase(deleteLeadById.rejected, (state, action) => {
           state.loading = false;
@@ -87,11 +86,9 @@ interface Lead {
           state.error = null;
         })
         .addCase(GetUserByRoles.fulfilled, (state, action) => {
-         
           state.users = action.payload.data;
           state.pagination = action.payload.pagination;
           state.loading = false;
-        
         })
         .addCase(GetUserByRoles.rejected, (state, action) => {
           state.loading = false;
