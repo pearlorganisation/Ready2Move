@@ -6,6 +6,7 @@ import bannerReducer  from "./slice/bannerSlice"
 import featureReducer from "./slice/featuresSlice"
 import projectReducer from "./slice/projectSlice"
 import propertyReducer from "./slice/propertySlice"
+import leadsReducer from "./slice/leadSlice"
 const rootReducer = combineReducers({
     auth: authReducer, // Add other reducers here
     otp: otpReducer,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     banner: bannerReducer,
     features: featureReducer,
     projects:projectReducer,
-    property:propertyReducer
+    property:propertyReducer,
+    leads:leadsReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>; // Define RootState type
