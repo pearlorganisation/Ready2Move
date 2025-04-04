@@ -45,7 +45,7 @@ const logInUserSlice = createSlice({
             state.isLoggedIn= false
             state.isError = false
             state.userData ={
-                  _id:"",
+                    _id:"",
                     name: '',
                     email: '',
                     phoneNumber: '',
