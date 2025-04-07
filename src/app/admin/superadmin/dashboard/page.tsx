@@ -3,10 +3,13 @@
 import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/helper/card"
 import { Building2, Users, House } from "lucide-react"
+import { Sidebar } from "@/components/sidebar"
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
+    <div>
+       <Sidebar />
+       <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -75,6 +78,8 @@ export default function DashboardPage() {
         </Card>
       </div>
     </div>
+    </div>
+    
   )
 }
 
