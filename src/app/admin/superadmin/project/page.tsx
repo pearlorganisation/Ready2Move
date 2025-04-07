@@ -578,13 +578,13 @@ const handleOpenAddProject =()=>{
                           <label className="block text-sm font-medium text-gray-700 mb-2">Amenities</label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                             {featureData
-                              ?.filter((item) => item?.type !== "BANKS")
+                              ?.filter((item) => item?.type == "AMENITIES")
                               ?.map((category) => (
                                 <fieldset key={category.type} className="border border-gray-300 rounded-md p-4">
                                   <legend className="px-2 font-medium text-gray-700">
                                     {category.type.replace("_", " ")}
                                   </legend>
-                                  {category.features.map((feature) => (
+                                  {category?.features?.map((feature) => (
                                     <div key={feature._id} className="flex items-center space-x-2 py-1">
                                       <input
                                         type="checkbox"
@@ -603,6 +603,37 @@ const handleOpenAddProject =()=>{
                           </div>
                         </div>
 
+
+                         <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Availability</label>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {featureData
+                              ?.filter((item) => item?.type == "AVAILABILITY")
+                              ?.map((category) => (
+                                <fieldset key={category.type} className="border border-gray-300 rounded-md p-4">
+                                  <legend className="px-2 font-medium text-gray-700">
+                                    {category.type.replace("_", " ")}
+                                  </legend>
+                                  {category?.features?.map((feature) => (
+                                    <div key={feature._id} className="flex items-center space-x-2 py-1">
+                                      <input
+                                        type="checkbox"
+                                        id={`amenity-${feature._id}`}
+                                        {...register("availability")}
+                                        value={feature._id}
+                                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                      />
+                                      <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
+                                        {feature.name}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </fieldset>
+                              ))}
+                          </div>
+                        </div>
+                        
+                        
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">Bank Approvals</label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
