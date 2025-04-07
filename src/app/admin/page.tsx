@@ -16,7 +16,7 @@ const Dashboard = () => {
 // useEffect(() => {
 //   const fetchUserData = async () => {
 //     try {
-//       const response = await axiosInstance.get(`/api/v1/user/me`);
+//       const response = await axiosInstance.get(`/api/v1/users/me`);
 //       console.log(response.data,"the data is");
 //       if(response?.data?.data?.role == "ADMIN"){
 //        router.push("/")

@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit"
- import { createProjectsByBuilder } from "../actions/projectAction"
-
-interface ProjectData {
-      id:string,
+ import { createProjectsByBuilder, getAllProjects } from "../actions/projectAction"
+import { Paginate } from "@/lib/util/paginateInterface";
+export interface ProjectData {
+  id:string,
   user: string;
   title: string;
   slug: string;
@@ -13,8 +13,10 @@ interface ProjectData {
   state: string;
   service: string;
   projectType: string;
-   areaRange:{min: string, max:string}, 
-        priceRange:{
+  areaRange:{
+        min: string,
+        max:string}, 
+  priceRange:{
         min: string,
         max: string
      },
@@ -28,13 +30,13 @@ interface ProjectData {
   isFeatured?: boolean;
   youtubeLink?: string;
 }
- interface Project{
+export interface Project{
     isLoading:boolean,
     isSuccess:boolean,
     isError: boolean,
-    projectData:ProjectData
+    projectData:ProjectData,
+    paginate: Paginate
 }
-
 const initialState : Project={
     isLoading:false,
     isSuccess:false,
@@ -62,6 +64,14 @@ const initialState : Project={
         imageGallary: [],
         isFeatured: false,
         youtubeLink: ""
+    },
+    paginate: {
+        total: 0,
+        current_page: 0,
+        limit: 0,
+        next: null,
+        prev: null,
+        pages:[]
     }
 }
 const createProjectSlice = createSlice({
@@ -84,6 +94,55 @@ const createProjectSlice = createSlice({
             state.isLoading= false
             state.isSuccess=true
             state.isError= false
+        })
+        .addCase(getAllProjects.pending,state=>{
+            state.isLoading= true
+            state.isSuccess= false
+            state.isError = false 
+        })
+        .addCase(getAllProjects.rejected,state=>{
+            state.isLoading= false
+            state.isSuccess= false
+            state.isError= true
+            state.projectData = {
+                id: "",
+                user: "",
+                title: "",
+                slug: "",
+                subTitle: "",
+                description: "",
+                locality: "",
+                city: "",
+                state: "",
+                service: "",
+                projectType: "",
+                areaRange: { min: "", max: "" },
+                priceRange: { min: "", max: "" },
+                pricePerSqFt: 0,
+                reraNumber: "",
+                availability: "",
+                reraPossessionDate: "",
+                aminities: [],
+                bankOfApproval: [],
+                imageGallary: [],
+                isFeatured: false,
+                youtubeLink: ""
+            }
+            state.paginate = {
+                total: 0,
+                current_page: 0,
+                limit: 0,
+                next: null,
+                prev: null,
+                pages:[]
+            }
+        })
+        .addCase(getAllProjects.fulfilled,(state,action)=>{
+            state.isLoading=false
+            state.isError=false
+            state.isSuccess= true
+            state.projectData = action.payload.data
+            state.paginate = action.payload.pagination
         })
     }
 })
