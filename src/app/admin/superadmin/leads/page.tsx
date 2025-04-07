@@ -14,11 +14,23 @@ import { useForm } from "react-hook-form";
 
 const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
 
+interface LeadRowProps {
+  Sno: number;
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  assignedTo?: any;
+  status: "PENDING" | "CALLING" | "QUALIFIED" | "UNQUALIFIED";
+  createdAt: string;
+}
+
 export default function LeadsPage() {
   const dispatch = useAppDispatch();
-  const { leads, loading, pagination } = useAppSelector(
-    (state) => state.leads
-  );
+  const { leads, pagination } = useAppSelector(
+    (state) => state.leads)
+    console.log(pagination ,"pagination")
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentStatus = searchParams.get("status") || "";
@@ -40,6 +52,7 @@ export default function LeadsPage() {
     updateQuery({ type });
   };
 
+  
   // Update Query Parameters in URL
   const updateQuery = (params: { [key: string]: string }) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -62,12 +75,17 @@ export default function LeadsPage() {
     );
   }, [dispatch, currentPage, currentStatus, propertyOrProject]);
 
+
+  const totalItems = 4;
+  const itemsPerPage = 5;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Optionally fetch new data here
+  };
   return (
     <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Leads</h1>
-        
-      </div>
+
 
       <div className="bg-white shadow rounded-lg p-6">
         {/* Filters */}
@@ -111,7 +129,7 @@ export default function LeadsPage() {
         {/* Leads Table */}
         <table className="w-full border-collapse border rounded-lg">
           <thead>
-            <tr className="bg-gray-200">
+            <tr className="bg-gray-200" >
               <th className="p-3 border">S No.</th>
               <th className="p-3 border">Name</th>
               <th className="p-3 border">Email</th>
@@ -123,11 +141,11 @@ export default function LeadsPage() {
             </tr>
           </thead>
           <tbody>
-            {false ? (
-              <tr>
-                <td colSpan={8} className="text-center py-4">Loading...</td>
-              </tr>
-            ) : leads?.length > 0 ? (
+          <div className="text-red-500">
+  
+  </div>
+      
+            {leads?.length > 0 ? (
               leads?.map((lead, index) => (
                 <LeadRow key={lead._id} Sno={index + 1} {...lead} />
               ))
@@ -138,14 +156,17 @@ export default function LeadsPage() {
             )}
           </tbody>
         </table>
-
-        {/* Pagination */}
         <Pagination
-          currentPage={currentPage}
-          totalPages={pagination?.pages || 1}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
-  
+  total={pagination?.total}          // ✅ total is a number (5)
+  currentPage={pagination?.current_page}  // ✅ current page from response
+  limit={pagination?.limit}         // ✅ limit is also a number (5)
+  onPageChange={handlePageChange}
+/>
+
+
+
+
+
       </div>
     </div>
   );
@@ -160,19 +181,22 @@ function LeadRow({
   email,
   phoneNumber,
   assignedTo,
-  assignedRole,
   status,
   createdAt,
 }: {
   Sno: number;
-} & Lead) {
+} & LeadRowProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [newAssignee, setNewAssignee] = useState<{ name: string; role: string } | null>(null);
   const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
-
-  const { users } = useAppSelector((state) => state.leads);
-  console.log("users",users)
+  type User = {
+    _id: string;
+    name: string;
+    role: string;
+  };
+  const users: User[] = useAppSelector((state) => state.leads.users);
+  console.log("users", users)
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -180,20 +204,23 @@ function LeadRow({
   }, []);
 
   // React Hook Form Setup
-  const { register, handleSubmit, setValue } = useForm({
+  const { register, handleSubmit, setValue ,formState:{errors}} = useForm({
     defaultValues: {
       name,
       email,
       phoneNumber,
       assignedTo,
-      assignedRole,
       status,
+      feedBack: "",
     },
   });
 
+
   const handleEdit = () => {
     setIsEditDialogOpen(true);
-    setNewAssignee(assignedTo ? { name: assignedTo, role: assignedRole || "" } : null);
+    setNewAssignee(
+      assignedTo ? { name: assignedTo.name, role: assignedTo.role || "" } : null
+    )
   };
 
   const onSubmit = async (data: any) => {
@@ -208,7 +235,7 @@ function LeadRow({
 
   return (
     <>
-    
+
       <tr className="border">
         <td className="p-3 border font-medium">{Sno}</td>
         <td className="p-3 border font-medium">{name}</td>
@@ -216,13 +243,12 @@ function LeadRow({
           <Mail className="h-4 w-4 mr-2 text-gray-500" /> {email}
         </td>
         <td className="p-3 border font-medium">{phoneNumber}</td>
-        <td className="p-3 border">{assignedTo ? `${assignedTo} - ${assignedRole}` : "Unassigned"}</td>
+        <td className="p-3 border">{assignedTo ? `${assignedTo.name} - ${assignedTo.role}` : "Unassigned"}</td>
         <td className="p-3 border">
-          <span className={`px-2 py-1 rounded text-white ${
-            status === "PENDING" ? "bg-gray-500" : 
-            status === "CALLING" ? "bg-blue-500" : 
-            status === "QUALIFIED" ? "bg-green-500" : "bg-red-500"
-          }`}>
+          <span className={`px-2 py-1 rounded text-white ${status === "PENDING" ? "bg-gray-500" :
+              status === "CALLING" ? "bg-blue-500" :
+                status === "QUALIFIED" ? "bg-green-500" : "bg-red-500"
+            }`}>
             {status}
           </span>
         </td>
@@ -252,23 +278,10 @@ function LeadRow({
 
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium">Name</label>
-                <input {...register("name")} className="w-full border px-3 py-2 rounded" />
-              </div>
 
-              {/* Email */}
-              <div>
-                <label className="block text-sm font-medium">Email</label>
-                <input {...register("email")} className="w-full border px-3 py-2 rounded" />
-              </div>
 
-              {/* Phone Number */}
-              <div>
-                <label className="block text-sm font-medium">Phone Number</label>
-                <input {...register("phoneNumber")} className="w-full border px-3 py-2 rounded" />
-              </div>
+
+
 
               {/* Assigned To Dropdown */}
               <div>
@@ -284,20 +297,21 @@ function LeadRow({
 
                   {isDropdownOpen && (
                     <div className="absolute mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 overflow-auto">
-                      {users.map((user, i) => (
-                        <div
-                          key={i}
-                          className="cursor-pointer select-none py-2 px-4 hover:bg-gray-100"
-                          onClick={() => {
-                            setNewAssignee({ name: user.name, role: user.role });
-                            setValue("assignedTo", user._id);
-                         
-                            setIsDropdownOpen(false);
-                          }}
-                        >
-                          {user.name} - {user.role}
-                        </div>
-                      ))}
+                      {Array.isArray(users) &&
+                        users.map((user, i) => (
+                          <div
+                            key={i}
+                            className="cursor-pointer select-none py-2 px-4 hover:bg-gray-100"
+                            onClick={() => {
+                              setNewAssignee({ name: user.name, role: user.role });
+                              setValue("assignedTo", user._id); // Assign user ID instead of an object
+                              setIsDropdownOpen(false);
+                            }}
+                          >
+                            {user.name || "Unknown"} - {user.role || "No Role"}
+                          </div>
+                        ))}
+
                     </div>
                   )}
                 </div>
@@ -312,6 +326,20 @@ function LeadRow({
                   ))}
                 </select>
               </div>
+
+              <div className="mt-10 w-full max-w-lg">
+  <label htmlFor="feedback" className="block text-lg font-semibold text-gray-700 mb-2">
+    Your Feedback
+  </label>
+  <textarea
+    id="feedback"
+    placeholder="Write your feedback here..."
+    className="w-full h-36 p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out resize-none bg-gray-50"
+    {...register("feedBack", { required: "Feedback is required", maxLength: 500 })}
+  />
+  {errors.feedBack?(  <p className="text-sm text-gray-500 mt-1">Max 500 characters</p>):null}
+
+</div>
 
               {/* Modal Footer */}
               <div className="flex justify-end gap-2 border-t px-6 py-4">

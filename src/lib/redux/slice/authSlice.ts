@@ -1,14 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { loginUser, registerUser } from "../actions/authAction"
+import { getAllUser, loginUser, registerUser } from "../actions/authAction"
 interface AuthState {
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
+  users: any[];
+  pagination:{}
 }
 const initialState:AuthState = {
     isLoading : false,
     isError: false,
     isSuccess: false,
+    users: [],
+    pagination:{}
 }
 
 const registerSlice = createSlice({
@@ -50,6 +54,21 @@ const registerSlice = createSlice({
             state.isLoading= false
             state.isSuccess= true
             state.isError= false
+        }).addCase(getAllUser.pending,(state,action)=>{
+            state.isLoading= true
+            state.isSuccess= false
+            state.isError= false
+        }).addCase(getAllUser.fulfilled,(state,action)=>{
+state.isLoading=false;
+state.users= action.payload.data
+state.pagination= action.payload.pagination
+state.isSuccess= true;
+state.isError= false
+        })
+        .addCase(getAllUser.rejected,(state,action)=>{
+            state.isLoading= false
+            state.isSuccess= false
+            state.isError= true
         })
     }
 })
