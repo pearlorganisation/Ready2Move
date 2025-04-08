@@ -2,10 +2,13 @@
 
 "use client";
 
-import { useState } from "react";
+import { useAppDispatch } from "@/lib/hooks/dispatchHook";
+import { getAllProperties } from "@/lib/redux/actions/propertyAction";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 const PropertiesPage = () => {
+  const dispatch = useAppDispatch()
   const [service, setService] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -97,6 +100,9 @@ const PropertiesPage = () => {
     );
   });
 
+  useEffect(()=>{
+     dispatch(getAllProperties())
+  },[])
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-900">

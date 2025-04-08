@@ -191,3 +191,19 @@ export const createPropertyByAdmin = createAsyncThunk(
     }
   );
   
+
+  export const getAllProperties = createAsyncThunk(
+    "get/allproperty",async(_,{rejectWithValue})=>{
+      try {
+        const config ={
+          headers:{
+            "Content-Type":"application/json"
+          }
+        }
+        const { data } = await axiosInstance.get(`/api/v1/properties`, config)
+        return data
+      } catch (error) {
+        return rejectWithValue(error)        
+      }
+    }
+  )

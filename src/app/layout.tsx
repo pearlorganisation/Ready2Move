@@ -31,8 +31,7 @@ export default function RootLayout({
       >
         <ReduxProvider>
          <HeaderWrapper />
- 
-                     <main>{children}</main>
+            <main>{children}</main>
           <FooterWrapper />
         </ReduxProvider>
         

@@ -33,13 +33,13 @@ console.log("the pathname is ", pathname)
         setUserData(fetchedUser);
 
         // --- Check role AFTER data is fetched ---
-        // if (fetchedUser && fetchedUser?.role === "ADMIN") {
-        //   console.log("User is ADMIN, authorizing.");
-        //   setIsAuthorized(true);
-        // } else {
-        //   console.log("User is not ADMIN or data fetch failed, redirecting.");
-        //   router.push("/login");
-        // }
+        if (fetchedUser && fetchedUser?.role === "ADMIN") {
+          console.log("User is ADMIN, authorizing.");
+          setIsAuthorized(true);
+        } else {
+          console.log("User is not ADMIN or data fetch failed, redirecting.");
+          router.push("/login");
+        }
         // --- End check ---
 
       } catch (error) {
@@ -66,7 +66,7 @@ console.log("the pathname is ", pathname)
      console.log("Rendering Admin content for user:", userdata.name);
      return (
        <div>
-         {/* <Sidebar /> */}
+         <Sidebar />
          {/* Add the rest of your admin page content here */}
          <h1>Welcome Admin, {userdata.name}!</h1>
        </div>
