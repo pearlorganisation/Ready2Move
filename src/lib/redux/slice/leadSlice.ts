@@ -1,6 +1,6 @@
-
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { deleteLeadById, getAllLeads, GetUserByRoles } from "../actions/leadsAction";
+import { Paginate } from "@/lib/util/paginateInterface";
 
 
 export interface Lead {
@@ -25,20 +25,20 @@ export interface Lead {
     email: string;
     role: string;
 }
-  interface Pagination {
-    total: number;
-    current_page: number;
-    limit: number;
-    next?: number;
-    prev?: number;
-    pages: number[];
-  }
+//   interface Pagination {
+//     total: number;
+//     current_page: number;
+//     limit: number;
+//     next?: number ;
+//     prev?: number;
+//     pages: number[];
+//   }
   
   interface LeadsState {
     leads: Lead[];
     loading: boolean;
     error: string | null;
-    pagination: Pagination | null;
+    pagination:Paginate;
     users:User[];
   }
   
@@ -46,7 +46,12 @@ export interface Lead {
     leads: [],
     loading: false,
     error: null,
-    pagination: null,
+    pagination: { total: 0,
+        current_page: 0,
+        limit: 0,
+        next: null,
+        prev: null,
+        pages:[]},
     users: [],
   };
   

@@ -35,3 +35,17 @@ export const loginUser=createAsyncThunk(
     }
 )
 
+export const getAllUser=createAsyncThunk("get/allUser",async({page,limit}:{page:number,limit:number},{rejectWithValue})=>{
+    try{
+        const config={
+            headers:{
+                "Content-type":"application/json"
+            }
+             }
+             const {data}=await axiosInstance.get(`/api/v1/users?page=${page}&${limit}`,config)
+             return data
+    }catch{
+        return rejectWithValue("Error while fetching users")
+    }
+
+})

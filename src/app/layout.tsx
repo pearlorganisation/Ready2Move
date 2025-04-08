@@ -24,6 +24,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
+
+
+
+
   return (
     <html lang="en">
       <body
@@ -34,7 +41,7 @@ export default function RootLayout({
             <main>{children}</main>
           <FooterWrapper />
         </ReduxProvider>
-        
+         
       </body>
     </html>
   );
