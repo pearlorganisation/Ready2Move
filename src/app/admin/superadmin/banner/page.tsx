@@ -60,7 +60,6 @@ export default function HeroSliderEditor() {
 
   return (
    <div className="flex min-h-screen">
-      {/* <Sidebar />  */}
       <div className="flex-1 p-6 overflow-y-auto">
              <div className="container mx-auto p-6 max-w-5xl">
        
