@@ -13,7 +13,8 @@ interface Login {
         phoneNumber: string,
         role: string,
         isVerified: string
-    }
+    },
+    users:{}
 }
 const initialState: Login={
   isLoading: false,
@@ -27,7 +28,8 @@ const initialState: Login={
     phoneNumber: '',
     role: '',
     isVerified: ''
-  }
+  },
+  users:{}
 }
 
 const logInUserSlice = createSlice({
@@ -51,7 +53,8 @@ const logInUserSlice = createSlice({
                     phoneNumber: '',
                     role: '',
                     isVerified: ''
-            }
+            },
+            state.users={}
         }
     },
     extraReducers:(builder)=>{

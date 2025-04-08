@@ -31,8 +31,7 @@ import { Sidebar } from "@/components/sidebar"
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const dashboardData: any = useAppSelector((state) => state.dashboard.data);
-  const users: any[] = useAppSelector((state) => state.user?.users || []);
-
+  const users: any[] = useAppSelector((state) => Array.isArray(state.user?.users) ? state.user.users : []);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [newAssignee, setNewAssignee] = useState<{ name: string; role: string } | null>(null);
@@ -277,10 +276,11 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
+    </div>
   );
 }
 
-function StatsCard({
+const StatsCard =({
   title,
   value,
   description,
@@ -290,7 +290,7 @@ function StatsCard({
   value: number;
   description: string;
   icon: React.ReactNode;
-}) {
+})=> {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
