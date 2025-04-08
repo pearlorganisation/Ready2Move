@@ -88,7 +88,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div>
+       {/* <Sidebar /> */}
+       <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
 
       {/* Stats Section */}
@@ -299,10 +301,11 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
+    </div>
   );
 }
 
-function StatsCard({
+const StatsCard =({
   title,
   value,
   description,
@@ -312,7 +315,7 @@ function StatsCard({
   value: number;
   description: string;
   icon: React.ReactNode;
-}) {
+})=> {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">

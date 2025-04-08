@@ -1,5 +1,6 @@
 "use client"
  
+import RoleRedirect from "@/components/RoleBasedComponent";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { createProjectsByBuilder } from "@/lib/redux/actions/projectAction";
@@ -94,6 +95,7 @@ const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      <RoleRedirect role="BUILDER" />
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Create Project</h1>
 
       <form onSubmit={handleSubmit(submitForm)} className="space-y-6">

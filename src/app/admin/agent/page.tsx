@@ -1,6 +1,11 @@
+import RoleRedirect from "@/components/RoleBasedComponent"
+
 const AgentPage = () => {
   return (
-    <div>AgenPage</div>
+    <div>
+      <div><RoleRedirect role="AGENT" /></div>
+      AgenPage
+    </div>
   )
 }
 

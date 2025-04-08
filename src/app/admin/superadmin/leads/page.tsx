@@ -82,6 +82,7 @@ export default function LeadsPage() {
   }, [dispatch, currentPage, currentStatus, propertyOrProject]);
 
   return (
+    
     <div className="space-y-6 p-6">
 
 
