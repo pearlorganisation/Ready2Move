@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useForm } from "react-hook-form";
-import { Lead } from "@/lib/redux/slice/leadSlice";
+import PaginationMainComponent from "@/components/PaginationMain";
 
 const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
 
@@ -29,8 +29,8 @@ interface LeadRowProps {
 export default function LeadsPage() {
   const dispatch = useAppDispatch();
   const { leads, pagination } = useAppSelector(
-    (state) => state.leads)
-    console.log(pagination ,"pagination")
+    (state) => state.leads
+  );
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,8 +39,14 @@ export default function LeadsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const limit: number = 5;
+  const limit: number = 2;
 
+  const totalPages = Math.ceil(pagination?.total / pagination?.limit) ;
+  const handlePageClickFunction=(page:number)=>{
+    if(page >0 && page <= totalPages){
+      setCurrentPage(page)
+    }
+  }
   // Handle Status Change and Update URL Query
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const status = event.target.value;
@@ -53,7 +59,6 @@ export default function LeadsPage() {
     updateQuery({ type });
   };
 
-  
   // Update Query Parameters in URL
   const updateQuery = (params: { [key: string]: string }) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -76,14 +81,6 @@ export default function LeadsPage() {
     );
   }, [dispatch, currentPage, currentStatus, propertyOrProject]);
 
-
-  const totalItems = 4;
-  const itemsPerPage = 5;
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    // Optionally fetch new data here
-  };
   return (
     <div className="space-y-6 p-6">
 
@@ -130,7 +127,7 @@ export default function LeadsPage() {
         {/* Leads Table */}
         <table className="w-full border-collapse border rounded-lg">
           <thead>
-            <tr className="bg-gray-200" >
+            <tr className="bg-gray-200">
               <th className="p-3 border">S No.</th>
               <th className="p-3 border">Name</th>
               <th className="p-3 border">Email</th>
@@ -142,10 +139,7 @@ export default function LeadsPage() {
             </tr>
           </thead>
           <tbody>
-          <div className="text-red-500">
-  
-  </div>
-      
+
             {leads?.length > 0 ? (
               leads?.map((lead, index) => (
                 <LeadRow key={lead._id} Sno={index + 1} {...lead} />
@@ -157,12 +151,15 @@ export default function LeadsPage() {
             )}
           </tbody>
         </table>
-        <Pagination
+
+        {/* Pagination */}
+        {/* <Pagination 
           currentPage={currentPage}
-          totalPages={Array.isArray(pagination?.pages) ? pagination.pages[0] : pagination?.pages || 1}
-          onPageChange={(page) => setCurrentPage(page)}
-        />
-  
+          limit={limit}  // Set the limit for items per page
+          total={pagination?.pages?.length || 1}  // Get the number of pages
+          onPageChange={(page:number) => setCurrentPage(page)}
+        /> */}
+<PaginationMainComponent totalPages={totalPages} currentPage={currentPage} handlePageClick={handlePageClickFunction} paginate={pagination} />
       </div>
     </div>
   );
@@ -178,8 +175,6 @@ function LeadRow({
   phoneNumber,
   assignedTo,
   status,
-  assignedRole,
-  status, 
   createdAt,
 }: {
   Sno: number;

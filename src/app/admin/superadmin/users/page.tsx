@@ -20,11 +20,12 @@ const page = () => {
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr className="bg-gray-100 text-left">
-              <th className="py-2 px-4 border-b">#</th>
+              <th className="py-2 px-4 border-b">S.no</th>
               <th className="py-2 px-4 border-b">Name</th>
               <th className="py-2 px-4 border-b">Email</th>
               <th className="py-2 px-4 border-b">Phone</th>
               <th className="py-2 px-4 border-b">Role</th>
+              <th className="py-2 px-4 border-b">Status</th>
                       </tr>
           </thead>
           <tbody>
@@ -36,8 +37,8 @@ const page = () => {
                 <td className="py-2 px-4 border-b">{user.phoneNumber}</td>
                 <td className="py-2 px-4 border-b">{user.role}</td>
      
-                <td className='py-2 px-4 border-b'>
-        
+                <td className="py-2 px-4 border-b">
+        {user.isVerified ?"Verified" :"Not verified"}
                 </td>
               </tr>
             ))}
