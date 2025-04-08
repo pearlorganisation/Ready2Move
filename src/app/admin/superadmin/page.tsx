@@ -66,7 +66,7 @@ console.log("the pathname is ", pathname)
      console.log("Rendering Admin content for user:", userdata.name);
      return (
        <div>
-         <Sidebar />
+         {/* <Sidebar /> */}
          {/* Add the rest of your admin page content here */}
          <h1>Welcome Admin, {userdata.name}!</h1>
        </div>

@@ -151,7 +151,7 @@ const handleOpenAddProject =()=>{
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <div className="flex-1 p-6 overflow-y-auto">
        <div className="flex w-full">
       {/* Sidebar */}

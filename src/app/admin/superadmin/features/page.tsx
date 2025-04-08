@@ -31,7 +31,7 @@ const dispatch= useAppDispatch()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   return (
     <div>
-       <Sidebar />
+       {/* <Sidebar /> */}
         <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-bold text-blue-700">FEATURE LISTING</h1>

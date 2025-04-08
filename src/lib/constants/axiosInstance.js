@@ -35,7 +35,6 @@ axiosInstance.interceptors.response.use(
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
                 console.log(refreshError, "-----refresh failed");
-
                 store.dispatch(logoutUser());
                 return Promise.reject(refreshError);
             }
