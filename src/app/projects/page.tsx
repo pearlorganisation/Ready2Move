@@ -15,7 +15,7 @@ const Page = () => {
   const totalPages = Math.ceil(paginate?.total/paginate?.limit)
  
   const handlePageClick = (page:number)=>{
-    if(page >0 && page < totalPages){
+    if(page >0 && page <= totalPages){
         setCurrentPage(page)
     }
   }
