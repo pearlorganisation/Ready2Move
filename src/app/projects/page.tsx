@@ -80,7 +80,7 @@ const Page = () => {
   </div>
 
   {/* Pagination */}
-  <div className="mt-12 flex justify-center">
+  <div className="mt-12">
     <PaginationMainComponent
       totalPages={totalPages}
       currentPage={currentPage}
