@@ -5,7 +5,7 @@ interface Property{
     isLoading:boolean,
     isSuccess:boolean,
     isError: boolean
-    propertyData:{}
+    propertyData: any[]
     paginate:Paginate
 }
 
@@ -13,7 +13,7 @@ const initialState : Property={
     isLoading:false,
     isSuccess:false,
     isError:false,
-    propertyData:{},
+    propertyData:[],
     paginate: {
         total: 0,
         current_page: 0,
@@ -51,7 +51,7 @@ const createPropertySlice = createSlice({
             state.isLoading= false
             state.isSuccess= false
             state.isError= true
-            state.propertyData={}
+            state.propertyData= []
             state.paginate={
                     total: 0,
                     current_page: 0,
