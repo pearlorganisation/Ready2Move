@@ -2,6 +2,7 @@
 
 "use client";
 
+import PaginationMainComponent from "@/components/PaginationMain";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getAllProperties } from "@/lib/redux/actions/propertyAction";
 import { useEffect, useState } from "react";
@@ -17,7 +18,7 @@ const PropertiesPage = () => {
   const [priceRange, setPriceRange] = useState(0);
   const [bedrooms, setBedrooms] = useState(0);
   const [bathrooms, setBathrooms] = useState(0);
-  const [currentPage, setCurrentPage] = useState<number | null>(1)
+  const [currentPage, setCurrentPage] = useState<number >(1)
 
   console.log("the price range is", priceRange)
   console.log("the no of bedrooms are", bedrooms)
@@ -34,7 +35,7 @@ const handlePageClick =(page:number)=>{
 
 
   useEffect(()=>{
-     dispatch(getAllProperties({page: currentPage, limit:10, priceRange:priceRange, bedRooms: bedrooms, bathRooms: bathrooms}))
+     dispatch(getAllProperties({page: currentPage, limit:5, priceRange:priceRange, bedRooms: bedrooms, bathRooms: bathrooms}))
   },[currentPage, bedrooms, priceRange, bathrooms])
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -119,7 +120,7 @@ const handlePageClick =(page:number)=>{
           <div className="flex items-center gap-3 mb-4">
             <button
               className="p-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition"
-              onClick={() => setBedrooms((prev) => Math.max(1, prev - 1))}
+              onClick={() => setBedrooms((prev) => Math.max(0, prev - 1))}
             >
               –
             </button>
@@ -202,6 +203,7 @@ const handlePageClick =(page:number)=>{
           )}
         </div>
       </div>
+      <PaginationMainComponent paginate={paginate} totalPages={totalPages} currentPage={currentPage} handlePageClick={handlePageClick} />
     </div>
   );
 };

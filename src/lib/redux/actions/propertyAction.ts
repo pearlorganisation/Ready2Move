@@ -193,7 +193,7 @@ export const createPropertyByAdmin = createAsyncThunk(
   
 
   export const getAllProperties = createAsyncThunk(
-    "get/allproperty",async({page,limit, priceRange, bedRooms, bathRooms}:{page:number | null, limit:number, priceRange: number, bedRooms: number, bathRooms: number},{rejectWithValue})=>{
+    "get/allproperty",async({page,limit, priceRange, bedRooms, bathRooms}:{page:number, limit:number, priceRange: number, bedRooms: number, bathRooms: number},{rejectWithValue})=>{
       try {
         const config ={
           headers:{
