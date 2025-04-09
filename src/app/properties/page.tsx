@@ -3,6 +3,7 @@
 "use client";
 
 import PaginationMainComponent from "@/components/PaginationMain";
+import { useDebounce } from "@/lib/hooks/debounceHook";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getAllProperties } from "@/lib/redux/actions/propertyAction";
 import { useEffect, useState } from "react";
@@ -20,6 +21,11 @@ const PropertiesPage = () => {
   const [bathrooms, setBathrooms] = useState(0);
   const [currentPage, setCurrentPage] = useState<number >(1)
 
+
+  // returned values from the custom debounce hook
+  const debouncedPriceRange = useDebounce(priceRange,500)
+  const debouncedBedRoom = useDebounce(bedrooms,500)
+  const debouncedBathRoom = useDebounce(bathrooms,500)
   console.log("the price range is", priceRange)
   console.log("the no of bedrooms are", bedrooms)
   console.log("the bathrooms are", bathrooms)
@@ -35,8 +41,8 @@ const handlePageClick =(page:number)=>{
 
 
   useEffect(()=>{
-     dispatch(getAllProperties({page: currentPage, limit:5, priceRange:priceRange, bedRooms: bedrooms, bathRooms: bathrooms}))
-  },[currentPage, bedrooms, priceRange, bathrooms])
+     dispatch(getAllProperties({page: currentPage, limit:5, priceRange:debouncedPriceRange, bedRooms: debouncedBedRoom, bathRooms: debouncedBathRoom}))
+  },[currentPage, debouncedBedRoom, debouncedPriceRange, debouncedBathRoom])
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-900">
@@ -142,7 +148,7 @@ const handlePageClick =(page:number)=>{
           <div className="flex items-center gap-3">
             <button
               className="p-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition"
-              onClick={() => setBathrooms((prev) => Math.max(1, prev - 1))}
+              onClick={() => setBathrooms((prev) => Math.max(0, prev - 1))}
             >
               –
             </button>
