@@ -14,6 +14,8 @@ import { getDashboardData } from "@/lib/redux/actions/dashboardAction";
 import { Button } from "@/components/helper/button";
 import { FaEdit, FaEnvelope, FaTrash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import { GetUserByRoles, updateLeadById } from "@/lib/redux/actions/leadsAction";
+import { FaChevronDown } from "react-icons/fa";
 
 interface LeadRowProps {
   Sno: number;
@@ -26,12 +28,19 @@ interface LeadRowProps {
   createdAt: string;
   feedBack?: string;
 }
-import { Sidebar } from "@/components/sidebar"
+
+type User = {
+  _id: string;
+  name: string;
+  role: string;
+};
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const dashboardData: any = useAppSelector((state) => state.dashboard.data);
-  const users: any[] = useAppSelector((state) => Array.isArray(state.user?.users) ? state.user.users : []);
+  const users: User[] = useAppSelector((state) => state.leads.users);
+  console.log("users", users)
+
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [newAssignee, setNewAssignee] = useState<{ name: string; role: string } | null>(null);
@@ -43,6 +52,9 @@ export default function DashboardPage() {
     dispatch(getDashboardData());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(GetUserByRoles({ limit: 5, page: 1, roles: "AGENT,BUILDER" }));
+  }, []);
   const {
     register,
     handleSubmit,
@@ -71,7 +83,7 @@ export default function DashboardPage() {
 
   const onSubmit = (data: any) => {
     console.log("Submitting edited lead:", { id: selectedLeadId, ...data });
-    // dispatch(updateLead({ id: selectedLeadId, ...data }));
+    dispatch(updateLeadById({ id: selectedLeadId, ...data }));
     setIsEditDialogOpen(false);
   };
 
@@ -188,34 +200,47 @@ export default function DashboardPage() {
               {/* Assigned To Dropdown */}
               <div>
                 <label className="block text-sm font-medium">Assigned To</label>
-                <div className="relative">
-                  <button
+                <div className="relative flex flex-row">
+                  {/* <button
                     type="button"
                     className="w-full border px-3 py-2 text-left"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)} 
                   >
                     {newAssignee
                       ? `${newAssignee.name} - ${newAssignee.role}`
                       : "Select Assignee"}
-                  </button>
+                  </button> */}
 
-                  {isDropdownOpen && (
-                    <div className="absolute mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 overflow-auto">
-                      {users.map((user, i) => (
-                        <div
-                          key={i}
-                          className="cursor-pointer py-2 px-4 hover:bg-gray-100"
-                          onClick={() => {
-                            setNewAssignee({ name: user.name, role: user.role });
-                            setValue("assignedTo", user._id);
-                            setIsDropdownOpen(false);
-                          }}
-                        >
-                          {user.name || "Unknown"} - {user.role || "No Role"}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <div className="relative">
+  {/* Trigger box */}
+  <div
+    className="flex w-full flex-row items-center justify-end border border-gray-300 rounded-md px-4 py-2 cursor-pointer"
+    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+  >
+    <span>{newAssignee?.name || "Select Assignee"}</span>
+    <FaChevronDown className={`ml-2 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+  </div>
+
+  {/* Dropdown menu */}
+  {isDropdownOpen && (
+    <div className="absolute mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 overflow-auto z-10">
+      {users.map((user, i) => (
+        <div
+          key={i}
+          className="cursor-pointer py-2 px-4 hover:bg-gray-100"
+          onClick={() => {
+            setNewAssignee({ name: user.name, role: user.role });
+            setValue("assignedTo", user._id);
+            setIsDropdownOpen(false);
+          }}
+        >
+          {user.name || "Unknown"} - {user.role || "No Role"}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
                 </div>
               </div>
 
