@@ -2,101 +2,47 @@
 
 "use client";
 
-import { useState } from "react";
+import PaginationMainComponent from "@/components/PaginationMain";
+import { useDebounce } from "@/lib/hooks/debounceHook";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { getAllProperties } from "@/lib/redux/actions/propertyAction";
+import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
 const PropertiesPage = () => {
+  const dispatch = useAppDispatch()
+  const {propertyData, paginate} = useAppSelector((state)=> state.property)
+
   const [service, setService] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
-  const [bedrooms, setBedrooms] = useState(1);
-  const [bathrooms, setBathrooms] = useState(1);
+  const [priceRange, setPriceRange] = useState(0);
+  const [bedrooms, setBedrooms] = useState(0);
+  const [bathrooms, setBathrooms] = useState(0);
+  const [currentPage, setCurrentPage] = useState<number >(1)
 
-  const properties = [
-    {
-      id: 1,
-      title: "Luxury Apartment",
-      type: "RESIDENTIAL",
-      service: "BUY",
-      location: "New York",
-      price: 800000,
-      bedrooms: 3,
-      bathrooms: 2,
-      image:
-        "https://photos.zillowstatic.com/fp/173b668ad3461bdb29dc13032b6f2e29-p_e.jpg",
-    },
-    {
-      id: 2,
-      title: "Office Space",
-      type: "COMMERCIAL",
-      service: "RENT",
-      location: "Los Angeles",
-      price: 500000,
-      bedrooms: 2,
-      bathrooms: 1,
-      image:
-        "https://boardwalkindia.com/wp-content/uploads/2022/05/shutterstock_1716940273.jpg",
-    },
-    {
-      id: 3,
-      title: "Beach House",
-      type: "RESIDENTIAL",
-      service: "SELL",
-      location: "Miami",
-      price: 950000,
-      bedrooms: 4,
-      bathrooms: 3,
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg9tdFrisZulo6WwGIISsV2ACSW7xsSdE14g&s",
-    },
-    {
-      id: 4,
-      title: "Retail Store",
-      type: "COMMERCIAL",
-      service: "BUY",
-      location: "Chicago",
-      price: 300000,
-      bedrooms: 6,
-      bathrooms: 4,
-      image:
-        "https://thumbs.dreamstime.com/b/new-commercial-building-newly-constructed-small-retail-office-35627949.jpg",
-    },
-    {
-      id: 5,
-      title: "Penthouse Suite",
-      type: "RESIDENTIAL",
-      service: "RENT",
-      location: "San Francisco",
-      price: 1200000,
-      bedrooms: 5,
-      bathrooms: 4,
-      image: "https://www.gharjunction.com/img/blog/218.jpg",
-    },
-  ];
 
-  const filteredProperties = properties.filter((property) => {
-    const matchesService = service ? property.service === service : true;
-    const matchesType = propertyType ? property.type === propertyType : true;
-    const matchesSearch = searchQuery
-      ? property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        property.location.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
-    const matchesPrice =
-      property.price >= priceRange[0] && property.price <= priceRange[1];
-    const matchesBedrooms = property.bedrooms >= bedrooms;
-    const matchesBathrooms = property.bathrooms >= bathrooms;
+  // returned values from the custom debounce hook
+  const debouncedPriceRange = useDebounce(priceRange,500)
+  const debouncedBedRoom = useDebounce(bedrooms,500)
+  const debouncedBathRoom = useDebounce(bathrooms,500)
+  console.log("the price range is", priceRange)
+  console.log("the no of bedrooms are", bedrooms)
+  console.log("the bathrooms are", bathrooms)
+   
+/** for the dynamic data */
+const totalPages = Math.ceil(paginate?.total/ paginate?.limit)
 
-    return (
-      matchesService &&
-      matchesType &&
-      matchesSearch &&
-      matchesPrice &&
-      matchesBedrooms &&
-      matchesBathrooms
-    );
-  });
+const handlePageClick =(page:number)=>{
+  if(page >0 && page <= totalPages){
+    setCurrentPage(page)
+  }
+}
 
+
+  useEffect(()=>{
+     dispatch(getAllProperties({page: currentPage, limit:5, priceRange:debouncedPriceRange, bedRooms: debouncedBedRoom, bathRooms: debouncedBathRoom}))
+  },[currentPage, debouncedBedRoom, debouncedPriceRange, debouncedBathRoom])
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-900">
@@ -151,13 +97,13 @@ const PropertiesPage = () => {
               min="0"
               max="2000000"
               step="50000"
-              value={priceRange[0]}
+              value={priceRange}
               onChange={(e) =>
-                setPriceRange([Number(e.target.value), priceRange[1]])
+                setPriceRange(Number(e.target.value))
               }
               className="w-full accent-blue-500"
             />
-            <input
+            {/* <input
               type="range"
               min="0"
               max="2000000"
@@ -167,10 +113,9 @@ const PropertiesPage = () => {
                 setPriceRange([priceRange[0], Number(e.target.value)])
               }
               className="w-full accent-blue-500 mt-2"
-            />
+            /> */}
             <p className="text-gray-700 text-sm font-medium mt-2">
-              Rs. {priceRange[0].toLocaleString()} - $
-              {priceRange[1].toLocaleString()}
+              Rs. {priceRange.toLocaleString()}
             </p>
           </div>
 
@@ -181,7 +126,7 @@ const PropertiesPage = () => {
           <div className="flex items-center gap-3 mb-4">
             <button
               className="p-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition"
-              onClick={() => setBedrooms((prev) => Math.max(1, prev - 1))}
+              onClick={() => setBedrooms((prev) => Math.max(0, prev - 1))}
             >
               –
             </button>
@@ -203,7 +148,7 @@ const PropertiesPage = () => {
           <div className="flex items-center gap-3">
             <button
               className="p-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-600 transition"
-              onClick={() => setBathrooms((prev) => Math.max(1, prev - 1))}
+              onClick={() => setBathrooms((prev) => Math.max(0, prev - 1))}
             >
               –
             </button>
@@ -220,32 +165,32 @@ const PropertiesPage = () => {
         </aside>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProperties.length > 0 ? (
-            filteredProperties.map((property) => (
+          {propertyData?.length > 0 ? (
+            propertyData?.map((property) => (
               <div
-                key={property.id}
+                key={property._id}
                 className="bg-white border rounded-lg shadow-lg overflow-hidden transform transition hover:scale-105 hover:shadow-xl"
               >
                 <img
-                  src={property.image}
+                  src={property?.imageGallery?.[0]?.secure_url}
                   alt={property.title}
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-5">
                   <h3 className="text-xl font-semibold text-gray-900">
-                    {property.title}
+                    {property?.title}
                   </h3>
-                  <p className="text-gray-600 mt-1">📍 {property.location}</p>
+                  <p className="text-gray-600 mt-1">📍 {property?.locality}</p>
                   <p className="text-gray-800 mt-1 font-medium">
-                    💰 Rs. {property.price.toLocaleString()}
+                    💰 Rs. {property?.expectedPrice?.toLocaleString()}
                   </p>
                   <p className="text-gray-800 mt-1">
-                    🛏 {property.bedrooms} Bedrooms | 🛁 {property.bathrooms}{" "}
+                    🛏 {property?.noOfBedrooms} Bedrooms | 🛁 {property.noOfBathrooms}{" "}
                     Bathrooms
                   </p>
                   <div className="mt-3 flex justify-between items-center">
                     <span className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
-                      {property.type}
+                      {property?.propertyType?.name}
                     </span>
                     <span className="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full">
                       {property.service}
@@ -264,6 +209,7 @@ const PropertiesPage = () => {
           )}
         </div>
       </div>
+      <PaginationMainComponent paginate={paginate} totalPages={totalPages} currentPage={currentPage} handlePageClick={handlePageClick} />
     </div>
   );
 };

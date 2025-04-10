@@ -1,6 +1,11 @@
+import RoleRedirect from "@/components/RoleBasedComponent"
+
 const UserPage = () => {
   return (
-    <div>UserPage</div>
+    <div>
+      <div> <RoleRedirect role="USER" /></div>
+      UserPage
+    </div>
   )
 }
 

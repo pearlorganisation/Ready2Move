@@ -1,8 +1,18 @@
+"use client";
 
-const BuilderPage = () => {
+import { FC } from "react";
+import Link from "next/link";
+import RoleRedirect from "@/components/RoleBasedComponent";
+
+const BuilderPage: FC = () => {
   return (
-    <div>BuilderPage hell</div>
-  )
-}
+    <div>
+      <RoleRedirect role="BUILDER" />
+      <div className="w-full flex justify-end mr-6">
+        <Link href="/admin/builder/addproject" className="mr-6">Add a Project</Link>
+      </div>
+    </div>
+  );
+};
 
-export default BuilderPage
+export default BuilderPage;

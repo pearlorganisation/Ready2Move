@@ -6,6 +6,7 @@ import "./globals.css";
 import { ReduxProvider } from "../lib/redux/provider"
 import HeaderWrapper from "@/components/HeaderWrapper";
 import FooterWrapper from "@/components/FooterWrapper";
+import { Sidebar } from "@/components/sidebar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,6 +24,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
+
+
+
+
   return (
     <html lang="en">
       <body
@@ -30,10 +38,10 @@ export default function RootLayout({
       >
         <ReduxProvider>
          <HeaderWrapper />
-           <main>{children}</main>
+            <main>{children}</main>
           <FooterWrapper />
         </ReduxProvider>
-        
+         
       </body>
     </html>
   );
