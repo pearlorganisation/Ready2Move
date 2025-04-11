@@ -132,9 +132,6 @@ const FeaturedProjects = () => {
     <div className="mt-4">
       <div className="flex flex-row justify-between px-12">
         <div className="">
-          <h1 className="text-2xl font-mono font-semibold">
-            Featured Projects
-          </h1>
           <div className="h-1.5 w-12 bg-yellow-500 mt-1 rounded-e-md rounded-s-md"></div>
         </div>
 
