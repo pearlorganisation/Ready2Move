@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createPropertyByAdmin,
   getAllProperties,
+  getSingleProperty,
 } from "../actions/propertyAction";
 import { Paginate } from "@/lib/util/paginateInterface";
 import { getSingleProject } from "../actions/projectAction";
@@ -71,6 +72,24 @@ const createPropertySlice = createSlice({
         state.isSuccess = true;
         state.propertyData = action.payload.data;
         state.paginate = action.payload.pagination;
+      })
+
+      .addCase(getSingleProperty.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+      })
+      .addCase(getSingleProperty.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.propertyData = action.payload.data;
+      })
+      .addCase(getSingleProperty.rejected, (state) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.propertyData = [];
       });
   },
 });
