@@ -4,14 +4,17 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const createProjectsByBuilder = createAsyncThunk(
   "create/project",
-  async ({ userdata }: { userdata: ProjectFormInputs }, { rejectWithValue }) => {
+  async (
+    { userdata }: { userdata: ProjectFormInputs },
+    { rejectWithValue }
+  ) => {
     try {
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       };
-console.log("the form data before is", userdata)
+      console.log("the form data before is", userdata);
       const formData = new FormData();
 
       // ✅ Append Image Gallery
@@ -20,7 +23,6 @@ console.log("the form data before is", userdata)
           formData.append("imageGallery", file);
         });
       }
-      
 
       // ✅ Append Basic Data with Optional Chaining
       formData.append("user", userdata?.id || "");
@@ -33,25 +35,37 @@ console.log("the form data before is", userdata)
       formData.append("state", userdata?.state || "");
       formData.append("service", userdata?.service || "");
       formData.append("projectType", userdata?.projectType || "");
-      formData.append("reraNumber", userdata?.reraNumber.toString())
-      formData.append("reraPossessionDate", userdata?.reraPossessionDate)
+      formData.append("reraNumber", userdata?.reraNumber.toString());
+      formData.append("reraPossessionDate", userdata?.reraPossessionDate);
       // ✅ Append Area Range
-      if (userdata?.areaRangeMin !== undefined && userdata?.areaRangeMax !== undefined) {
+      if (
+        userdata?.areaRangeMin !== undefined &&
+        userdata?.areaRangeMax !== undefined
+      ) {
         formData.append("areaRange[min]", userdata.areaRangeMin.toString());
         formData.append("areaRange[max]", userdata.areaRangeMax.toString());
       }
 
       // ✅ Append Price Range
-      if (userdata?.priceRangeMin !== undefined && userdata?.priceRangeMax !== undefined) {
+      if (
+        userdata?.priceRangeMin !== undefined &&
+        userdata?.priceRangeMax !== undefined
+      ) {
         formData.append("priceRange[min]", userdata.priceRangeMin.toString());
         formData.append("priceRange[max]", userdata.priceRangeMax.toString());
       }
 
       // ✅ Append Other Fields
-      formData.append("pricePerSqFt", userdata?.pricePerSqFt?.toString() || "0");
- 
-      formData.append("availability", userdata?.availability || "67d90f7c24424477265974a7"); // sending temporarry
-  
+      formData.append(
+        "pricePerSqFt",
+        userdata?.pricePerSqFt?.toString() || "0"
+      );
+
+      formData.append(
+        "availability",
+        userdata?.availability || "67d90f7c24424477265974a7"
+      ); // sending temporarry
+
       formData.append("isFeatured", userdata?.isFeatured ? "true" : "false");
 
       // ✅ Append YouTube Link if Exists
@@ -59,7 +73,6 @@ console.log("the form data before is", userdata)
         formData.append("youtubeLink", userdata.youtubeLink);
       }
 
-    
       // ✅ Append Amenities (Array or Single Value)
       if (Array.isArray(userdata?.aminities)) {
         userdata.aminities.forEach((amenity) => {
@@ -68,7 +81,7 @@ console.log("the form data before is", userdata)
       } else if (userdata?.aminities) {
         formData.append("aminities", userdata.aminities);
       }
- 
+
       // ✅ Append Bank Approvals (Array or Single Value)
       if (Array.isArray(userdata?.bankOfApproval)) {
         userdata.bankOfApproval.forEach((bank) => {
@@ -77,9 +90,13 @@ console.log("the form data before is", userdata)
       } else if (userdata?.bankOfApproval) {
         formData.append("bankOfApproval", userdata.bankOfApproval);
       }
-console.log("the formdata after is", formData)
+      console.log("the formdata after is", formData);
       // ✅ Send FormData Instead of Raw Object
-      const { data } = await axiosInstance.post("/api/v1/projects", formData, config);
+      const { data } = await axiosInstance.post(
+        "/api/v1/projects",
+        formData,
+        config
+      );
       return data;
     } catch (error) {
       console.error("The error is:", error);
@@ -88,20 +105,44 @@ console.log("the formdata after is", formData)
   }
 );
 
-
 export const getAllProjects = createAsyncThunk(
-  "get/allprojects",async({page,limit}: {page: number ,limit:number}, {rejectWithValue})=>{
+  "get/allprojects",
+  async (
+    { page, limit }: { page: number; limit: number },
+    { rejectWithValue }
+  ) => {
     try {
-      const config ={
-        headers:{
-          "Content-Type":"application/json"
-        }
-      }
-      const data = await axiosInstance.get(`/api/v1/projects?page=${page}&limit=${limit}`, config)
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const data = await axiosInstance.get(
+        `/api/v1/projects?page=${page}&limit=${limit}`,
+        config
+      );
       // console.log("the data returned in the main projects page is", data)
-      return data.data
+      return data.data;
     } catch (error) {
-      return rejectWithValue(error)      
+      return rejectWithValue(error);
     }
   }
-)
+);
+
+export const getSingleProject = createAsyncThunk(
+  "get/singleproject",
+  async ({ slug }: { slug: string }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);

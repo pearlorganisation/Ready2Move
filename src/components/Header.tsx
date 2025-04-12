@@ -68,15 +68,19 @@ console.log("is logged in", isLoggedIn)
           </Link>
          { isLoggedIn ? 
          userData.role === "ADMIN" ? (
-          <div>
-            <Link href={`/admin/superadmin`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>
-            {/* <button onClick={()=> HandleLogout()}> Logout </button> */}
+          <div className="flex flex-col md:flex-row">
+              <Link href={`/admin/superadmin`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700">
+                Go to Dashboard
+              </Link>
+              <button className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" onClick={() => HandleLogout()}>
+                Logout
+              </button>
           </div>
            ) :
          (
           <div>
             <Link href={`/admin/${userData?.role.toLowerCase()}`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>
-            {/* <button onClick={()=> HandleLogout()}> Logout </button> */}
+            <button  className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" onClick={()=> HandleLogout()}> Logout </button>
           </div>
            )
            :<>          

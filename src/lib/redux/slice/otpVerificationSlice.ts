@@ -3,13 +3,15 @@ import { verifyOtp } from "../actions/otpAction"
 interface OtpState{
     isLoading: boolean,
     isSuccess: boolean,
-    isError:boolean
+    isError:boolean,
+    // isPasswordReset:boolean
 }
 
 const initialState:OtpState ={
      isLoading:false,
      isSuccess:false,
-     isError:false
+     isError:false,
+    //  isPasswordReset:false
 }
 
 
@@ -17,7 +19,11 @@ const initialState:OtpState ={
 const verificationSlice = createSlice({
 name:"otpverification",
 initialState,
-reducers:{},
+reducers:{
+    resetOtpState:(state)=>{
+        Object.assign(state, initialState)
+    }
+},
 extraReducers:(builder)=>{
     builder
     .addCase(verifyOtp.pending,state=>{
@@ -37,5 +43,5 @@ extraReducers:(builder)=>{
     })
   }
 })
-
+export const { resetOtpState } = verificationSlice.actions;
 export default verificationSlice.reducer

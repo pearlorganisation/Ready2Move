@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-interface verification {
+export interface verification {
     otp: number,
     email:string
     type:string
@@ -9,6 +9,7 @@ interface verification {
 export const verifyOtp = createAsyncThunk(
     "verify/otp",async(userData:verification,{rejectWithValue})=>{
         try {
+            console.log("the data recieved is",userData)
             const config ={
                 headers:{
                     "Content-Type":"application/json"

@@ -193,14 +193,14 @@ export const createPropertyByAdmin = createAsyncThunk(
   
 
   export const getAllProperties = createAsyncThunk(
-    "get/allproperty",async(page:{page:number},{rejectWithValue})=>{
+    "get/allproperty",async({page,limit, priceRange, bedRooms, bathRooms}:{page:number, limit:number, priceRange: number, bedRooms: number, bathRooms: number},{rejectWithValue})=>{
       try {
         const config ={
           headers:{
             "Content-Type":"application/json"
           }
         }
-        const { data } = await axiosInstance.get(`/api/v1/properties/?${page}`, config)
+        const { data } = await axiosInstance.get(`/api/v1/properties?page=${page}&limit=${limit}&priceRange=${priceRange}&bedRooms=${bedRooms}&bathRooms=${bathRooms}`, config)
         return data
       } catch (error) {
         return rejectWithValue(error)        
