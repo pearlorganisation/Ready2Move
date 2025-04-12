@@ -26,7 +26,7 @@ const handlePageClick = (page:number)=>{
 }
 
   useEffect(() => {
-    dispatch(getAllProperties({page:currentPage}))
+    dispatch(getAllProperties({page:currentPage, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
   }, [dispatch, currentPage])
 
   
