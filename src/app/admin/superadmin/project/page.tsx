@@ -6,7 +6,11 @@ import { createProjectsByBuilder } from "@/lib/redux/actions/projectAction"
 import { useEffect, useState, useRef } from "react"
 import { useForm, Controller } from "react-hook-form"
 import slugify from "slugify"
-export type ProjectFormInputs = {
+import ProjectListing from "../projectlist/page"
+import { cn } from "@/lib/util/cn"
+
+
+ export type ProjectFormInputs = {
   id: string
   user: string
   title: string
@@ -32,6 +36,45 @@ export type ProjectFormInputs = {
   isFeatured?: boolean
   youtubeLink?: string
 }
+const CustomButton = ({
+  children,
+  variant = "default",
+  size = "default",
+  className = "",
+  ...props
+}: {
+  children: React.ReactNode;
+  variant?: "default" | "outline" | "destructive";
+  size?: "default" | "sm" | "lg";
+  className?: string;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const variantClasses = {
+    default: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
+    outline:
+      "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500",
+    destructive: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
+  };
+
+  const sizeClasses = {
+    default: "px-4 py-2 text-sm",
+    sm: "px-2 py-1 text-xs",
+    lg: "px-6 py-3 text-base",
+  };
+
+  return (
+    <button
+      className={cn(
+        "font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center transition-colors",
+        variantClasses[variant],
+        sizeClasses[size],
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};
 
 const CreateProject = () => {
   const dispatch = useAppDispatch()
@@ -138,25 +181,25 @@ const handleOpenAddProject =()=>{
   ]
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
-    }
-  }
+    if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
+    console.log(currentStep,"handlenext")
+  };
 
+  console.log(currentStep,"currentstep")
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-    }
-  }
+    if (currentStep > 0) setCurrentStep(currentStep - 1);
+    console.log(currentStep,"handleback")
+  };
+
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex ">
       {/* <Sidebar /> */}
-      <div className="flex-1 p-6 overflow-y-auto">
-       <div className="flex w-full">
+      <div className="flex flex-col p-4">
+       <div className="flex  flex-col w-full">
       {/* Sidebar */}
           <div className="w-full  px-4 py-4">
-              <div className="flex justify-end">
+              <div className="flex ">
                 <button
                   className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition"
                   onClick={handleOpenAddProject}
@@ -165,12 +208,25 @@ const handleOpenAddProject =()=>{
                 </button>
               </div>
           </div>
-      {/** for listing the page  */}
-      {/** to open for adding th project */}
+          {/* Modal for adding project */}
+ 
         { openAddProjectModal &&
             <div  className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
-                <div className="w-64 bg-white border-r border-slate-200 p-4">
-                        <div className="flex justify-end"><button className="bg-red rounded-sm" onClick={()=>setOpenAddProjectModal(false)}>Cancel</button></div>
+            <div className="w-full flex flex-row px-28">
+            <div className="w-64 bg-white border border-slate-200 rounded-xl shadow-lg p-4">
+  {/* Header with Cancel Button */}
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
+    <button
+      onClick={() => setOpenAddProjectModal(false)}
+      className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
+    >
+      Cancel
+    </button>
+  </div>
+
+
+
 
                   <div className="space-y-6">
                     {steps.map((step, index) => (
@@ -195,7 +251,7 @@ const handleOpenAddProject =()=>{
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 p-6  max-h-[90vh] overflow-y-auto">
+                <div className="flex-1  max-h-[90vh]">
                   <form onSubmit={handleSubmit(submitForm)} className="max-w-4xl mx-auto">
                     <div className="bg-white rounded-lg shadow-sm border border-slate-200">
                       {/* Step Content */}
@@ -472,24 +528,7 @@ const handleOpenAddProject =()=>{
                                 )}
                               </div>
 
-                              {/* <div>
-                                <label htmlFor="availability" className="block text-sm font-medium text-gray-700 mb-1">
-                                  Availability
-                                </label>
-                                <select
-                                  id="availability"
-                                  {...register("availability", { required: "Availability is required" })}
-                                  className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                >
-                                  <option value="">Select Availability</option>
-                                  <option value="Ready2move">Ready to Move</option>
-                                  <option value="Under Construction">Under Construction</option>
-                                  <option value="More Than 10 Years">More Than 10 Years</option>
-                                </select>
-                                {errors.availability && (
-                                  <p className="text-red-500 text-xs mt-1">{errors.availability.message}</p>
-                                )}
-                              </div> */}
+                            
                             </div>
                           </div>
                         )}
@@ -566,26 +605,27 @@ const handleOpenAddProject =()=>{
                           </div>
                         )}
 
+
                         {currentStep === 4 && (
-                          <div className="space-y-6">
+                          <div className=" w-full">
                             <div>
                               <h2 className="text-2xl font-semibold text-slate-800">Amenities Details</h2>
                               <p className="text-slate-500 text-sm">Add amenities / unique features</p>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className=" flex flex-row ">
                               <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Amenities</label>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                <div className="grid grid-cols-3 md:grid-cols-3 gap-2">
                                   {featureData
                                     ?.filter((item) => item?.type == "AMENITIES")
                                     ?.map((category) => (
-                                      <fieldset key={category.type} className="border border-gray-300 rounded-md p-4">
+                                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
                                         <legend className="px-2 font-medium text-gray-700">
                                           {category.type.replace("_", " ")}
                                         </legend>
                                         {category?.features?.map((feature) => (
-                                          <div key={feature._id} className="flex items-center space-x-2 py-1">
+                                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
                                             <input
                                               type="checkbox"
                                               id={`amenity-${feature._id}`}
@@ -610,14 +650,14 @@ const handleOpenAddProject =()=>{
                                   {featureData
                                     ?.filter((item) => item?.type == "AVAILABILITY")
                                     ?.map((category) => (
-                                      <fieldset key={category.type} className="border border-gray-300 rounded-md p-4">
+                                      <fieldset key={category.type} className="border border-gray-300  w-48 rounded-md p-4">
                                         <legend className="px-2 font-medium text-gray-700">
                                           {category.type.replace("_", " ")}
                                         </legend>
                                         {category?.features?.map((feature) => (
                                           <div key={feature._id} className="flex items-center space-x-2 py-1">
                                             <input
-                                              type="checkbox"
+                                              type="radio"
                                               id={`amenity-${feature._id}`}
                                               {...register("availability")}
                                               value={feature._id}
@@ -635,7 +675,7 @@ const handleOpenAddProject =()=>{
                               
                               
                               <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Bank Approvals</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2 line-clamp-1">Bank Approvals</label>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                   {featureData
                                     ?.filter((item) => item?.type === "BANKS")
@@ -643,7 +683,7 @@ const handleOpenAddProject =()=>{
                                       item?.features?.map((bank) => (
                                         <div key={bank?._id} className="flex items-center space-x-2 py-1">
                                           <input
-                                            type="checkbox"
+                                            type="radio"
                                             id={`bank-${bank?._id}`}
                                             {...register("bankOfApproval")}
                                             value={bank?._id}
@@ -716,10 +756,12 @@ const handleOpenAddProject =()=>{
                             </div>
                           </div>
                         )}
+
+
                       </div>
 
                       {/* Navigation */}
-                      <div className="flex justify-between items-center p-6 border-t border-slate-200">
+                      {/* <div className="flex justify-between items-center p-6 border-t border-slate-200">
                         <button
                           type="button"
                           onClick={handleBack}
@@ -749,14 +791,37 @@ const handleOpenAddProject =()=>{
                             Next
                           </button>
                         )}
-                      </div>
+                      </div> */}
+
+                      
+      <div className="flex justify-between items-center p-6 border-t border-slate-200">
+                      <CustomButton
+                        type="button"
+                        variant="outline"
+                        onClick={handleBack}
+                        disabled={currentStep === 0}
+                      >
+                        Back
+                      </CustomButton>
+
+                      {currentStep === steps.length - 1 ? (
+                        <CustomButton type="submit">Publish</CustomButton>
+                      ) : (
+                        <CustomButton type="button" onClick={handleNext}>
+                          Next
+                        </CustomButton>
+                      )}
+                    </div>
                     </div>
                   </form>
                 </div>
             </div>
+            </div>
         }
        </div>
-      </div>
+   
+      <ProjectListing />   </div>
+
     </div>
     
   )
