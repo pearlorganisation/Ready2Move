@@ -101,7 +101,7 @@ const PropertiesPage = () => {
   });
 
   useEffect(()=>{
-     dispatch(getAllProperties())
+     dispatch(getAllProperties({page:1}))
   },[])
   return (
     <div className="p-6 max-w-7xl mx-auto">

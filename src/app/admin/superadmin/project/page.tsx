@@ -209,14 +209,14 @@ const handleOpenAddProject =()=>{
               </div>
           </div>
           {/* Modal for adding project */}
-      {/** to open for adding th project */}
+ 
         { openAddProjectModal &&
             <div  className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
             <div className="w-full flex flex-row px-28">
             <div className="w-64 bg-white border border-slate-200 rounded-xl shadow-lg p-4">
   {/* Header with Cancel Button */}
   <div className="flex justify-between items-center mb-4">
-    <h2 className="text-lg font-semibold text-slate-700">Add Project</h2>
+    <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
     <button
       onClick={() => setOpenAddProjectModal(false)}
       className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
@@ -528,24 +528,7 @@ const handleOpenAddProject =()=>{
                                 )}
                               </div>
 
-                              {/* <div>
-                                <label htmlFor="availability" className="block text-sm font-medium text-gray-700 mb-1">
-                                  Availability
-                                </label>
-                                <select
-                                  id="availability"
-                                  {...register("availability", { required: "Availability is required" })}
-                                  className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                >
-                                  <option value="">Select Availability</option>
-                                  <option value="Ready2move">Ready to Move</option>
-                                  <option value="Under Construction">Under Construction</option>
-                                  <option value="More Than 10 Years">More Than 10 Years</option>
-                                </select>
-                                {errors.availability && (
-                                  <p className="text-red-500 text-xs mt-1">{errors.availability.message}</p>
-                                )}
-                              </div> */}
+                            
                             </div>
                           </div>
                         )}

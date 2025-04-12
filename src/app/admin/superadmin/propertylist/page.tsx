@@ -28,6 +28,8 @@ const handlePageClick = (page:number)=>{
   useEffect(() => {
     dispatch(getAllProperties({page:currentPage}))
   }, [dispatch, currentPage])
+
+  
   return (
     <div className="p-4 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">All Property</h2>
@@ -37,7 +39,7 @@ const handlePageClick = (page:number)=>{
             <th className="p-3 border">S No.</th>
             <th className="p-3 border">Title</th>
             <th className="p-3 border">Image</th>
-            <th className="p-3 border">Project Type</th>        
+            <th className="p-3 border text-nowrap">Property Type</th>        
             <th className="p-3 border">Locality</th>
             <th className="p-3 border">RERA Number</th>
             <th className="p-3 border">Services</th>
@@ -52,10 +54,10 @@ const handlePageClick = (page:number)=>{
               <tr key={project?._id} className="border-t">
                 <td className="p-3 border">{index + 1}</td>
                 <td className="p-3 border">{project?.title}</td>
-                <td>{project.imageGallery.slice(0,1).map((img:any)=>{
+                <td className="p-3 border">{project.imageGallery.slice(0,1).map((img:any)=>{
                   return <img key={img} src={img.secure_url} alt="image" className="w-20 h-20 rounded-md" />
                 })}</td> 
-                <td className="p-3 border">{project?.projectType}</td>
+                <td className="p-3 border">{project?.propertyType?.name}</td>
                 <td className="p-3 border">{project.city} {project.locality} {project.state}</td>
                 <td className="p-3 border">{project?.reraNumber}</td>         
                 <td className="p-3 border">{project?.service}</td>  
@@ -69,7 +71,7 @@ const handlePageClick = (page:number)=>{
                   )}
                 </td>
               
-                <td className="p-3 border flex gap-2">
+                <td className="p-3 flex justify-center items-center mt-6 gap-4">
                   <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500">
                     <FaEdit />
                   </button>

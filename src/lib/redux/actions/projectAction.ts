@@ -90,14 +90,14 @@ console.log("the formdata after is", formData)
 
 
 export const getAllProjects = createAsyncThunk(
-  "get/allprojects",async({page}: {page: number}, {rejectWithValue})=>{
+  "get/allprojects",async({page,limit}: {page: number ,limit:number}, {rejectWithValue})=>{
     try {
       const config ={
         headers:{
           "Content-Type":"application/json"
         }
       }
-      const data = await axiosInstance.get(`/api/v1/projects?page=${page}`, config)
+      const data = await axiosInstance.get(`/api/v1/projects?page=${page}&limit=${limit}`, config)
       // console.log("the data returned in the main projects page is", data)
       return data.data
     } catch (error) {

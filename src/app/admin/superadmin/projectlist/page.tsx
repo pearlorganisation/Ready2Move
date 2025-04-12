@@ -8,7 +8,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
-import { Delete } from "lucide-react";
+
 
 const ProjectListing = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -17,8 +17,7 @@ const ProjectListing = () => {
   console.log("projectData", projectData)
 const dispatch = useAppDispatch();
 const totalPages = Math.ceil(paginate?.total/paginate?.limit)
-const limit= paginate?.limit
-console.log(paginate ,"limit")
+
  
 const handlePageClick = (page:number)=>{
   if(page >0 && page < totalPages){
@@ -27,7 +26,7 @@ const handlePageClick = (page:number)=>{
 }
 
   useEffect(() => {
-    dispatch(getAllProjects({page: currentPage}))
+    dispatch(getAllProjects({page: currentPage,limit:10}))
   }, [dispatch, currentPage])
   return (
     <div className="p-4 overflow-x-auto">
@@ -53,11 +52,11 @@ const handlePageClick = (page:number)=>{
               <tr key={project?._id} className="border-t">
                 <td className="p-3 border">{index + 1}</td>
                 <td className="p-3 border">{project?.title}</td>
-                <td>{project.imageGallery.slice(0,1).map((img:any)=>{
-                  return <img key={img} src={img.secure_url} alt="image" className="w-20 h-20 rounded-md" />
+                <td className="p-3 border">{project?.imageGallery?.slice(0,1).map((img:any,i:any)=>{
+                  return <img key={i} src={img?.secure_url} alt="image" className="w-20 h-20 rounded-md" />
                 })}</td> 
                 <td className="p-3 border">{project?.projectType}</td>
-                <td className="p-3 border">{project.city} {project.locality} {project.state}</td>
+                <td className="p-3 border">{project?.city} {project?.locality} {project?.state}</td>
                 <td className="p-3 border">{project?.reraNumber}</td>         
                 <td className="p-3 border">{project?.service}</td>  
                   
@@ -70,7 +69,8 @@ const handlePageClick = (page:number)=>{
                   )}
                 </td>
               
-                <td className="p-3 border flex gap-2">
+               
+                <td className="p-3 flex justify-center items-center mt-6 gap-4">
                   <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500">
                     <FaEdit />
                   </button>
