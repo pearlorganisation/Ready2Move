@@ -92,7 +92,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
         >
           {propertyData?.data?.imageGallery?.slice(0, 4).map((image, index) => (
             <SwiperSlide key={index}>
-              <div className="relative h-[300px] md:h-[400px]">
+              <div className="relative h-[300px] md:h-[500px]">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
                 <Image
                   src={image.secure_url}
