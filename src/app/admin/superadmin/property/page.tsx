@@ -13,7 +13,7 @@ import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { Sidebar } from "@/components/sidebar";
 
-
+import Propertylisting from "../propertylist/page"
 type FormData = {
   title: string;
   slug: string;
@@ -82,6 +82,11 @@ type FormData = {
   youtubeEmbedLink: string;
   isFeatured: boolean;
 };
+type PropertyFormValues = Pick<
+  FormData,
+  "noOfBedrooms" | "noOfBalconies" | "noOfBathrooms"
+>;
+
 
 // Custom Input component
 const CustomInput = ({
@@ -460,6 +465,10 @@ export default function PropertyForm() {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const dispatch = useAppDispatch()
+  const[OpenPropertyModal,setPropertyModal]=useState<boolean>(false)
+  const handleModalOpen=()=>{
+    setPropertyModal(!OpenPropertyModal)
+  }
 
   const {
     register,
@@ -608,14 +617,31 @@ export default function PropertyForm() {
   },[])
 
   return (
-    <div className="flex min-h-screen">
-       {/* <Sidebar /> */}
-      <div className="flex-1 p-6 overflow-y-auto">
-
-        <div className="flex min-h-screen bg-slate-50">
+    
+    <div className="flex flex-col justify-end mt-6 px-6">
       {/* Sidebar */}
-              <div className="w-64 bg-white border-r border-slate-200 p-4 hidden md:block">
-                <div className="space-y-6">
+      <div></div>
+      <div className="flex  justify-end"><button  onClick={handleModalOpen} className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
+      >Create Property</button></div>
+
+      
+
+<div>
+  <Propertylisting />
+</div>
+        <div className="flex max-w-full">
+          {OpenPropertyModal && <div className="flex flex-row w-full px-20 inset-0 fixed  bg-black bg-opacity-50  z-50 "> 
+            <div className="w-64 bg-white border-r p-4 hidden md:block mt-6 rounded-md mb-4">
+            <div className="flex justify-between items-center mb-4">
+    <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
+    <button
+      onClick={() =>setPropertyModal(false)}
+      className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
+    >
+      Cancel
+    </button>
+  </div>
+                <div className="space-y-2 rounded-md  px-6 py-6">
                   {steps.map((step, index) => (
                     <div
                       key={step.id}
@@ -642,9 +668,8 @@ export default function PropertyForm() {
                   ))}
                 </div>
               </div>
-
-              {/* Mobile Steps Indicator */}
-              <div className="md:hidden p-4 bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-10">
+                 {/* Mobile Steps Indicator */}
+                 <div className="md:hidden p-4 bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-10">
                 <div className="flex justify-between items-center">
                   <h2 className="text-lg font-semibold">{steps[currentStep].title}</h2>
                   <div className="text-sm text-slate-500">
@@ -653,13 +678,13 @@ export default function PropertyForm() {
                 </div>
               </div>
 
-              {/* Main Content */}
-              <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6">
-                <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto">
-                  <div className="bg-white rounded-lg shadow">
+   {/* Main Content */}
+   <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6 w-full">
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full mx-auto">
+                  <div className="bg-white rounded-lg shadow w-full">
                     {/* Step Content */}
                     <div className="p-6">
-                      {currentStep === 0 && (
+                      {/* {currentStep === 0 && (
                         <div className="space-y-6">
                           <div>
                             <h2 className="text-2xl font-semibold text-slate-800">
@@ -802,7 +827,130 @@ export default function PropertyForm() {
                             </div>
                           </div>
                         </div>
-                      )}
+                      )} */}
+                      {currentStep === 0 && (
+  <div className="space-y-8">
+    {/* Section Heading */}
+    <div className="border-b pb-4">
+      <h2 className="text-2xl font-bold text-slate-800">Basic Details</h2>
+      <p className="text-sm text-slate-500">Add basic information about your property</p>
+    </div>
+
+    {/* Title & Slug */}
+    <div className="grid gap-4 md:grid-cols-2">
+      <CustomInput
+        id="title"
+        label="Property Title"
+        placeholder="e.g. 2 BHK Apartment for Sale in Rustomjee Global City"
+        error={errors.title?.message}
+        {...register("title", { required: "Title is required" })}
+        onChange={(e) => handleTitleChange(e.target.value)}
+      />
+
+      <CustomInput
+        id="slug"
+        label="Slug"
+        placeholder="slug"
+        className="bg-slate-50"
+        {...register("slug")}
+        readOnly
+      />
+    </div>
+    <div className="grid gap-4 md:grid-cols-2">
+    {/* Subtitle */}
+    <CustomInput
+      id="subTitle"
+      label="Property Subtitle (optional)"
+      placeholder="e.g. Kandivali West, Mumbai, Mahavir Nagar"
+      {...register("subTitle")}
+    />
+
+    {/* Description */}
+    <CustomTextarea
+      id="description"
+      label="Property Description"
+      placeholder="Describe your property in detail"
+      className="min-h-[100px]"
+      error={errors.description?.message}
+      {...register("description", { required: "Description is required" })}
+    />
+    </div>
+
+    {/* You’re looking to: SELL / RENT */}
+    <div className="grid gap-4 md:grid-cols-2">
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">You're looking to</label>
+      <Controller
+        name="service"
+        control={control}
+        render={({ field }) => (
+          <div className="flex gap-3">
+            {["SELL", "RENT"].map((option) => (
+              <CustomButton
+                key={option}
+                type="button"
+                variant={field.value === option ? "default" : "outline"}
+                onClick={() => field.onChange(option)}
+              >
+                {option}
+              </CustomButton>
+            ))}
+          </div>
+        )}
+      />
+    </div>
+
+    {/* Property Type: RESIDENTIAL / COMMERCIAL */}
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">Property</label>
+      <Controller
+        name="property"
+        control={control}
+        render={({ field }) => (
+          <div className="flex gap-3">
+            {["RESIDENTIAL", "COMMERCIAL"].map((option) => (
+              <CustomButton
+                key={option}
+                type="button"
+                variant={field.value === option ? "default" : "outline"}
+                onClick={() => field.onChange(option)}
+              >
+                {option}
+              </CustomButton>
+            ))}
+          </div>
+        )}
+      />
+    </div></div>
+
+    {/* Property Sub-Type (from featureData) */}
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">Property Type</label>
+      <Controller
+        name="propertyType"
+        control={control}
+        render={({ field }) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {featureData
+              .filter((item) => item.type === "PROPERTY_TYPE")
+              .flatMap((category) => category.features)
+              .map((type) => (
+                <CustomButton
+                  key={type._id}
+                  type="button"
+                  variant={field.value === type._id ? "default" : "outline"}
+                  onClick={() => field.onChange(type._id)}
+                >
+                  {type.name}
+                </CustomButton>
+              ))}
+          </div>
+        )}
+      />
+    </div>
+  </div>
+)}
+
 
                       {currentStep === 1 && (
                         <div className="space-y-6">
@@ -858,320 +1006,216 @@ export default function PropertyForm() {
                           </div>
                         </div>
                       )}
+                      {/* Property Details */}
+{currentStep === 2 && (
+  <div className="space-y-8">
+    {/* Heading */}
+    <div>
+      <h2 className="text-2xl font-semibold text-slate-800">Property Details</h2>
+      <p className="text-slate-500 text-sm">Tell us about your property</p>
+    </div>
 
-                      {currentStep === 2 && (
-                        <div className="space-y-6">
-                          <div>
-                            <h2 className="text-2xl font-semibold text-slate-800">
-                              Property Details
-                            </h2>
-                            <p className="text-slate-500 text-sm">
-                              Tell us about your property
-                            </p>
-                          </div>
+    {/* Area Details */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {[
+        { label: "Carpet Area", index: 0, placeholder: "e.g. 1000" },
+        { label: "Buildup Area", index: 1, placeholder: "Buildup area" },
+        { label: "Super Area", index: 2, placeholder: "Super area" },
+      ].map(({ label, index, placeholder }) => (
+        <div className="space-y-2" key={label}>
+          <label className="block text-sm font-medium text-gray-700">{label}</label>
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder={placeholder}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              {...register(`area.${index}.area`, { valueAsNumber: true })}
+            />
+            <Controller
+              name={`area.${index}.areaMeasurement`}
+              control={control}
+              render={({ field }) => (
+                <select
+                  className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  value={field.value}
+                  onChange={field.onChange}
+                >
+                  <option value="SQ_FT">Sq. Ft</option>
+                  <option value="SQ_M">Sq. Mt</option>
+                </select>
+              )}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
 
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Carpet Area
-                              </label>
-                              <div className="flex gap-2">
-                                <input
-                                  type="number"
-                                  placeholder="e.g. 1000"
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                  {...register("area.0.area", { valueAsNumber: true })}
-                                />
-                                <Controller
-                                  name="area.0.areaMeasurement"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <select
-                                      className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                      value={field.value}
-                                      onChange={field.onChange}
-                                    >
-                                      <option value="SQ_FT">Sq. Ft</option>
-                                      <option value="SQ_M">Sq. Mt</option>
-                                    </select>
-                                  )}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Buildup Area
-                              </label>
-                              <div className="flex gap-2">
-                                <input
-                                  type="number"
-                                  placeholder="Buildup area"
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                  {...register("area.1.area", { valueAsNumber: true })}
-                                />
-                                <Controller
-                                  name="area.1.areaMeasurement"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <select
-                                      className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                      value={field.value}
-                                      onChange={field.onChange}
-                                    >
-                                      <option value="SQ_FT">Sq. Ft</option>
-                                      <option value="SQ_M">Sq. Mt</option>
-                                    </select>
-                                  )}
-                                />
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Super Area
-                              </label>
-                              <div className="flex gap-2">
-                                <input
-                                  type="number"
-                                  placeholder="Super area"
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                  {...register("area.2.area", { valueAsNumber: true })}
-                                />
-                                <Controller
-                                  name="area.2.areaMeasurement"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <select
-                                      className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                      value={field.value}
-                                      onChange={field.onChange}
-                                    >
-                                      <option value="SQ_FT">Sq. Ft</option>
-                                      <option value="SQ_M">Sq. Mt</option>
-                                    </select>
-                                  )}
-                                />
-                              </div>
-                            </div>
-
-                            <CustomInput
-                              id="reraNumber"
-                              label="RERA Number"
-                              placeholder="Enter RERA Number"
-                              error={errors.reraNumber?.message}
-                              {...register("reraNumber", {
-                                required: "RERA Number is required",
-                              })}
-                            />
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                RERA Possession Date
-                              </label>
-                              <Controller
-                                name="reraPossessionDate"
-                                control={control}
-                                render={({ field }) => (
-                                  <CustomPopover
-                                    isOpen={calendarOpen}
-                                    setIsOpen={setCalendarOpen}
-                                    trigger={
-                                      <button
-                                        type="button"
-                                        className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                      >
-                                        {field.value ? (
-                                          format(field.value, "PPP")
-                                        ) : (
-                                          <span className="text-gray-400">
-                                            Pick a date
-                                          </span>
-                                        )}
-                                        <CalendarIcon className="h-4 w-4 text-gray-400" />
-                                      </button>
-                                    }
-                                    content={
-                                      <div className="p-2">
-                                        <CustomCalendar
-                                          selected={field.value || undefined}
-                                          onSelect={(date) => {
-                                            field.onChange(date);
-                                            setCalendarOpen(false);
-                                          }}
-                                        />
-                                      </div>
-                                    }
-                                  />
-                                )}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                No. of Bedrooms
-                              </label>
-                              <div className="flex flex-wrap gap-2">
-                                {[0, 1, 2, 3].map((num) => (
-                                  <Controller
-                                    key={num}
-                                    name="noOfBedrooms"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === num ? "default" : "outline"
-                                        }
-                                        onClick={() => field.onChange(num)}
-                                      >
-                                        {num}
-                                      </CustomButton>
-                                    )}
-                                  />
-                                ))}
-                                <input
-                                  type="number"
-                                  placeholder="you can enter"
-                                  className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                  value={selectedBedrooms > 3 ? selectedBedrooms : ""}
-                                  onChange={(e) =>
-                                    setValue(
-                                      "noOfBedrooms",
-                                      Number.parseInt(e.target.value) || 0
-                                    )
-                                  }
-                                />
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                No. of Balconies
-                              </label>
-                              <div className="flex flex-wrap gap-2">
-                                {[0, 1, 2, 3].map((num) => (
-                                  <Controller
-                                    key={num}
-                                    name="noOfBalconies"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === num ? "default" : "outline"
-                                        }
-                                        onClick={() => field.onChange(num)}
-                                      >
-                                        {num}
-                                      </CustomButton>
-                                    )}
-                                  />
-                                ))}
-                          <input
-          type="number"
-          placeholder="you can enter"
-          className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          value={selectedBalconies ? selectedBalconies : ""}
-          onChange={(e) => setValue("noOfBalconies", parseInt(e.target.value))}
-          onWheel={(e) => e.preventDefault()} // Prevent scroll from changing the value
+    {/* RERA Fields */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <CustomInput
+        id="reraNumber"
+        label="RERA Number"
+        placeholder="Enter RERA Number"
+        error={errors.reraNumber?.message}
+        {...register("reraNumber", {
+          required: "RERA Number is required",
+        })}
+      />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
+          RERA Possession Date
+        </label>
+        <Controller
+          name="reraPossessionDate"
+          control={control}
+          render={({ field }) => (
+            <CustomPopover
+              isOpen={calendarOpen}
+              setIsOpen={setCalendarOpen}
+              trigger={
+                <button
+                  type="button"
+                  className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {field.value ? (
+                    format(field.value, "PPP")
+                  ) : (
+                    <span className="text-gray-400">Pick a date</span>
+                  )}
+                  <CalendarIcon className="h-4 w-4 text-gray-400" />
+                </button>
+              }
+              content={
+                <div className="p-2">
+                  <CustomCalendar
+                    selected={field.value || undefined}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      setCalendarOpen(false);
+                    }}
+                  />
+                </div>
+              }
+            />
+          )}
         />
+      </div>
+    </div>
 
-                            
-                              </div>
-                            </div>
+    {/* Bedroom, Balcony, Bathroom Counts */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  {[
+    {
+      label: "No. of Bedrooms",
+      name: "noOfBedrooms",
+      selectedValue: selectedBedrooms,
+      setValueFn: setValue,
+    },
+    {
+      label: "No. of Balconies",
+      name: "noOfBalconies",
+      selectedValue: selectedBalconies,
+      setValueFn: setValue,
+    },
+    {
+      label: "No. of Bathrooms",
+      name: "noOfBathrooms",
+      selectedValue: selectedBathroom,
+      setValueFn: setValue,
+    },
+  ].map(({ label, name, selectedValue, setValueFn }) => (
+    <div className="space-y-2" key={name}>
+      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <div className="flex flex-wrap gap-2 items-center">
+        {[0, 1, 2, 3].map((num) => (
+          <Controller
+            key={num}
+            name={name as keyof PropertyFormValues}
+            control={control}
+            render={({ field }) => (
+              <button
+                type="button"
+                className={`px-4 py-2 rounded-md border text-sm font-medium shadow-sm transition-all duration-150 ${
+                  field.value === num
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                }`}
+                onClick={() => field.onChange(num)}
+              >
+                {num}
+              </button>
+            )}
+          />
+        ))}
+        <input
+          type="number"
+          min={0}
+          placeholder="Custom"
+          className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          value={selectedValue > 3 ? selectedValue : ""}
+          onChange={(e) =>
+            setValueFn(name as keyof PropertyFormValues, parseInt(e.target.value) || 0)
+          }
+          onWheel={(e) => e.preventDefault()}
+        />
+      </div>
+    </div>
+  ))}
+</div>
 
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                No. of Bathrooms
-                              </label>
-                              <div className="flex flex-wrap gap-2">
-                                {[0, 1, 2, 3].map((num) => (
-                                  <Controller
-                                    key={num}
-                                    name="noOfBathrooms"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === num ? "default" : "outline"
-                                        }
-                                        onClick={() => field.onChange(num)}
-                                      >
-                                        {num}
-                                      </CustomButton>
-                                    )}
-                                  />
-                                ))}
-                                  <input 
-                                      placeholder="you can enter"
-                                  className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                  
-                                  type="number" value={selectedBathroom>3? selectedBathroom:""} onChange={(e)=>{
-                                    setValue("noOfBathrooms",parseInt(e.target.value))
-                                  }} />
-                              </div>
-                            </div>
+    {/* Parking */}
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">Parking</label>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        {featureData
+          ?.filter((item) => item.type === "PARKING")
+          .flatMap((category) => category.features)
+          .map((type) => (
+            <Controller
+              key={type._id}
+              name="parking"
+              control={control}
+              render={({ field }) => (
+                <CustomButton
+                  type="button"
+                  variant={field.value === type._id ? "default" : "outline"}
+                  onClick={() => field.onChange(type._id)}
+                >
+                  {type.name}
+                </CustomButton>
+              )}
+            />
+          ))}
+      </div>
+    </div>
 
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Parking
-                              </label>
-                              <div className="grid grid-cols-2 gap-2">
-                                {featureData?.filter((item)=>item.type==="PARKING").flatMap((category)=>category.features).map((type) => (
-                                  <Controller
-                                    key={type._id}
-                                    name="parking"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === type._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() => field.onChange(type._id)}
-                                      >
-                                        {type.name}
-                                      </CustomButton>
-                                    )}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Furnishing
-                              </label>
-                              <div className="flex flex-wrap gap-2">
-                                {featureData.filter((item)=>item.type==="FURNISHING").flatMap((category)=>category.features).map((type) => (
-                                  <Controller
-                                    key={type._id}
-                                    name="furnishing"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === type._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() => field.onChange(type._id)}
-                                      >
-                                        {type.name}
-                                      </CustomButton>
-                                    )}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+    {/* Furnishing */}
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">Furnishing</label>
+      <div className="flex flex-wrap gap-2">
+        {featureData
+          .filter((item) => item.type === "FURNISHING")
+          .flatMap((category) => category.features)
+          .map((type) => (
+            <Controller
+              key={type._id}
+              name="furnishing"
+              control={control}
+              render={({ field }) => (
+                <CustomButton
+                  type="button"
+                  variant={field.value === type._id ? "default" : "outline"}
+                  onClick={() => field.onChange(type._id)}
+                >
+                  {type.name}
+                </CustomButton>
+              )}
+            />
+          ))}
+      </div>
+    </div>
+  </div>
+)}
 
                       {currentStep === 3 && (
                         <div className="space-y-6">
@@ -1786,9 +1830,14 @@ export default function PropertyForm() {
                   </div>
                 </form>
               </div>
+              </div>
+}
+    
+           
+           
         </div>
         </div>
-    </div>
+    
    
   );
 }

@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { loginUser } from "@/lib/redux/actions/userAction";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -109,12 +110,12 @@ const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
 
             {/* Forgot Password Link */}
             <div className="text-right">
-              <a
-                href="/forgot-password"
+              <Link
+                href="/forgotpassword"
                 className="text-sm text-blue-600 hover:underline"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             {/* Login Button */}
@@ -130,6 +131,7 @@ const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
               Register
             </a>
           </p>
+
         </div>
       </div>
     </div>

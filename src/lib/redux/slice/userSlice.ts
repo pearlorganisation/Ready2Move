@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { loginUser } from "../actions/userAction"
+import { fetchCurrentUser, loginUser } from "../actions/userAction"
+
+interface UserUpdated{
+    
+}
 
 interface Login {
     isLoading: boolean,
@@ -84,6 +88,9 @@ const logInUserSlice = createSlice({
             state.isLoggedIn= true
             state.userData = action.payload.user
         })
+        // .addCase(fetchCurrentUser.pending,state=>{
+            
+        // })
     }
 })
 

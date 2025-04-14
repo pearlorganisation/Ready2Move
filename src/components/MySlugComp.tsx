@@ -16,11 +16,13 @@ import { createLeads } from "@/lib/redux/actions/leadsAction";
 
 const MySlugComp = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
+  
   useEffect(() => {
     dispatch(getSingleProject({ slug: slug }));
   }, [slug]);
 
-  const { projectData } = useAppSelector((state) => state.projects);
+  console.log("the slug is", slug)
+  const { singleProjectData } = useAppSelector((state) => state.projects);
 
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,10 +55,10 @@ const MySlugComp = ({ slug }: { slug: string }) => {
         message: formData.message,
       };
 
-      if (projectData?.data?.projectType) {
-        payload.project = projectData?.data._id;
+      if (singleProjectData?.projectType) {
+        payload.project = singleProjectData?._id;
       } else {
-        payload.property = projectData?.data?._id;
+        payload.property = singleProjectData?._id;
       }
 
       await dispatch(createLeads(payload)).unwrap();
@@ -76,7 +78,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
   };
   return (
     <div className="container mx-auto py-12 px-4">
-      <Link href="/projects" className="group">
+       <Link href="/projects" className="group">
         <button className="mb-6 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4 transition-colors" />
           Back to Projects
@@ -89,7 +91,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
           navigation
           className="rounded-lg overflow-hidden mb-8"
         >
-          {projectData?.data?.imageGallery?.slice(0, 4).map((image, index) => (
+          {singleProjectData?.imageGallery?.slice(0, 4).map((image, index) => (
             <SwiperSlide key={index}>
               <div className="relative h-[300px] md:h-[400px]">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
@@ -102,31 +104,31 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                   priority={index === 0}
                 />
 
-                {projectData?.data?.isFeatured && (
+                {singleProjectData?.isFeatured && (
                   <div className="absolute top-0 left-0 px-2 py-6 md:px-2 md:py-2 z-20 text-white">
                     <h1 className="text-sm md:text-sm text-white font-bold bg-blue-700 rounded-md px-2 py-1">
-                      {projectData?.data?.isFeatured ? "Featured" : ""}
+                      {singleProjectData?.isFeatured ? "Featured" : ""}
                     </h1>
                   </div>
                 )}
 
                 <div className="absolute bottom-0 left-0 p-6 md:p-10 z-20 text-white">
                   <h1 className="text-3xl md:text-4xl font-bold">
-                    {projectData?.data?.title}
+                    {singleProjectData?.title}
                   </h1>
                   <p className="text-lg md:text-xl mt-2">
-                    by {projectData?.data?.subTitle}
+                    by {singleProjectData?.subTitle}
                   </p>
                 </div>
 
                 <div className="absolute bottom-0 right-0 p-6 md:p-10 z-20 text-white text-right">
                   <p className="text-xl md:text-2xl font-bold">
-                    ₹{projectData?.data?.priceRange?.min} -{" "}
-                    {projectData?.data?.priceRange?.max}
+                    ₹{singleProjectData?.priceRange?.min} -{" "}
+                    {singleProjectData?.priceRange?.max}
                   </p>
                   <p className="text-sm md:text-base mt-1">
-                    {projectData?.data?.areaRange?.min} sq.ft -{" "}
-                    {projectData?.data?.areaRange?.max} sq.ft
+                    {singleProjectData?.areaRange?.min} sq.ft -{" "}
+                    {singleProjectData?.areaRange?.max} sq.ft
                   </p>
                 </div>
               </div>
@@ -138,7 +140,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
           <h2 className="text-xl font-semibold mb-4">Description</h2>
           <hr className="mb-6" />
 
-          <p className="text-gray-700">{projectData?.data?.description}</p>
+          <p className="text-gray-700">{singleProjectData?.description}</p>
         </div>
 
         <div className="container mx-auto px-4 py-8">
@@ -169,7 +171,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {projectData?.data?.availability?.name}
+                      {singleProjectData?.availability?.name}
                     </p>
                     <p className="text-sm text-gray-500">Availability</p>
                   </div>
@@ -191,7 +193,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {projectData?.data?.pricePerSqFt}
+                      {singleProjectData?.pricePerSqFt}
                     </p>
                     <p className="text-sm text-gray-500">Price Per Sq Ft</p>
                   </div>
@@ -213,8 +215,8 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {projectData?.data?.areaRange.min}sq.ft -{" "}
-                      {projectData?.data?.areaRange.max}sq.ft
+                      {singleProjectData?.areaRange.min}sq.ft -{" "}
+                      {singleProjectData?.areaRange.max}sq.ft
                     </p>
                     <p className="text-sm text-gray-500">Area Range</p>
                   </div>
@@ -236,7 +238,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {moment(projectData?.data?.reraPossessionDate).format(
+                      {moment(singleProjectData?.reraPossessionDate).format(
                         "DD MMM YYYY"
                       )}
                     </p>
@@ -263,7 +265,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {projectData?.data?.reraNumber}
+                      {singleProjectData?.reraNumber}
                     </p>
                     <p className="text-sm text-gray-500">Rera Number</p>
                   </div>
@@ -291,7 +293,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {projectData?.data?.city}, {projectData?.data?.state}
+                      {singleProjectData?.city}, {singleProjectData?.state}
                     </p>
                     <p className="text-sm text-gray-500">Location</p>
                   </div>
@@ -313,7 +315,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {projectData?.data?.projectType}
+                      {singleProjectData?.projectType}
                     </p>
                     <p className="text-sm text-gray-500">Project Type</p>
                   </div>
@@ -334,7 +336,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{projectData?.data?.service}</p>
+                    <p className="font-medium">{singleProjectData?.service}</p>
                     <p className="text-sm text-gray-500">Service Type</p>
                   </div>
 
@@ -355,7 +357,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{projectData?.data?.locality}</p>
+                    <p className="font-medium">{singleProjectData?.locality}</p>
                     <p className="text-sm text-gray-500">Locality</p>
                   </div>
                 </div>
@@ -368,7 +370,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {projectData?.data?.aminities?.map((bank, index) => (
+                  {singleProjectData?.aminities?.map((bank, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -385,7 +387,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {projectData?.data?.bankOfApproval?.map((bank, index) => (
+                  {singleProjectData?.bankOfApproval?.map((bank, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -403,7 +405,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                   <div className="w-full h-0 pb-[56.25%] relative bg-gray-200">
                     <iframe
                       className="absolute inset-0 w-full h-full"
-                      src={projectData?.data?.youtubeEmbedLink}
+                      src={singleProjectData?.youtubeEmbedLink}
                       title="YouTube video player"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

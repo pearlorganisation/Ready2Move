@@ -54,7 +54,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
         message: formData.message,
       };
 
-      if (propertyData?.data?.propertyType) {
+      if (propertyData?.propertyType) {
         payload.property = propertyData?.data._id;
       } else {
         payload.project = propertyData?.data?._id;

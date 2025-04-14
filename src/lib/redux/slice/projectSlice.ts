@@ -5,6 +5,8 @@ import {
   getSingleProject,
 } from "../actions/projectAction";
 import { Paginate } from "@/lib/util/paginateInterface";
+import { SingleProject } from "@/lib/Interfaces/project";
+import { boolean } from "yup";
 export interface ProjectData {
   id: string;
   user: string;
@@ -40,6 +42,7 @@ export interface Project {
   isSuccess: boolean;
   isError: boolean;
   projectData: ProjectData;
+  singleProjectData: SingleProject;
   paginate: Paginate;
 }
 const initialState: Project = {
@@ -69,6 +72,37 @@ const initialState: Project = {
     imageGallary: [],
     isFeatured: false,
     youtubeLink: "",
+  },
+  singleProjectData: {
+    _id: "",
+    user: "",
+    title: "",
+    slug: "",
+    subTitle: "",
+    description: "",
+    locality: "",
+    city: "",
+    state: "",
+    service: "",
+    projectType: "",
+    areaRange: { min: 0, max: 0 },
+    priceRange: { min: 0, max: 0 },
+    pricePerSqFt: 0,
+    reraNumber: "",
+    availability: {
+      _id: "",
+      name: "",
+      type: "",
+    },
+    reraPossessionDate: "",
+    aminities: [],
+    bankOfApproval: [],
+    imageGallery: [],
+    isFeatured: false,
+    youtubeEmbedLink: "",
+    createdAt: "",
+    updatedAt: "",
+    __v: 0,
   },
   paginate: {
     total: 0,
@@ -159,14 +193,16 @@ const createProjectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        state.projectData = action.payload.data; // assuming `data` is in `data.data`
+        state.singleProjectData = action.payload.data.data;
+        // state.projectData = action.payload.data;
+        // assuming `data` is in `data.data`
       })
       .addCase(getSingleProject.rejected, (state) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
-        state.projectData = {
-          id: "",
+        state.singleProjectData = {
+          _id: "",
           user: "",
           title: "",
           slug: "",
@@ -177,18 +213,49 @@ const createProjectSlice = createSlice({
           state: "",
           service: "",
           projectType: "",
-          areaRange: { min: "", max: "" },
-          priceRange: { min: "", max: "" },
+          areaRange: { min: 0, max: 0 },
+          priceRange: { min: 0, max: 0 },
           pricePerSqFt: 0,
           reraNumber: "",
-          availability: "",
+          availability: {
+            _id: "",
+            name: "",
+            type: "",
+          },
           reraPossessionDate: "",
           aminities: [],
           bankOfApproval: [],
-          imageGallary: [],
+          imageGallery: [],
           isFeatured: false,
-          youtubeLink: "",
+          youtubeEmbedLink: "",
+          createdAt: "",
+          updatedAt: "",
+          __v: 0,
         };
+        // state.projectData = {
+        //   id: "",
+        //   user: "",
+        //   title: "",
+        //   slug: "",
+        //   subTitle: "",
+        //   description: "",
+        //   locality: "",
+        //   city: "",
+        //   state: "",
+        //   service: "",
+        //   projectType: "",
+        //   areaRange: { min: "", max: "" },
+        //   priceRange: { min: "", max: "" },
+        //   pricePerSqFt: 0,
+        //   reraNumber: "",
+        //   availability: "",
+        //   reraPossessionDate: "",
+        //   aminities: [],
+        //   bankOfApproval: [],
+        //   imageGallary: [],
+        //   isFeatured: false,
+        //   youtubeLink: "",
+        // };
       });
   },
 });
