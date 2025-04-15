@@ -1,15 +1,18 @@
 "use client"
 
+import { useAppDispatch } from "@/lib/hooks/dispatchHook"
+import { updateUserPassword } from "@/lib/redux/actions/passwordAction"
 import { SubmitHandler, useForm } from "react-hook-form"
 
 export interface Password{
     password:string
 }
 const UpdatePassword = () => {
+    const dispatch = useAppDispatch()
     const {register, handleSubmit,formState:{errors}} = useForm<Password>()
   
     const submitPasswordUpdate:SubmitHandler<Password>=(data)=>{
-
+          dispatch(updateUserPassword(data))  
     }
     return (
      <div className="flex items-center justify-center p-4">

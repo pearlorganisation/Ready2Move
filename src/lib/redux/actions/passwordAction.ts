@@ -3,6 +3,7 @@ import { ResetPasswordForm } from "@/app/(auth)/resetpassword/page";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+/** for requesting the otp */
 export const forgotPassword = createAsyncThunk(
     "send/forgot-password",async(formdata:ForgotEmail,{rejectWithValue})=>{
         try {
@@ -19,7 +20,7 @@ export const forgotPassword = createAsyncThunk(
     }
 )
 
-
+/** for resetting when user is not logged in */
 export const resetPasswordFunction = createAsyncThunk(
     "reset/password",async(formdata:ResetPasswordForm,{rejectWithValue})=>{
         try {
@@ -32,6 +33,24 @@ export const resetPasswordFunction = createAsyncThunk(
             return data
         } catch (error) {
            return rejectWithValue(error);           
+        }
+    }
+)
+
+/** for when user is logged in and wants to update the password */
+
+export const updateUserPassword = createAsyncThunk(
+    "updated/user-password",async({password}:{password:string},{rejectWithValue})=>{
+        try {
+            const config ={
+                headers:{
+          "Content-Type": "application/json",
+                }
+            }
+            const data = await axiosInstance.patch(`/api/v1/users/me`, {password},config)
+            return data
+        } catch (error) {
+            return rejectWithValue(error)
         }
     }
 )

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import UpdatePassword from "./UpdatePassword";
+import { updateUser } from "@/lib/redux/actions/userAction";
+import { useAppDispatch } from "@/lib/hooks/dispatchHook";
 
 export interface UserData{
     _id:string;
@@ -15,6 +17,8 @@ export interface UserData{
 }
 const DetailsModal = ({userData, showModal}:{userData: UserData, showModal:React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+
+    const dispatch = useAppDispatch()
     const [openUpdateModal, setUpdateModal] = useState<boolean>(false)
     const [openPasswordUpdateModal, setOpenPasswordUpdateModal] = useState<boolean>(false)
     const [detailsModal, setOpenDetailsModal] = useState<boolean>(false)
@@ -47,8 +51,8 @@ const DetailsModal = ({userData, showModal}:{userData: UserData, showModal:React
 
     {/** for sending the updated data */}   
     const onSubmitForm:SubmitHandler<UserData> =(data)=>{
-
-        } 
+         dispatch(updateUser({userdata:data}))    
+      } 
      return (
  <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex justify-center items-center p-4">
   <div className="bg-white rounded-2xl shadow-xl w-full h-full max-w-4xl p-6 space-y-6 overflow-y-auto relative">

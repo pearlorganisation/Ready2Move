@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { fetchCurrentUser, loginUser } from "../actions/userAction"
+import { fetchCurrentUser, loginUser, updateUser } from "../actions/userAction"
 
 interface UserUpdated{
-    
+    isSuccess:boolean,
+    isError:boolean,
+    isLoading:boolean
 }
 
 interface Login {
@@ -18,7 +20,8 @@ interface Login {
         role: string,
         isVerified: string
     },
-    users:{}
+    users:{},
+    isUserUpdated:UserUpdated
 }
 const initialState: Login={
   isLoading: false,
@@ -33,7 +36,12 @@ const initialState: Login={
     role: '',
     isVerified: ''
   },
-  users:{}
+  users:{},
+  isUserUpdated:{
+    isLoading:false,
+    isSuccess:false,
+    isError:false
+  }
 }
 
 const logInUserSlice = createSlice({
@@ -88,10 +96,22 @@ const logInUserSlice = createSlice({
             state.isLoggedIn= true
             state.userData = action.payload.user
         })
-        // .addCase(fetchCurrentUser.pending,state=>{
-            
-        // })
-    }
+        .addCase(updateUser.pending,state=>{
+            state.isError=false
+            state.isLoading= true
+            state.isSuccess= true
+        })
+        .addCase(updateUser.rejected,state=>{
+            state.isError=true
+            state.isLoading=false
+            state.isSuccess=false
+        })
+        .addCase(updateUser.fulfilled,state=>{
+            state.isLoading=false
+            state.isSuccess= true
+            state.isError=false
+        })
+     }
 })
 
 export const { resetLogin, logoutUser } = logInUserSlice.actions
