@@ -284,7 +284,7 @@ export const getSingleProperty = createAsyncThunk(
         config
       );
 
-      return data;
+      return data.data;
     } catch (error) {
       return rejectWithValue(error);
     }

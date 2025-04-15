@@ -5,6 +5,7 @@ import {
   getSingleProperty,
 } from "../actions/propertyAction";
 import { Paginate } from "@/lib/util/paginateInterface";
+import { SimpleType } from "@/lib/Interfaces/property";
 
 export interface AreaRange {
   min: string;
@@ -25,7 +26,7 @@ export interface PropertyData {
   description: string;
   service: string;
   property: string;
-  propertyType: string;
+  propertyType: SimpleType;
   apartmentName: string;
   apartmentNo: string;
   locality: string;
@@ -92,7 +93,7 @@ export interface SingleProperty {
   description: string;
   service: string;
   property: string;
-  propertyType: string;
+  propertyType: SimpleType;
   apartmentName: string;
   apartmentNo: string;
   locality: string;
@@ -160,7 +161,11 @@ export const initialPropertyState: PropertyState = {
     description: "",
     service: "",
     property: "",
-    propertyType: "",
+    propertyType: {
+      _id: "",
+      name: "",
+      type: "",
+    },
     apartmentName: "",
     apartmentNo: "",
     locality: "",
@@ -202,7 +207,11 @@ export const initialPropertyState: PropertyState = {
     description: "",
     service: "",
     property: "",
-    propertyType: "",
+    propertyType: {
+      _id: "",
+      name: "",
+      type: "",
+    },
     apartmentName: "",
     apartmentNo: "",
     locality: "",

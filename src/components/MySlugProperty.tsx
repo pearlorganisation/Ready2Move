@@ -21,7 +21,9 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
     dispatch(getSingleProperty({ slug: slug }));
   }, [slug]);
 
-  const { propertyData } = useAppSelector((state) => state.property);
+  const { singlePropertyData } = useAppSelector((state) => state.property);
+
+  console.log(singlePropertyData, "the single property data is");
 
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,10 +56,10 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
         message: formData.message,
       };
 
-      if (propertyData?.propertyType) {
-        payload.property = propertyData?.data._id;
+      if (singlePropertyData?.propertyType) {
+        payload.property = singlePropertyData?._id;
       } else {
-        payload.project = propertyData?.data?._id;
+        payload.project = singlePropertyData._id;
       }
 
       await dispatch(createLeads(payload)).unwrap();
@@ -90,7 +92,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
           navigation
           className="rounded-lg overflow-hidden mb-8"
         >
-          {propertyData?.data?.imageGallery?.slice(0, 4).map((image, index) => (
+          {singlePropertyData.imageGallery?.slice(0, 4).map((image, index) => (
             <SwiperSlide key={index}>
               <div className="relative h-[300px] md:h-[500px]">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
@@ -103,20 +105,20 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   priority={index === 0}
                 />
 
-                {propertyData?.data?.isFeatured && (
+                {singlePropertyData.isFeatured && (
                   <div className="absolute top-0 left-0 px-2 py-6 md:px-2 md:py-2 z-20 text-white">
                     <h1 className="text-sm md:text-sm text-white font-bold bg-blue-700 rounded-md px-2 py-1">
-                      {propertyData?.data?.isFeatured ? "Featured" : ""}
+                      {singlePropertyData.isFeatured ? "Featured" : ""}
                     </h1>
                   </div>
                 )}
 
                 <div className="absolute bottom-0 left-0 p-6 md:p-10 z-20 text-white">
                   <h1 className="text-3xl md:text-4xl font-bold">
-                    {propertyData?.data?.title}
+                    {singlePropertyData.title}
                   </h1>
                   <p className="text-lg md:text-xl mt-2">
-                    {propertyData?.data?.subTitle}
+                    {singlePropertyData.subTitle}
                   </p>
                 </div>
 
@@ -125,12 +127,8 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                     Expected Price
                   </h1>
                   <p className="text-xl md:text-2xl font-bold">
-                    ₹{propertyData?.data?.expectedPrice}
+                    ₹{singlePropertyData.expectedPrice}
                   </p>
-                  {/* <p className="text-sm md:text-base mt-1">
-                    {propertyData?.data?.areaRange?.min} sq.ft -{" "}
-                    {propertyData?.data?.areaRange?.max} sq.ft
-                  </p> */}
                 </div>
               </div>
             </SwiperSlide>
@@ -141,7 +139,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
           <h2 className="text-xl font-semibold mb-4">Description</h2>
           <hr className="mb-6" />
 
-          <p className="text-gray-700">{propertyData?.data?.description}</p>
+          <p className="text-gray-700">{singlePropertyData.description}</p>
         </div>
 
         <div className="container mx-auto px-4 py-8">
@@ -172,32 +170,10 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.availability?.name}
+                      {singlePropertyData.availability?.name}
                     </p>
                     <p className="text-sm text-gray-500">Availability</p>
                   </div>
-                  {/* <div className="text-center">
-                    <div className="flex justify-center mb-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-gray-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <p className="font-medium">
-                      {propertyData?.data?.pricePerSqFt}
-                    </p>
-                    <p className="text-sm text-gray-500">Price Per Sq Ft</p>
-                  </div> */}
 
                   <div className="text-center">
                     <div className="flex justify-center mb-2">
@@ -217,34 +193,11 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.waterSource?.name}
+                      {singlePropertyData.waterSource?.name}
                     </p>
                     <p className="text-sm text-gray-500">Water Source</p>
                   </div>
 
-                  {/* <div className="text-center">
-                    <div className="flex justify-center mb-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-gray-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                        />
-                      </svg>
-                    </div>
-                    <p className="font-medium">
-                      {propertyData?.data?.areaRange?.min}sq.ft -{" "}
-                      {propertyData?.data?.areaRange?.max}sq.ft
-                    </p>
-                    <p className="text-sm text-gray-500">Area Range</p>
-                  </div> */}
                   <div className="text-center">
                     <div className="flex justify-center mb-2">
                       <svg
@@ -263,7 +216,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {moment(propertyData?.data?.reraPossessionDate).format(
+                      {moment(singlePropertyData.reraPossessionDate).format(
                         "DD MMM YYYY"
                       )}
                     </p>
@@ -290,7 +243,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.propertyType?.name}
+                      {singlePropertyData.propertyType.name}
                     </p>
                     <p className="text-sm text-gray-500">Property Category</p>
                   </div>
@@ -313,7 +266,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.reraNumber}
+                      {singlePropertyData.reraNumber}
                     </p>
                     <p className="text-sm text-gray-500">Rera Number</p>
                   </div>
@@ -341,7 +294,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.city}, {propertyData?.data?.state}
+                      {singlePropertyData.city}, {singlePropertyData.state}
                     </p>
                     <p className="text-sm text-gray-500">Location</p>
                   </div>
@@ -362,9 +315,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">
-                      {propertyData?.data?.property}
-                    </p>
+                    <p className="font-medium">{singlePropertyData.property}</p>
                     <p className="text-sm text-gray-500">Property Type</p>
                   </div>
                   <div className="text-center">
@@ -384,7 +335,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{propertyData?.data?.service}</p>
+                    <p className="font-medium">{singlePropertyData.service}</p>
                     <p className="text-sm text-gray-500">Service Type</p>
                   </div>
 
@@ -405,9 +356,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">
-                      {propertyData?.data?.locality}
-                    </p>
+                    <p className="font-medium">{singlePropertyData.locality}</p>
                     <p className="text-sm text-gray-500">Locality</p>
                   </div>
                 </div>
@@ -438,7 +387,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.noOfBedrooms}
+                      {singlePropertyData.noOfBedrooms}
                     </p>
                     <p className="text-sm text-gray-500">Bedrooms</p>
                   </div>
@@ -460,7 +409,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.noOfBathrooms}
+                      {singlePropertyData.noOfBathrooms}
                     </p>
                     <p className="text-sm text-gray-500">Bathrooms</p>
                   </div>
@@ -482,7 +431,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.noOfBalconies}
+                      {singlePropertyData.noOfBalconies}
                     </p>
                     <p className="text-sm text-gray-500"> Balconies</p>
                   </div>
@@ -505,7 +454,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.parking?.name}
+                      {singlePropertyData.parking?.name}
                     </p>
                     <p className="text-sm text-gray-500"> Parking</p>
                   </div>
@@ -533,7 +482,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.furnishing?.name}
+                      {singlePropertyData.furnishing?.name}
                     </p>
                     <p className="text-sm text-gray-500">Furnishing</p>
                   </div>
@@ -555,7 +504,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.entranceFacing?.name}
+                      {singlePropertyData.entranceFacing?.name}
                     </p>
                     <p className="text-sm text-gray-500">Entrance Facing</p>
                   </div>
@@ -577,7 +526,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.propertyAge?.name}
+                      {singlePropertyData.propertyAge?.name}
                     </p>
                     <p className="text-sm text-gray-500">Age of Property</p>
                   </div>
@@ -600,7 +549,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.ownership?.name}
+                      {singlePropertyData.ownership?.name}
                     </p>
                     <p className="text-sm text-gray-500"> Ownership</p>
                   </div>
@@ -623,7 +572,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {propertyData?.data?.propertyFlooring?.name}
+                      {singlePropertyData.propertyFlooring?.name}
                     </p>
                     <p className="text-sm text-gray-500">Flooring</p>
                   </div>
@@ -637,7 +586,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {propertyData?.data?.aminities?.map((bank, index) => (
+                  {singlePropertyData.aminities?.map((bank, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -655,7 +604,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {propertyData?.data?.otherFeatures?.map((feature, index) => (
+                  {singlePropertyData.otherFeatures?.map((feature, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -673,7 +622,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {propertyData?.data?.area?.map((areaa, index) => (
+                  {singlePropertyData.area?.map((areaa, index) => (
                     <div
                       key={index}
                       className="rounded-xl border border-blue-500 bg-white text-blue-800 shadow-md p-4 transition hover:bg-blue-500 hover:text-white"
@@ -699,52 +648,52 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <ul className="space-y-2 text-gray-700">
                   <li>
                     <span className="font-medium">Apartment Name:</span>{" "}
-                    {propertyData?.data?.apartmentName}
+                    {singlePropertyData.apartmentName}
                   </li>
                   <li>
                     <span className="font-medium">Apartment No:</span>{" "}
-                    {propertyData?.data?.apartmentNo}
+                    {singlePropertyData.apartmentNo}
                   </li>
                   <li>
                     <span className="font-medium">OC Available:</span>{" "}
                     <span
                       className={
-                        propertyData?.data?.isOCAvailable
+                        singlePropertyData.isOCAvailable
                           ? "text-green-600"
                           : "text-red-600"
                       }
                     >
-                      {propertyData?.data?.isOCAvailable ? "Yes" : "No"}
+                      {singlePropertyData.isOCAvailable ? "Yes" : "No"}
                     </span>
                   </li>
                   <li>
                     <span className="font-medium">CC Available:</span>{" "}
                     <span
                       className={
-                        propertyData?.data?.isCCAvailable
+                        singlePropertyData.isCCAvailable
                           ? "text-green-600"
                           : "text-red-600"
                       }
                     >
-                      {propertyData?.data?.isCCAvailable ? "Yes" : "No"}
+                      {singlePropertyData.isCCAvailable ? "Yes" : "No"}
                     </span>
                   </li>
                   <li>
                     <span className="font-medium">Price Negotiable:</span>{" "}
                     <span
                       className={
-                        propertyData?.data?.isPriceNegotiable
+                        singlePropertyData.isPriceNegotiable
                           ? "text-green-600"
                           : "text-red-600"
                       }
                     >
-                      {propertyData?.data?.isPriceNegotiable ? "Yes" : "No"}
+                      {singlePropertyData.isPriceNegotiable ? "Yes" : "No"}
                     </span>
                   </li>
-                  {propertyData?.data?.isBrokerageCharge && (
+                  {singlePropertyData.isBrokerageCharge && (
                     <li>
                       <span className="font-medium">Brokerage:</span>{" "}
-                      {propertyData?.data?.brokerage}%
+                      {singlePropertyData.brokerage}%
                     </li>
                   )}
                 </ul>
@@ -756,7 +705,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {propertyData?.data?.bankOfApproval?.map((bank, index) => (
+                  {singlePropertyData.bankOfApproval?.map((bank, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -774,7 +723,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   <div className="w-full h-0 pb-[56.25%] relative bg-gray-200">
                     <iframe
                       className="absolute inset-0 w-full h-full"
-                      src={propertyData?.data?.youtubeEmbedLink}
+                      src={singlePropertyData.youtubeEmbedLink}
                       title="YouTube video player"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -26,9 +26,9 @@ const PropertiesPage = () => {
   const debouncedPriceRange = useDebounce(priceRange, 500);
   const debouncedBedRoom = useDebounce(bedrooms, 500);
   const debouncedBathRoom = useDebounce(bathrooms, 500);
-  console.log("the price range is", priceRange);
-  console.log("the no of bedrooms are", bedrooms);
-  console.log("the bathrooms are", bathrooms);
+  // console.log("the price range is", priceRange);
+  // console.log("the no of bedrooms are", bedrooms);
+  // console.log("the bathrooms are", bathrooms);
 
   /** for the dynamic data */
   const totalPages = Math.ceil(paginate?.total / paginate?.limit);
