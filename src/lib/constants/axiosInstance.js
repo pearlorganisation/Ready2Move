@@ -2,7 +2,7 @@ import axios from "axios";
 import { store } from "./constant";
 import { logoutUser } from "../redux/slice/userSlice";
 
-const baseURL = process.env.ENVIRONMENT =="development" ? process.env.NEXT_PUBLIC_BACKEND_DEV_BASE_URL : process.env.NEXT_PUBLIC_PRODUCTION_DEV_BASE_URL;
+const baseURL = process.env.ENVIRONMENT =="development" ? process.env.NEXT_PUBLIC_BACKEND_DEV_BASE_URL : process.env.NEXT_PUBLIC_BACKEND_DEV_BASE_URL;
 
 export const axiosInstance = axios.create({
     baseURL,
@@ -49,5 +49,4 @@ axiosInstance.interceptors.response.use(
 
         return Promise.reject(error);
     }
-  );
-  
+);

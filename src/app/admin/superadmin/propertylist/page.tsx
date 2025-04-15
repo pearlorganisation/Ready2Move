@@ -3,7 +3,6 @@
 
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
