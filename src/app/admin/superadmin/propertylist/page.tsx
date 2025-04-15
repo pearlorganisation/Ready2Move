@@ -3,7 +3,6 @@
 
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
@@ -26,7 +25,7 @@ const handlePageClick = (page:number)=>{
 }
 
   useEffect(() => {
-    dispatch(getAllProperties({page:currentPage}))
+    dispatch(getAllProperties({page:currentPage ,limit, priceRange:0, bedRooms:0, bathRooms:0}))
   }, [dispatch, currentPage])
 
   
