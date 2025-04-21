@@ -92,12 +92,12 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
           navigation
           className="rounded-lg overflow-hidden mb-8"
         >
-          {singlePropertyData.imageGallery?.slice(0, 4).map((image, index) => (
+          {singlePropertyData?.imageGallery?.slice(0, 4).map((image, index) => (
             <SwiperSlide key={index}>
               <div className="relative h-[300px] md:h-[500px]">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
                 <Image
-                  src={image.secure_url}
+                  src={image?.secure_url}
                   alt={`Property Image ${index + 1}`}
                   layout="fill"
                   objectFit="cover"
@@ -105,20 +105,20 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   priority={index === 0}
                 />
 
-                {singlePropertyData.isFeatured && (
+                {singlePropertyData?.isFeatured && (
                   <div className="absolute top-0 left-0 px-2 py-6 md:px-2 md:py-2 z-20 text-white">
                     <h1 className="text-sm md:text-sm text-white font-bold bg-blue-700 rounded-md px-2 py-1">
-                      {singlePropertyData.isFeatured ? "Featured" : ""}
+                      {singlePropertyData?.isFeatured ? "Featured" : ""}
                     </h1>
                   </div>
                 )}
 
                 <div className="absolute bottom-0 left-0 p-6 md:p-10 z-20 text-white">
                   <h1 className="text-3xl md:text-4xl font-bold">
-                    {singlePropertyData.title}
+                    {singlePropertyData?.title}
                   </h1>
                   <p className="text-lg md:text-xl mt-2">
-                    {singlePropertyData.subTitle}
+                    {singlePropertyData?.subTitle}
                   </p>
                 </div>
 
@@ -127,7 +127,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                     Expected Price
                   </h1>
                   <p className="text-xl md:text-2xl font-bold">
-                    ₹{singlePropertyData.expectedPrice}
+                    ₹{singlePropertyData?.expectedPrice}
                   </p>
                 </div>
               </div>
@@ -139,7 +139,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
           <h2 className="text-xl font-semibold mb-4">Description</h2>
           <hr className="mb-6" />
 
-          <p className="text-gray-700">{singlePropertyData.description}</p>
+          <p className="text-gray-700">{singlePropertyData?.description}</p>
         </div>
 
         <div className="container mx-auto px-4 py-8">
@@ -170,7 +170,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.availability?.name}
+                      {singlePropertyData?.availability?.name}
                     </p>
                     <p className="text-sm text-gray-500">Availability</p>
                   </div>
@@ -193,7 +193,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.waterSource?.name}
+                      {singlePropertyData?.waterSource?.name}
                     </p>
                     <p className="text-sm text-gray-500">Water Source</p>
                   </div>
@@ -216,7 +216,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {moment(singlePropertyData.reraPossessionDate).format(
+                      {moment(singlePropertyData?.reraPossessionDate).format(
                         "DD MMM YYYY"
                       )}
                     </p>
@@ -243,7 +243,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.propertyType.name}
+                      {singlePropertyData?.propertyType?.name}
                     </p>
                     <p className="text-sm text-gray-500">Property Category</p>
                   </div>
@@ -266,7 +266,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.reraNumber}
+                      {singlePropertyData?.reraNumber}
                     </p>
                     <p className="text-sm text-gray-500">Rera Number</p>
                   </div>
@@ -294,7 +294,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.city}, {singlePropertyData.state}
+                      {singlePropertyData?.city}, {singlePropertyData?.state}
                     </p>
                     <p className="text-sm text-gray-500">Location</p>
                   </div>
@@ -315,7 +315,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{singlePropertyData.property}</p>
+                    <p className="font-medium">{singlePropertyData?.property}</p>
                     <p className="text-sm text-gray-500">Property Type</p>
                   </div>
                   <div className="text-center">
@@ -335,7 +335,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{singlePropertyData.service}</p>
+                    <p className="font-medium">{singlePropertyData?.service}</p>
                     <p className="text-sm text-gray-500">Service Type</p>
                   </div>
 
@@ -356,7 +356,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{singlePropertyData.locality}</p>
+                    <p className="font-medium">{singlePropertyData?.locality}</p>
                     <p className="text-sm text-gray-500">Locality</p>
                   </div>
                 </div>
@@ -387,7 +387,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.noOfBedrooms}
+                      {singlePropertyData?.noOfBedrooms}
                     </p>
                     <p className="text-sm text-gray-500">Bedrooms</p>
                   </div>
@@ -409,7 +409,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.noOfBathrooms}
+                      {singlePropertyData?.noOfBathrooms}
                     </p>
                     <p className="text-sm text-gray-500">Bathrooms</p>
                   </div>
@@ -431,7 +431,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.noOfBalconies}
+                      {singlePropertyData?.noOfBalconies}
                     </p>
                     <p className="text-sm text-gray-500"> Balconies</p>
                   </div>
@@ -454,7 +454,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.parking?.name}
+                      {singlePropertyData?.parking?.name}
                     </p>
                     <p className="text-sm text-gray-500"> Parking</p>
                   </div>
@@ -482,7 +482,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.furnishing?.name}
+                      {singlePropertyData?.furnishing?.name}
                     </p>
                     <p className="text-sm text-gray-500">Furnishing</p>
                   </div>
@@ -504,7 +504,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.entranceFacing?.name}
+                      {singlePropertyData?.entranceFacing?.name}
                     </p>
                     <p className="text-sm text-gray-500">Entrance Facing</p>
                   </div>
@@ -526,7 +526,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.propertyAge?.name}
+                      {singlePropertyData?.propertyAge?.name}
                     </p>
                     <p className="text-sm text-gray-500">Age of Property</p>
                   </div>
@@ -549,7 +549,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.ownership?.name}
+                      {singlePropertyData?.ownership?.name}
                     </p>
                     <p className="text-sm text-gray-500"> Ownership</p>
                   </div>
@@ -572,7 +572,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singlePropertyData.propertyFlooring?.name}
+                      {singlePropertyData?.propertyFlooring?.name}
                     </p>
                     <p className="text-sm text-gray-500">Flooring</p>
                   </div>
@@ -586,7 +586,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {singlePropertyData.aminities?.map((bank, index) => (
+                  {singlePropertyData?.aminities?.map((bank, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -604,7 +604,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {singlePropertyData.otherFeatures?.map((feature, index) => (
+                  {singlePropertyData?.otherFeatures?.map((feature, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -622,18 +622,18 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {singlePropertyData.area?.map((areaa, index) => (
+                  {singlePropertyData?.area?.map((areaa, index) => (
                     <div
                       key={index}
                       className="rounded-xl border border-blue-500 bg-white text-blue-800 shadow-md p-4 transition hover:bg-blue-500 hover:text-white"
                     >
                       <h3 className="text-lg font-semibold mb-2 text-center">
-                        {areaa.name.replace(/_/g, " ")}
+                        {areaa?.name.replace(/_/g, " ")}
                       </h3>
                       <p className="text-center text-2xl font-bold">
-                        {areaa.area}{" "}
+                        {areaa?.area}{" "}
                         <span className="text-sm font-medium">
-                          {areaa.areaMeasurement}
+                          {areaa?.areaMeasurement}
                         </span>
                       </p>
                     </div>
@@ -648,52 +648,52 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <ul className="space-y-2 text-gray-700">
                   <li>
                     <span className="font-medium">Apartment Name:</span>{" "}
-                    {singlePropertyData.apartmentName}
+                    {singlePropertyData?.apartmentName}
                   </li>
                   <li>
                     <span className="font-medium">Apartment No:</span>{" "}
-                    {singlePropertyData.apartmentNo}
+                    {singlePropertyData?.apartmentNo}
                   </li>
                   <li>
                     <span className="font-medium">OC Available:</span>{" "}
                     <span
                       className={
-                        singlePropertyData.isOCAvailable
+                        singlePropertyData?.isOCAvailable
                           ? "text-green-600"
                           : "text-red-600"
                       }
                     >
-                      {singlePropertyData.isOCAvailable ? "Yes" : "No"}
+                      {singlePropertyData?.isOCAvailable ? "Yes" : "No"}
                     </span>
                   </li>
                   <li>
                     <span className="font-medium">CC Available:</span>{" "}
                     <span
                       className={
-                        singlePropertyData.isCCAvailable
+                        singlePropertyData?.isCCAvailable
                           ? "text-green-600"
                           : "text-red-600"
                       }
                     >
-                      {singlePropertyData.isCCAvailable ? "Yes" : "No"}
+                      {singlePropertyData?.isCCAvailable ? "Yes" : "No"}
                     </span>
                   </li>
                   <li>
                     <span className="font-medium">Price Negotiable:</span>{" "}
                     <span
                       className={
-                        singlePropertyData.isPriceNegotiable
+                        singlePropertyData?.isPriceNegotiable
                           ? "text-green-600"
                           : "text-red-600"
                       }
                     >
-                      {singlePropertyData.isPriceNegotiable ? "Yes" : "No"}
+                      {singlePropertyData?.isPriceNegotiable ? "Yes" : "No"}
                     </span>
                   </li>
-                  {singlePropertyData.isBrokerageCharge && (
+                  {singlePropertyData?.isBrokerageCharge && (
                     <li>
                       <span className="font-medium">Brokerage:</span>{" "}
-                      {singlePropertyData.brokerage}%
+                      {singlePropertyData?.brokerage}%
                     </li>
                   )}
                 </ul>
@@ -705,7 +705,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <hr className="mb-6" />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {singlePropertyData.bankOfApproval?.map((bank, index) => (
+                  {singlePropertyData?.bankOfApproval?.map((bank, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-center rounded-xl border border-blue-500 bg-white text-blue-800 font-medium shadow-md px-2 py-1 transition hover:bg-blue-500 hover:text-white"
@@ -723,7 +723,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   <div className="w-full h-0 pb-[56.25%] relative bg-gray-200">
                     <iframe
                       className="absolute inset-0 w-full h-full"
-                      src={singlePropertyData.youtubeEmbedLink}
+                      src={singlePropertyData?.youtubeEmbedLink}
                       title="YouTube video player"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
