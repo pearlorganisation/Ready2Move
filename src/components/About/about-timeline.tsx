@@ -5,36 +5,69 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+// const timelineEvents = [
+//   {
+//     year: "2015",
+//     title: "Founded",
+//     description:
+//       "Our journey began with a small team of three passionate designers and developers.",
+//   },
+//   {
+//     year: "2017",
+//     title: "First Major Client",
+//     description:
+//       "Secured our first enterprise client and expanded our team to 10 members.",
+//   },
+//   {
+//     year: "2019",
+//     title: "International Expansion",
+//     description:
+//       "Opened our second office in London and began serving clients globally.",
+//   },
+//   {
+//     year: "2021",
+//     title: "Award Recognition",
+//     description:
+//       "Received multiple industry awards for our innovative digital experiences.",
+//   },
+//   {
+//     year: "2023",
+//     title: "Today",
+//     description:
+//       "A team of 50+ creatives working with leading brands across various industries.",
+//   },
+// ];
+
 const timelineEvents = [
   {
-    year: "2015",
-    title: "Founded",
+    year: "2016",
+    title: "Humble Beginnings",
     description:
-      "Our journey began with a small team of three passionate designers and developers.",
+      "Ready 2 Move was founded with a vision to simplify property buying, selling, and renting for everyone.",
   },
   {
-    year: "2017",
-    title: "First Major Client",
+    year: "2018",
+    title: "First 100 Properties",
     description:
-      "Secured our first enterprise client and expanded our team to 10 members.",
+      "Successfully closed deals on over 100 properties, gaining trust and recognition in the local market.",
   },
   {
-    year: "2019",
-    title: "International Expansion",
+    year: "2020",
+    title: "Tech Integration",
     description:
-      "Opened our second office in London and began serving clients globally.",
+      "Launched our digital platform, enabling users to explore and book properties online with ease.",
   },
   {
-    year: "2021",
-    title: "Award Recognition",
+    year: "2022",
+    title: "Pan-India Operations",
     description:
-      "Received multiple industry awards for our innovative digital experiences.",
+      "Expanded services across major cities, partnering with developers and landlords nationwide.",
   },
   {
-    year: "2023",
-    title: "Today",
+    year: "2024",
+    title: "Trusted by Thousands",
     description:
-      "A team of 50+ creatives working with leading brands across various industries.",
+      "Over 10,000 happy customers and 500+ active listings, establishing Ready 2 Move as a leading real estate platform.",
   },
 ];
 

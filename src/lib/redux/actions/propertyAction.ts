@@ -235,8 +235,43 @@ export const createPropertyByAdmin = createAsyncThunk(
   }
 );
 
+// export const getAllProperties = createAsyncThunk(
+//   "get/allproperty",
+//   async (
+//     {
+//       page,
+//       limit,
+//       priceRange,
+//       bedRooms,
+//       bathRooms,
+//     }: {
+//       page: number;
+//       limit: number;
+//       priceRange: number;
+//       bedRooms: number;
+//       bathRooms: number;
+//     },
+//     { rejectWithValue }
+//   ) => {
+//     try {
+//       const config = {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       };
+//       const { data } = await axiosInstance.get(
+//         `/api/v1/properties?page=${page}&limit=${limit}&priceRange=${priceRange}&bedRooms=${bedRooms}&bathRooms=${bathRooms}`,
+//         config
+//       );
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
+
 export const getAllProperties = createAsyncThunk(
-  "get/allproperty",
+  "get/allproperties",
   async (
     {
       page,
@@ -244,12 +279,20 @@ export const getAllProperties = createAsyncThunk(
       priceRange,
       bedRooms,
       bathRooms,
+      areaRange,
+      q,
+      service,
+      property,
     }: {
       page: number;
       limit: number;
-      priceRange: number;
+      priceRange?: string;
+      areaRange?: string;
       bedRooms: number;
       bathRooms: number;
+      q?: string;
+      service?: "RENT" | "SELL";
+      property?: "RESIDENTIAL" | "COMMERCIAL";
     },
     { rejectWithValue }
   ) => {
@@ -259,11 +302,25 @@ export const getAllProperties = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axiosInstance.get(
-        `/api/v1/properties?page=${page}&limit=${limit}&priceRange=${priceRange}&bedRooms=${bedRooms}&bathRooms=${bathRooms}`,
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange);
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (bedRooms) queryParams.append("bedrooms", bedRooms.toString());
+      if (bathRooms) queryParams.append("areaRange", bathRooms.toString());
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (property) queryParams.append("property", property);
+
+      const response = await axiosInstance.get(
+        `/api/v1/properties?${queryParams.toString()}`,
         config
       );
-      return data;
+
+      return response.data;
     } catch (error) {
       return rejectWithValue(error);
     }

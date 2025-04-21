@@ -22,15 +22,15 @@ interface PropertyCardProps {
 }
 
 export default function HeroSection() {
-  const dispatch = useAppDispatch()
-  const { bannerData } = useAppSelector(state=> state.banner)
+  const dispatch = useAppDispatch();
+  const { bannerData } = useAppSelector((state) => state.banner);
 
-  useEffect(()=>{
-      dispatch(getBanner())
-  },[])
-  console.log("the banner data is", banner)
+  useEffect(() => {
+    dispatch(getBanner());
+  }, []);
+  console.log("the banner data is", banner);
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col mt-6">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 px-6">
         <div className="container mx-auto flex items-center justify-between">
@@ -43,41 +43,14 @@ export default function HeroSection() {
               className="h-10 w-auto"
             />
           </Link>
-
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/about" className="text-gray-700 hover:text-primary">
-              About Us
-            </Link>
-            <Link href="/projects" className="text-gray-700 hover:text-primary">
-              Projects
-            </Link>
-            <Link
-              href="/properties"
-              className="text-gray-700 hover:text-primary"
-            >
-              Properties
-            </Link>
-            <Link href="/login" className="text-gray-700 hover:text-primary">
-              Login
-            </Link>
-            <Link href="/register" className="text-gray-700 hover:text-primary">
-              Register
-            </Link>
-            <Link
-              href="/create-listing"
-              className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded font-medium"
-            >
-              CREATE LISTING
-            </Link>
-          </nav>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-[500px] flex items-center justify-center">
+      <section className="relative h-[600px] md:h-[700px] lg:h-[600px] flex items-center justify-center">
         <div className="absolute inset-0 z-0">
           <Image
-            src={bannerData.bgImage?.secure_url}
+            src={bannerData?.bgImage?.secure_url}
             alt="City skyline"
             fill
             className="object-cover"
@@ -88,11 +61,11 @@ export default function HeroSection() {
 
         <div className="container mx-auto px-4 z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-             {bannerData?.headline}
+            {bannerData?.headline}
           </h1>
           <p className="text-white text-lg md:text-xl max-w-4xl mx-auto mb-12">
-             {bannerData?.quote}
-           </p>
+            {bannerData?.quote}
+          </p>
 
           <SearchBar />
         </div>
