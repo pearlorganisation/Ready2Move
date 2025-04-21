@@ -61,7 +61,7 @@ export default function SearchBar() {
       try {
         setLoading(true);
         const res = await axiosInstance.get(
-          "http://localhost:5000/api/v1/features?type=PROPERTY_TYPE"
+          `api/v1/features?type=PROPERTY_TYPE`
         );
         const features = res?.data?.data?.[0]?.features || [];
         setPropertyCategories(features);
