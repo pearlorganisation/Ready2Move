@@ -10,8 +10,9 @@ import {
   Check,
 } from "lucide-react";
 import Link from "next/link";
+import { SingleProject } from "@/lib/Interfaces/project";
 
-export default function PropertyCard({ project }) {
+export default function PropertyCard({ project }: { project: SingleProject }) {
   console.log("Received Project", project);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -46,7 +47,7 @@ export default function PropertyCard({ project }) {
   };
 
   //   const propertyData = project;
-  const formatPrice = (price) => {
+  const formatPrice = (price:number) => {
     if (price >= 10000000) {
       return `₹${(price / 10000000).toFixed(2)} Cr`;
     } else if (price >= 100000) {

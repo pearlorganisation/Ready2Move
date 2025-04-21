@@ -117,8 +117,8 @@ export const getAllProjects = createAsyncThunk(
       service,
       projectType,
     }: {
-      page: number;
-      limit: number;
+      page?: number;
+      limit?: number;
       priceRange?: string;
       areaRange?: string;
       q?: string;

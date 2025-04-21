@@ -16,10 +16,10 @@ import { useDispatch } from "react-redux";
 import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { getAllProperties } from "@/lib/redux/actions/propertyAction";
 import { toast } from "react-toastify";
-import { useAppSelector } from "@/lib/hooks/dispatchHook";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 
 export default function SearchBar() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [activeTab, setActiveTab] = useState<"projects" | "properties">(
     "projects"
@@ -122,7 +122,7 @@ export default function SearchBar() {
     debouncedQ,
   ]);
 
-  const onSubmit = (data) => {
+  const onSubmit = (data:any) => {
     const payload = {
       tab: activeTab,
       ...data,
@@ -246,7 +246,7 @@ export default function SearchBar() {
                     />
                     {activeTab === "projects" && suggestions.length > 0 && (
                       <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        {projectData.map((item, idx) => (
+                        { Array.isArray(projectData)&&projectData?.map((item, idx) => (
                           <li
                             key={idx}
                             className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
