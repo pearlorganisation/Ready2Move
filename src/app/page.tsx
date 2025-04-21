@@ -1,5 +1,6 @@
 import FAQ from "./FAQ/page";
 import FeaturedProjects from "./home/FeaturedProjects";
+import FeaturedProperties from "./home/FeaturedProperties";
 import HeroSection from "./home/herosection";
 
 export default function Home() {
@@ -9,6 +10,8 @@ export default function Home() {
         <HeroSection />
 
         <FeaturedProjects />
+
+        <FeaturedProperties />
 
         <FAQ />
       </div>

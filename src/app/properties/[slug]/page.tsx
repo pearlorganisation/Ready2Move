@@ -4,7 +4,7 @@ interface Props {
   params: { slug: string };
 }
 
-export default async function ProjectDetails({ params }: Props) {
+export default function PropertyDetails({ params }: Props) {
   const slug = params.slug;
 
   return (

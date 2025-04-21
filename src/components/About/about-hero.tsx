@@ -123,7 +123,7 @@ export default function AboutHero() {
         </motion.div>
 
         <AnimatedText
-          text="We Create Digital Experiences That Matter"
+          text="We Create Real Estate Experiences That Matter"
           className="mb-8 text-5xl font-bold leading-tight tracking-tighter sm:text-6xl md:text-7xl"
         />
 
@@ -133,9 +133,8 @@ export default function AboutHero() {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="mx-auto mb-12 max-w-2xl text-xl text-gray-300"
         >
-          Founded in 2015, we're a team of designers, developers, and
-          strategists passionate about crafting exceptional digital solutions
-          that drive business growth and user engagement.
+          Ready 2 Move was founded with a vision to simplify property buying,
+          selling, and renting for everyone.
         </motion.p>
 
         <motion.div

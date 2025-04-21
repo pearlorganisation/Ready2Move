@@ -58,7 +58,7 @@ export default function AboutContact() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="mx-auto max-w-2xl text-gray-400"
+            className="mx-auto max-w-2xl text-gray-200"
           >
             Have a project in mind or want to learn more about our services?
             We'd love to hear from you.
@@ -84,10 +84,10 @@ export default function AboutContact() {
                     Email
                   </div>
                   <a
-                    href="mailto:hello@company.com"
+                    href="mailto:admin@ready2move.com"
                     className="text-white hover:text-gray-300"
                   >
-                    hello@company.com
+                    admin@ready2move.com
                   </a>
                 </div>
               </div>
@@ -118,11 +118,11 @@ export default function AboutContact() {
                     Location
                   </div>
                   <address className="not-italic text-white">
-                    123 Design Street
+                    123 Bandra West
                     <br />
-                    Creative District
+                    Mumbai, Maharashtra
                     <br />
-                    New York, NY 10001
+                    India
                   </address>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default function AboutContact() {
                   value={formState.name}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-colors focus:border-white/30 focus:outline-none"
+                  className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-200 transition-colors focus:border-white/30 focus:outline-none"
                   placeholder="Your name"
                 />
               </div>
@@ -186,7 +186,7 @@ export default function AboutContact() {
                   value={formState.email}
                   onChange={handleChange}
                   required
-                  className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-colors focus:border-white/30 focus:outline-none"
+                  className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-200 transition-colors focus:border-white/30 focus:outline-none"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -205,7 +205,7 @@ export default function AboutContact() {
                   onChange={handleChange}
                   required
                   rows={5}
-                  className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-500 transition-colors focus:border-white/30 focus:outline-none"
+                  className="w-full rounded-md border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-gray-200 transition-colors focus:border-white/30 focus:outline-none"
                   placeholder="Tell us about your project..."
                 />
               </div>

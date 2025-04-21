@@ -45,6 +45,7 @@ export interface Project {
   singleProjectData: SingleProject;
   paginate: Paginate;
 }
+
 const initialState: Project = {
   isLoading: false,
   isSuccess: false,
@@ -113,6 +114,7 @@ const initialState: Project = {
     pages: [],
   },
 };
+
 const createProjectSlice = createSlice({
   name: "project",
   initialState,

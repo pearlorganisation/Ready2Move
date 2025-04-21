@@ -108,7 +108,23 @@ export const createProjectsByBuilder = createAsyncThunk(
 export const getAllProjects = createAsyncThunk(
   "get/allprojects",
   async (
-    { page, limit }: { page: number; limit: number },
+    {
+      page,
+      limit,
+      priceRange,
+      areaRange,
+      q,
+      service,
+      projectType,
+    }: {
+      page: number;
+      limit: number;
+      priceRange?: string;
+      areaRange?: string;
+      q?: string;
+      service?: "RENT" | "SELL";
+      projectType?: "RESIDENTIAL" | "COMMERCIAL";
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -117,12 +133,23 @@ export const getAllProjects = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      const data = await axiosInstance.get(
-        `/api/v1/projects?page=${page}&limit=${limit}`,
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange);
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (projectType) queryParams.append("projectType", projectType);
+
+      const response = await axiosInstance.get(
+        `/api/v1/projects?${queryParams.toString()}`,
         config
       );
-      // console.log("the data returned in the main projects page is", data)
-      return data.data;
+
+      return response.data;
     } catch (error) {
       return rejectWithValue(error);
     }
