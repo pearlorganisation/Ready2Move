@@ -11,6 +11,7 @@ const Header = () => {
    const HandleLogout = ()=>{
        dispatch(logoutUser())   
   }
+  
 console.log("is logged in", isLoggedIn)
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">

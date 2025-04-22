@@ -8,6 +8,7 @@ import PropertyCard from "./PropertyCard";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { useEffect } from "react";
 import { getBanner } from "@/lib/redux/actions/bannerAction";
+import { fetchCurrentUser } from "@/lib/redux/actions/userAction";
 
 // TypeScript types for props passed into PropertyCard
 interface PropertyCardProps {
@@ -24,10 +25,15 @@ interface PropertyCardProps {
 export default function HeroSection() {
   const dispatch = useAppDispatch();
   const { bannerData } = useAppSelector((state) => state.banner);
-
+  const { isLoggedIn } = useAppSelector(state=> state.user)
   useEffect(() => {
     dispatch(getBanner());
   }, []);
+  useEffect(()=>{
+     if(isLoggedIn){
+      dispatch(fetchCurrentUser())
+     }
+  },[])
   console.log("the banner data is", banner);
   return (
     <div className="min-h-screen flex flex-col mt-6">

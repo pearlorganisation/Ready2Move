@@ -82,19 +82,19 @@ const logInUserSlice = createSlice({
             state.isSuccess= false
             state.isLoading= false
             state.isLoggedIn= false
-            state.userData ={_id:"", 
-                            name: '',
-                            email: '',
-                            phoneNumber: '',
-                            role: '',
-                            isVerified: ''}
+            // state.userData ={_id:"", 
+            //                 name: '',
+            //                 email: '',
+            //                 phoneNumber: '',
+            //                 role: '',
+            //                 isVerified: ''}
         })
         .addCase(loginUser.fulfilled,(state,action)=>{
             state.isError= false
             state.isSuccess= true
             state.isLoading= false
             state.isLoggedIn= true
-            state.userData = action.payload.user
+            // state.userData = action.payload.user
         })
         .addCase(updateUser.pending,state=>{
             state.isError=false
@@ -110,6 +110,30 @@ const logInUserSlice = createSlice({
             state.isLoading=false
             state.isSuccess= true
             state.isError=false
+        })
+        .addCase(fetchCurrentUser.pending,state=>{
+            state.isLoading = true
+            state.isSuccess= false
+            state.isError= false 
+        })
+        .addCase(fetchCurrentUser.rejected,state=>{
+            state.isSuccess= false
+            state.isError=true
+            state.isLoading=false
+            state.userData ={
+                    _id:"", 
+                    name: '',
+                    email: '',
+                    phoneNumber: '',
+                    role: '',
+                    isVerified: ''
+                }
+        })
+        .addCase(fetchCurrentUser.fulfilled,(state,action)=>{
+            state.isLoading= false
+            state.isError= false
+            state.isSuccess= true
+            state.userData = action.payload.data
         })
      }
 })
