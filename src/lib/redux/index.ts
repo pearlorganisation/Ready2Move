@@ -9,6 +9,7 @@ import propertyReducer from "./slice/propertySlice"
 import leadsReducer from "./slice/leadSlice"
 import dashboardReducer from "./slice/dashboardSlice"
 import forgotPasswordReducer from "./slice/passwordSlice"
+import footerReducer from "./slice/footerSlice";
 const rootReducer = combineReducers({
     auth: authReducer, // Add other reducers here
     otp: otpReducer,
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
     property:propertyReducer,
     leads:leadsReducer,
     dashboard:dashboardReducer,
-    forgotpassword:forgotPasswordReducer
+    forgotpassword:forgotPasswordReducer,
+    footer: footerReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>; // Define RootState type

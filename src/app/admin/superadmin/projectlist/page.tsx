@@ -9,6 +9,9 @@ import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
 
+import { useRouter } from 'next/navigation'
+
+
 
 const ProjectListing = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -17,13 +20,21 @@ const ProjectListing = () => {
   console.log("projectData", projectData)
 const dispatch = useAppDispatch();
 const totalPages = Math.ceil(paginate?.total/paginate?.limit)
-
+const[isModalopen,setModalopen]=useState(false) 
  
 const handlePageClick = (page:number)=>{
   if(page >0 && page < totalPages){
       setCurrentPage(page)
   }
 }
+
+const router = useRouter();
+
+
+const handleModalOpen = (slug: string) => {
+  console.log("slug", slug);
+  router.push(`/admin/superadmin/project/edit/${slug}`);
+};
 
   useEffect(() => {
     dispatch(getAllProjects({page: currentPage,limit:10}))
@@ -71,8 +82,10 @@ const handlePageClick = (page:number)=>{
               
                
                 <td className="p-3 flex justify-center items-center mt-6 gap-4">
-                  <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500">
+                  <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500" 
+                  onClick={()=>handleModalOpen(project.slug)}>
                     <FaEdit />
+                    
                   </button>
                   <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600">
                     <FaTrash />
@@ -91,7 +104,7 @@ const handlePageClick = (page:number)=>{
       paginate={paginate}
       handlePageClick={handlePageClick}
     /></div>
-   
+
     </div>
   );
 };

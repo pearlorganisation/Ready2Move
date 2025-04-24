@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { getFeatures } from "../actions/featuresAction"
+import { createFeature, getFeatures } from "../actions/featuresAction"
 
 interface Features{
      featureData:[
@@ -50,12 +50,27 @@ const createFeatureSlice = createSlice({
             type:""
             }]
         })
-        .addCase(getFeatures.fulfilled,(state,action)=>{
-            state.isLoading = false,
-            state.isError= false,
-            state.isSuccess= true
-            state.featureData = action.payload.data
+      .addCase(getFeatures.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.featureData = action.payload.data
+     })
+        .addCase(createFeature.pending,state=>{
+            state.isLoading=true;
+            state.isSuccess=false;
+            state.isError= false;
         })
+        .addCase(createFeature.rejected,(state)=>{
+            state.isLoading= false;
+            state.isError= true;
+            state.isSuccess= false;
+        })
+        .addCase(createFeature.fulfilled,(state)=>{
+            state.isLoading = false;
+            state.isError= false;
+            state.isSuccess= true;
+         })
     }
 })
 

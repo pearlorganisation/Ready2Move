@@ -10,6 +10,9 @@ import PaginationMainComponent from "@/components/PaginationMain";
 import { Delete } from "lucide-react";
 import { getAllProperties } from "@/lib/redux/actions/propertyAction";
 
+
+import { useRouter } from 'next/navigation';
+
 const ProjectListing = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [loading, setLoading] = useState(true);
@@ -24,6 +27,13 @@ const handlePageClick = (page:number)=>{
   }
 }
 
+const router = useRouter();
+
+
+const handleModalOpen = (slug: string) => {
+  console.log("slug", slug);
+  router.push(`/admin/superadmin/property/edit/${slug}`);
+};
   useEffect(() => {
     dispatch(getAllProperties({page:currentPage, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
   }, [dispatch, currentPage])
@@ -71,7 +81,8 @@ const handlePageClick = (page:number)=>{
                 </td>
               
                 <td className="p-3 flex justify-center items-center mt-6 gap-4">
-                  <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500">
+                  <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500" onClick={()=>handleModalOpen(project.slug)}>
+
                     <FaEdit />
                   </button>
                   <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600">
