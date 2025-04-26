@@ -81,8 +81,8 @@ export default function SearchBar() {
       try {
         const url =
           activeTab === "projects"
-            ? `http://localhost:5000/api/v1/projects?page=1&limit=10&q=${debouncedQ}`
-            : `http://localhost:5000/api/v1/properties?page=1&limit=10&q=${debouncedQ}`;
+            ? `/api/v1/projects?page=1&limit=10&q=${debouncedQ}`
+            : `/api/v1/properties?page=1&limit=10&q=${debouncedQ}`;
 
         const { data } = await axiosInstance.get(url);
         setSuggestions(data?.data || []);
