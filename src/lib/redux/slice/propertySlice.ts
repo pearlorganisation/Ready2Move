@@ -81,7 +81,7 @@ export interface SimpleField {
 }
 
 export interface AreaField {
-  _id: string;
+  // _id: string;
   name: string;
   area: number;
   areaMeasurement: string;
@@ -214,7 +214,7 @@ export const initialPropertyState: PropertyState = {
     locality: "",
     city: "",
     state: "",
-    area: [],
+    area: [{name:"", area:0, areaMeasurement:""}],
     reraNumber: "",
     reraPossessionDate: "",
     noOfBedrooms: 0,

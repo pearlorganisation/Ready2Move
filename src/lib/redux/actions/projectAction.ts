@@ -69,8 +69,8 @@ export const createProjectsByBuilder = createAsyncThunk(
       formData.append("isFeatured", userdata?.isFeatured ? "true" : "false");
 
       // ✅ Append YouTube Link if Exists
-      if (userdata?.youtubeLink) {
-        formData.append("youtubeLink", userdata.youtubeLink);
+      if (userdata?.youtubeEmbedLink) {
+        formData.append("youtubeEmbedLink", userdata.youtubeEmbedLink);
       }
 
       // ✅ Append Amenities (Array or Single Value)

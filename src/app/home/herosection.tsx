@@ -50,7 +50,7 @@ export default function HeroSection() {
       <section className="relative h-[600px] md:h-[700px] lg:h-[600px] flex items-center justify-center">
         <div className="absolute inset-0 z-0">
           <Image
-            src={bannerData?.bgImage?.secure_url}
+            src={bannerData?.[0]?.bgImage?.secure_url}
             alt="City skyline"
             fill
             className="object-cover"
@@ -61,10 +61,10 @@ export default function HeroSection() {
 
         <div className="container mx-auto px-4 z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            {bannerData?.headline}
+            {bannerData?.[0]?.headline}
           </h1>
           <p className="text-white text-lg md:text-xl max-w-4xl mx-auto mb-12">
-            {bannerData?.quote}
+            {bannerData?.[0]?.quote}
           </p>
 
           <SearchBar />
