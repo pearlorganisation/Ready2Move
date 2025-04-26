@@ -26,10 +26,10 @@ const FeaturedProjects = () => {
           </div>
         </div>
 
-        <h1 className="text-red-500 flex flex-row gap-2">
+        {/* <h1 className="text-red-500 flex flex-row gap-2">
           <span className="">See All Projects</span>
           <ArrowRight size={24} />
-        </h1>
+        </h1> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-20 mt-12">
