@@ -10,10 +10,14 @@ import PaginationMainComponent from "@/components/PaginationMain";
 import { Delete } from "lucide-react";
 import { getAllProperties } from "@/lib/redux/actions/propertyAction";
 
+
+import { useRouter } from 'next/navigation';
+
 const ProjectListing = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [loading, setLoading] = useState(true);
   const { propertyData, paginate } = useAppSelector((state) => state.property)
+ 
   console.log("propertyData", propertyData)
 const dispatch = useAppDispatch();
 const totalPages = Math.ceil(paginate?.total/paginate?.limit)
@@ -24,10 +28,18 @@ const handlePageClick = (page:number)=>{
   }
 }
 
+const router = useRouter();
+
+
+const handleModalOpen = (slug: string) => {
+  console.log("slug", slug);
+  router.push(`/admin/superadmin/property/edit/${slug}`);
+};
   useEffect(() => {
     dispatch(getAllProperties({page:currentPage, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
   }, [dispatch, currentPage])
 
+ 
   
   return (
     <div className="p-4 overflow-x-auto">
@@ -71,7 +83,8 @@ const handlePageClick = (page:number)=>{
                 </td>
               
                 <td className="p-3 flex justify-center items-center mt-6 gap-4">
-                  <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500">
+                  <button className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500" onClick={()=>handleModalOpen(project.slug)}>
+
                     <FaEdit />
                   </button>
                   <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600">
@@ -85,12 +98,19 @@ const handlePageClick = (page:number)=>{
       </table>
       
       <div className="mt-12 flex justify-center">
-    <PaginationMainComponent
+     <PaginationMainComponent
       totalPages={totalPages}
       currentPage={currentPage}
       paginate={paginate}
       handlePageClick={handlePageClick}
-    /></div>
+     /></div>
+    
+     <div>
+    
+     </div>
+
+
+
    </div>
    
   );
