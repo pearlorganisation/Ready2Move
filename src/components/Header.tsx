@@ -59,7 +59,7 @@ console.log("is logged in", isLoggedIn)
             href="blog"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >
-   blog
+           Blog
           </Link>
           <Link
             href="/about"
@@ -94,9 +94,9 @@ console.log("is logged in", isLoggedIn)
          </>}
     
 
-           <button className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition w-full md:w-auto">
+           {/* <button className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition w-full md:w-auto">
             Create Listing
-          </button>
+          </button> */}
         </div>
       </nav>
     </header>

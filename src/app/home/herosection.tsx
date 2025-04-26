@@ -78,7 +78,7 @@ export default function HeroSection() {
       </section>
 
       {/* Featured Listings Section */}
-      <section className="py-16 bg-gray-50">
+      {/* <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
             Discover Our Featured Listings
@@ -134,7 +134,7 @@ export default function HeroSection() {
             />
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Chat Icons */}
       <div className="fixed bottom-6 right-6 flex flex-col space-y-4">

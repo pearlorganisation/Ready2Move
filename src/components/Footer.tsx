@@ -128,7 +128,7 @@ Property In {item?.city}
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 5L5 20L20 35L35 20L20 5Z" fill="white" />
               </svg>
-              <span className="text-sm">© 2025 Ready2Move. All rights reserved.</span>
+              <span className="text-sm">© 2025 All Rights Reserved. The ReadyToMove Powered By Pearl Organisation</span>
             </div>
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <div className="relative">
