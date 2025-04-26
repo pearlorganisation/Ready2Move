@@ -62,7 +62,7 @@ export default function HeroSection() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-red-300/50"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         <div className="container mx-auto px-4 z-10 text-center">
@@ -137,7 +137,7 @@ export default function HeroSection() {
       </section> */}
 
       {/* Chat Icons */}
-      <div className="fixed bottom-6 right-6 flex flex-col space-y-4">
+      {/* <div className="fixed bottom-6 right-6 flex flex-col space-y-4">
         <div className="bg-green-500 text-white p-3 rounded-full shadow-lg cursor-pointer relative">
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
             1
@@ -147,7 +147,7 @@ export default function HeroSection() {
         <div className="bg-blue-600 text-white p-3 rounded-full shadow-lg cursor-pointer">
           <MessageCircle size={24} />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

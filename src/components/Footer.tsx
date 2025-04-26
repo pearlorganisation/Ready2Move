@@ -128,8 +128,11 @@ Property In {item?.city}
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 5L5 20L20 35L35 20L20 5Z" fill="white" />
               </svg>
-              <span className="text-sm">© 2025 All Rights Reserved. The ReadyToMove Powered By Pearl Organisation</span>
-            </div>
+<span className="text-sm">
+  © 2025 All Rights Reserved. 
+  <a href="https://ready2move.co.in/" className="text-blue-500 hover:underline" target="_self"> Ready2Move</a> Powered By 
+  <a href="https://www.pearlorganisation.com/" className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer"> Pearl Organisation</a>
+</span>            </div>
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <div className="relative">
                 <button onClick={toggleLanguage} className="flex items-center space-x-1 hover:text-gray-300">
