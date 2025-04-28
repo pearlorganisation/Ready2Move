@@ -23,6 +23,7 @@ import {
 } from "@/lib/redux/actions/propertyAction";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import Link from "next/link";
 
 export default function SearchBar() {
   const dispatch = useAppDispatch();
@@ -194,79 +195,83 @@ export default function SearchBar() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Service */}
-            <SelectField
-              control={control}
-              name="service"
-              icon={<Landmark />}
-              label="Service"
-              options={["ALL", "SELL", "RENT"]}
-            />
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  {/* Service */}
+  <SelectField
+    control={control}
+    name="service"
+    icon={<Landmark />}
+    label="Service"
+    options={["ALL", "SELL", "RENT"]}
+  />
 
-            {/* Project Type (ONLY for Projects tab)*/}
-            {activeTab === "projects" && (
-              <SelectField
-                control={control}
-                name="projectType"
-                icon={<Building2 />}
-                label="Project Type"
-                options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
-              />
-            )}
+  {/* Project Type (ONLY for Projects tab) */}
+  {activeTab === "projects" && (
+    <SelectField
+      control={control}
+      name="projectType"
+      icon={<Building2 />}
+      label="Project Type"
+      options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
+    />
+  )}
 
-            {/* Property Type (ONLY for Properties tab) */}
-            {activeTab === "properties" && (
-              <SelectField
-                control={control}
-                name="propertyType"
-                icon={<Building2 />}
-                label="Property Type"
-                options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
-              />
-            )}
+  {/* Property Type (ONLY for Properties tab) */}
+  {activeTab === "properties" && (
+    <SelectField
+      control={control}
+      name="propertyType"
+      icon={<Building2 />}
+      label="Property Type"
+      options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
+    />
+  )}
 
-            {/* Property Category (ONLY for Properties tab) */}
-            {activeTab === "properties" && (
-              <SelectField
-                control={control}
-                name="propertyCategory"
-                icon={<Home />}
-                label="Property Category"
-                loading={loading}
-                options={[
-                  "ALL",
-                  ...propertyCategories.map((cat) => ({
-                    value: cat._id,
-                    label: cat.name,
-                  })),
-                ]}
-              />
-            )}
+  {/* Property Category (ONLY for Properties tab) */}
+  {activeTab === "properties" && (
+    <SelectField
+      control={control}
+      name="propertyCategory"
+      icon={<Home />}
+      label="Property Category"
+      loading={loading}
+      options={[
+        "ALL",
+        ...propertyCategories.map((cat) => ({
+          value: cat._id,
+          label: cat.name,
+        })),
+      ]}
+    />
+  )}
 
-            {/* Search Field */}
-            <div className="space-y-2 relative">
-              <label
-                htmlFor="q"
-                className="text-sm font-medium text-gray-700 flex items-center gap-1"
-              >
-                <MapPin className="h-4 w-4" /> Search
-              </label>
-              <Controller
-                name="q"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <input
-                      {...field}
-                      id="q"
-                      type="text"
-                      placeholder="Serach by name, locality, city or state"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500"
-                    />
-                    {activeTab === "projects" && (
-                      <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        {Array.isArray(searchedProjectData) &&
+  {/* Search Field */}
+  <div
+    className={`space-y-2 relative w-full ${
+      activeTab === "projects" ? "lg:col-span-2" : "lg:col-span-1"
+    } md:col-span-2`}
+  >
+    <label
+      htmlFor="q"
+      className="text-sm font-medium text-gray-700 flex items-center gap-1"
+    >
+      <MapPin className="h-4 w-4" /> Search
+    </label>
+    <Controller
+      name="q"
+      control={control}
+      render={({ field }) => (
+        <>
+          <input
+            {...field}
+            id="q"
+            type="text"
+            placeholder="Search by name, locality, city or state"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500"
+          />
+          {activeTab === "projects" && (
+            <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
+             {Array.isArray(searchedProjectData) &&
                         searchedProjectData.length > 0 ? (
                           searchedProjectData.map((item, idx) => (
                             <li
@@ -277,6 +282,8 @@ export default function SearchBar() {
                                 setSuggestions([]);
                               }}
                             >
+                              <Link href={`/projects/${item?.slug}`}>
+                               <div>
                               <img
                                 src={item?.imageGallery?.[0]?.secure_url}
                                 alt={item.title}
@@ -285,6 +292,8 @@ export default function SearchBar() {
                               <span className="text-sm text-gray-800">
                                 {item.title}
                               </span>
+                               </div>
+                              </Link>
                             </li>
                           ))
                         ) : Array.isArray(searchedProjectData) &&
@@ -293,12 +302,12 @@ export default function SearchBar() {
                             No results found
                           </li>
                         ) : null}
-                      </ul>
-                    )}
+            </ul>
+          )}
 
-                    {activeTab === "properties" && (
-                      <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        {Array.isArray(searchedPropertyData) &&
+          {activeTab === "properties" && (
+            <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
+           {Array.isArray(searchedPropertyData) &&
                         searchedPropertyData.length > 0 ? (
                           searchedPropertyData.map((item, idx) => (
                             <li
@@ -309,7 +318,9 @@ export default function SearchBar() {
                                 setSuggestions([]);
                               }}
                             >
-                              <img
+                              <Link href={`/properties/${item?.slug}`}> 
+                              <div>
+                                <img
                                 src={item?.imageGallery?.[0]?.secure_url}
                                 alt={item.title}
                                 className="w-12 h-12 object-cover rounded-md border"
@@ -317,6 +328,8 @@ export default function SearchBar() {
                               <span className="text-sm text-gray-800">
                                 {item.title}
                               </span>
+                              </div>
+                               </Link>
                             </li>
                           ))
                         ) : Array.isArray(searchedPropertyData) &&
@@ -325,20 +338,14 @@ export default function SearchBar() {
                             No results found
                           </li>
                         ) : null}
-                      </ul>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-          </div>
+            </ul>
+          )}
+        </>
+      )}
+    />
+  </div>
+</div>
 
-          <button
-            type="submit"
-            className="mt-6 w-full bg-teal-600 text-white py-2 px-4 rounded-md"
-          >
-            Search
-          </button>
         </motion.form>
       </div>
     </div>

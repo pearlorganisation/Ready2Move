@@ -17,26 +17,21 @@ const FeaturedProjects = () => {
 
   console.log("The featured projects are", featuredProjects);
   return (
-    <div className="mt-4">
-      <div className="flex flex-row justify-between px-12">
+    <div className="mt-12 lg:mt-4 ">
+      <div className="flex flex-row justify-between">
         <div className="">
           Featured Projects{" "}
           <div className="h-1.5 w-12 bg-yellow-500 mt-1 rounded-e-md rounded-s-md">
             {" "}
           </div>
         </div>
-
-        {/* <h1 className="text-red-500 flex flex-row gap-2">
-          <span className="">See All Projects</span>
-          <ArrowRight size={24} />
-        </h1> */}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-20 mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 mx-auto px-8 lg:grid-cols-3 gap-12 mt-12">
         {Array.isArray(featuredProjects) &&
           featuredProjects?.map((data, index) => (
             <div className="" key={index}>
-              <div className="w-80 overflow-hidden  min-h-72 border-2  rounded-2xl relative">
+              <div className="w-80 overflow-hidden min-h-72 border-2 rounded-2xl relative">
                 <Image
                   width={200}
                   height={200}

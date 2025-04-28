@@ -33,7 +33,7 @@ const FeaturedProperties = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-20 mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 mx-auto px-8 lg:grid-cols-3 gap-12 mt-12">
         {Array.isArray(featuredProperties) &&
           featuredProperties?.slice(0, 3).map((data, index) => {
             // const minArea = Math.min(...data.area.map((a) => a.area));
