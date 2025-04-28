@@ -8,6 +8,7 @@ import { useForm, Controller } from "react-hook-form"
 import slugify from "slugify"
 import ProjectListing from "../projectlist/page"
 import { cn } from "@/lib/util/cn"
+import RoleRedirect from "@/components/RoleBasedComponent"
 
 
  export type ProjectFormInputs = {
@@ -195,6 +196,7 @@ const handleOpenAddProject =()=>{
   return (
     <div className="flex ">
       {/* <Sidebar /> */}
+      <RoleRedirect role ="ADMIN" />
       <div className="flex flex-col p-4">
        <div className="flex  flex-col w-full">
       {/* Sidebar */}
