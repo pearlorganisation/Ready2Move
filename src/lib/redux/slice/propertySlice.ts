@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   createPropertyByAdmin,
   getAllProperties,
+  getAllSearchedProperties,
   getSingleProperty,
 } from "../actions/propertyAction";
 import { Paginate } from "@/lib/util/paginateInterface";
@@ -144,6 +145,7 @@ export interface PropertyState {
   isSuccess: boolean;
   isError: boolean;
   propertyData: PropertyData;
+  searchedPropertyData: PropertyData;
   singlePropertyData: SingleProperty;
   paginate: Paginate;
 }
@@ -153,6 +155,52 @@ export const initialPropertyState: PropertyState = {
   isSuccess: false,
   isError: false,
   propertyData: {
+    id: "",
+    user: "",
+    title: "",
+    slug: "",
+    subTitle: "",
+    description: "",
+    service: "",
+    property: "",
+    propertyType: {
+      _id: "",
+      name: "",
+      type: "",
+    },
+    apartmentName: "",
+    apartmentNo: "",
+    locality: "",
+    city: "",
+    state: "",
+    area: [],
+    reraNumber: "",
+    reraPossessionDate: "",
+    noOfBedrooms: 0,
+    noOfBathrooms: 0,
+    noOfBalconies: 0,
+    parking: "",
+    furnishing: "",
+    entranceFacing: "",
+    availability: "",
+    propertyAge: "",
+    isOCAvailable: false,
+    isCCAvailable: false,
+    ownership: "",
+    expectedPrice: 0,
+    isPriceNegotiable: false,
+    isBrokerageCharge: false,
+    brokerage: 0,
+    bankOfApproval: [],
+    aminities: [],
+    waterSource: "",
+    otherFeatures: [],
+    propertyFlooring: "",
+    imageGallary: [],
+    isFeatured: false,
+    youtubeLink: "",
+  },
+  searchedPropertyData: {
     id: "",
     user: "",
     title: "",
@@ -318,6 +366,25 @@ const createPropertySlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.propertyData = action.payload.data;
+        state.paginate = action.payload.pagination;
+      })
+
+      .addCase(getAllSearchedProperties.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllSearchedProperties.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.searchedPropertyData = initialPropertyState.searchedPropertyData;
+
+        state.paginate = initialPropertyState.paginate;
+      })
+      .addCase(getAllSearchedProperties.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.searchedPropertyData = action.payload.data;
         state.paginate = action.payload.pagination;
       })
 

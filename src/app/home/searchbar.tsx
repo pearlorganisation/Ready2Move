@@ -13,8 +13,14 @@ import {
 } from "lucide-react";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { useDispatch } from "react-redux";
-import { getAllProjects } from "@/lib/redux/actions/projectAction";
-import { getAllProperties } from "@/lib/redux/actions/propertyAction";
+import {
+  getAllProjects,
+  getAllSearchProjects,
+} from "@/lib/redux/actions/projectAction";
+import {
+  getAllProperties,
+  getAllSearchedProperties,
+} from "@/lib/redux/actions/propertyAction";
 import { toast } from "react-toastify";
 import { useAppSelector } from "@/lib/hooks/dispatchHook";
 
@@ -30,14 +36,18 @@ export default function SearchBar() {
   const [debouncedQ, setDebouncedQ] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
 
-  const { projectData } = useAppSelector((state) => state.projects);
-  const { propertyData } = useAppSelector((state) => state.property);
+  const { projectData, searchedProjectData } = useAppSelector(
+    (state) => state.projects
+  );
+  const { propertyData, searchedPropertyData } = useAppSelector(
+    (state) => state.property
+  );
 
   const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       service: "ALL",
       projectType: "ALL",
-      property: "ALL",
+      propertyType: "ALL",
       propertyCategory: "ALL",
       q: "",
     },
@@ -45,7 +55,7 @@ export default function SearchBar() {
 
   const service = watch("service");
   const projectType = watch("projectType");
-  const property = watch("property");
+  const propertyType = watch("propertyType");
   const propertyCategory = watch("propertyCategory");
   const q = watch("q");
 
@@ -104,12 +114,12 @@ export default function SearchBar() {
 
     if (activeTab === "projects") {
       if (projectType !== "ALL") filters.projectType = projectType;
-      dispatch(getAllProjects(filters));
+      dispatch(getAllSearchProjects(filters));
     } else {
-      if (property !== "ALL") filters.property = property;
+      if (propertyType !== "ALL") filters.propertyType = propertyType;
       if (propertyCategory !== "ALL")
         filters.propertyCategory = propertyCategory;
-      dispatch(getAllProperties(filters));
+      dispatch(getAllSearchedProperties(filters));
     }
   }, [
     dispatch,
@@ -117,7 +127,7 @@ export default function SearchBar() {
     currentPage,
     service,
     projectType,
-    property,
+    propertyType,
     propertyCategory,
     debouncedQ,
   ]);
@@ -186,20 +196,22 @@ export default function SearchBar() {
               options={["ALL", "SELL", "RENT"]}
             />
 
-            {/* Project Type */}
-            <SelectField
-              control={control}
-              name="projectType"
-              icon={<Building2 />}
-              label="Project Type"
-              options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
-            />
+            {/* Project Type (ONLY for Projects tab)*/}
+            {activeTab === "projects" && (
+              <SelectField
+                control={control}
+                name="projectType"
+                icon={<Building2 />}
+                label="Project Type"
+                options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
+              />
+            )}
 
             {/* Property Type (ONLY for Properties tab) */}
             {activeTab === "properties" && (
               <SelectField
                 control={control}
-                name="property"
+                name="propertyType"
                 icon={<Building2 />}
                 label="Property Type"
                 options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
@@ -241,54 +253,70 @@ export default function SearchBar() {
                       {...field}
                       id="q"
                       type="text"
-                      placeholder="Enter query"
+                      placeholder="Serach by name, locality, city or state"
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500"
                     />
-                    {activeTab === "projects" && suggestions.length > 0 && (
+                    {activeTab === "projects" && (
                       <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        {projectData.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
-                            onClick={() => {
-                              field.onChange(item.title);
-                              setSuggestions([]);
-                            }}
-                          >
-                            <img
-                              src={item?.imageGallery?.[0]?.secure_url}
-                              alt={item.title}
-                              className="w-12 h-12 object-cover rounded-md border"
-                            />
-                            <span className="text-sm text-gray-800">
-                              {item.title}
-                            </span>
+                        {Array.isArray(searchedProjectData) &&
+                        searchedProjectData.length > 0 ? (
+                          searchedProjectData.map((item, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
+                              onClick={() => {
+                                field.onChange(item.title);
+                                setSuggestions([]);
+                              }}
+                            >
+                              <img
+                                src={item?.imageGallery?.[0]?.secure_url}
+                                alt={item.title}
+                                className="w-12 h-12 object-cover rounded-md border"
+                              />
+                              <span className="text-sm text-gray-800">
+                                {item.title}
+                              </span>
+                            </li>
+                          ))
+                        ) : Array.isArray(searchedProjectData) &&
+                          searchedProjectData.length === 0 ? (
+                          <li className="px-4 py-2 text-sm text-gray-500">
+                            No results found
                           </li>
-                        ))}
+                        ) : null}
                       </ul>
                     )}
 
-                    {activeTab === "properties" && suggestions.length > 0 && (
+                    {activeTab === "properties" && (
                       <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        {propertyData.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
-                            onClick={() => {
-                              field.onChange(item.title);
-                              setSuggestions([]);
-                            }}
-                          >
-                            <img
-                              src={item?.imageGallery?.[0]?.secure_url}
-                              alt={item.title}
-                              className="w-12 h-12 object-cover rounded-md border"
-                            />
-                            <span className="text-sm text-gray-800">
-                              {item.title}
-                            </span>
+                        {Array.isArray(searchedPropertyData) &&
+                        searchedPropertyData.length > 0 ? (
+                          searchedPropertyData.map((item, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
+                              onClick={() => {
+                                field.onChange(item.title);
+                                setSuggestions([]);
+                              }}
+                            >
+                              <img
+                                src={item?.imageGallery?.[0]?.secure_url}
+                                alt={item.title}
+                                className="w-12 h-12 object-cover rounded-md border"
+                              />
+                              <span className="text-sm text-gray-800">
+                                {item.title}
+                              </span>
+                            </li>
+                          ))
+                        ) : Array.isArray(searchedPropertyData) &&
+                          searchedPropertyData.length === 0 ? (
+                          <li className="px-4 py-2 text-sm text-gray-500">
+                            No results found
                           </li>
-                        ))}
+                        ) : null}
                       </ul>
                     )}
                   </>

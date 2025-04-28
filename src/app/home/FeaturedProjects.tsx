@@ -34,7 +34,7 @@ const FeaturedProjects = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-20 mt-12">
         {Array.isArray(featuredProjects) &&
-          featuredProjects.map((data, index) => (
+          featuredProjects?.map((data, index) => (
             <div className="" key={index}>
               <div className="w-80 overflow-hidden  min-h-72 border-2  rounded-2xl relative">
                 <Image

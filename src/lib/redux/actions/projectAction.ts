@@ -156,6 +156,57 @@ export const getAllProjects = createAsyncThunk(
   }
 );
 
+export const getAllSearchProjects = createAsyncThunk(
+  "get/allsearchprojects",
+  async (
+    {
+      page,
+      limit,
+      priceRange,
+      areaRange,
+      q,
+      service,
+      projectType,
+    }: {
+      page: number;
+      limit: number;
+      priceRange?: string;
+      areaRange?: string;
+      q?: string;
+      service?: "RENT" | "SELL";
+      projectType?: "RESIDENTIAL" | "COMMERCIAL";
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange);
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (projectType) queryParams.append("projectType", projectType);
+
+      const response = await axiosInstance.get(
+        `/api/v1/projects/search?${queryParams.toString()}`,
+        config
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const getSingleProject = createAsyncThunk(
   "get/singleproject",
   async ({ slug }: { slug: string }, { rejectWithValue }) => {
