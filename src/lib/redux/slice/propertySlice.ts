@@ -61,12 +61,14 @@ export interface PropertyData {
   waterSource?: string;
   otherFeatures?: string[];
   propertyFlooring?: string;
-  imageGallery?: [{ 
-          secure_url: string,
-          public_id: string
-        }];
+  imageGallery?: [
+    {
+      secure_url: string;
+      public_id: string;
+    }
+  ];
   isFeatured?: boolean;
-  youtubeLink?: string;
+  youtubeEmbedLink?: string;
 }
 
 export interface ImageGallery {
@@ -148,57 +150,61 @@ export const initialPropertyState: PropertyState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
-  propertyData: [{
-    _id: "",
-    user: "",
-    title: "",
-    slug: "",
-    subTitle: "",
-    description: "",
-    service: "",
-    property: "",
-    propertyType: {
+  propertyData: [
+    {
       _id: "",
-      name: "",
-      type: "",
+      user: "",
+      title: "",
+      slug: "",
+      subTitle: "",
+      description: "",
+      service: "",
+      property: "",
+      propertyType: {
+        _id: "",
+        name: "",
+        type: "",
+      },
+      apartmentName: "",
+      apartmentNo: "",
+      locality: "",
+      city: "",
+      state: "",
+      area: [],
+      reraNumber: "",
+      reraPossessionDate: "",
+      noOfBedrooms: 0,
+      noOfBathrooms: 0,
+      noOfBalconies: 0,
+      parking: "",
+      furnishing: "",
+      entranceFacing: "",
+      availability: "",
+      propertyAge: "",
+      isOCAvailable: false,
+      isCCAvailable: false,
+      ownership: "",
+      expectedPrice: 0,
+      isPriceNegotiable: false,
+      isBrokerageCharge: false,
+      brokerage: 0,
+      bankOfApproval: [],
+      aminities: [],
+      waterSource: "",
+      otherFeatures: [],
+      propertyFlooring: "",
+      imageGallery: [
+        {
+          secure_url: "",
+          public_id: "",
+        },
+      ],
+      isFeatured: false,
+      youtubeEmbedLink: "",
     },
-    apartmentName: "",
-    apartmentNo: "",
-    locality: "",
-    city: "",
-    state: "",
-    area: [],
-    reraNumber: "",
-    reraPossessionDate: "",
-    noOfBedrooms: 0,
-    noOfBathrooms: 0,
-    noOfBalconies: 0,
-    parking: "",
-    furnishing: "",
-    entranceFacing: "",
-    availability: "",
-    propertyAge: "",
-    isOCAvailable: false,
-    isCCAvailable: false,
-    ownership: "",
-    expectedPrice: 0,
-    isPriceNegotiable: false,
-    isBrokerageCharge: false,
-    brokerage: 0,
-    bankOfApproval: [],
-    aminities: [],
-    waterSource: "",
-    otherFeatures: [],
-    propertyFlooring: "",
-    imageGallery:  [{
-      secure_url:"",
-      public_id:""
-    }],
-    isFeatured: false,
-    youtubeLink: "",
-  },
+  ],
   searchedPropertyData: {
-    id: "",
+    _id: "",
     user: "",
     title: "",
     slug: "",
@@ -241,7 +247,7 @@ export const initialPropertyState: PropertyState = {
     propertyFlooring: "",
     imageGallary: [],
     isFeatured: false,
-    youtubeLink: "",
+    youtubeEmbedLink: "",
   },
   singlePropertyData: {
     _id: "",
@@ -262,7 +268,7 @@ export const initialPropertyState: PropertyState = {
     locality: "",
     city: "",
     state: "",
-    area: [{name:"", area:0, areaMeasurement:""}],
+    area: [{ name: "", area: 0, areaMeasurement: "" }],
     reraNumber: "",
     reraPossessionDate: "",
     noOfBedrooms: 0,
