@@ -77,7 +77,7 @@ const initialState: Project = {
     youtubeLink: "",
   },
   searchedProjectData: {
-    id: "",
+    _id: "",
     user: "",
     title: "",
     slug: "",
@@ -222,7 +222,7 @@ const createProjectSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.searchedProjectData = {
-          id: "",
+          _id: "",
           user: "",
           title: "",
           slug: "",

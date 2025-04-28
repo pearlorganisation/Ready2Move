@@ -71,6 +71,58 @@ export interface PropertyData {
   youtubeEmbedLink?: string;
 }
 
+export interface SearchedPropertyData {
+  _id: string;
+  user: string;
+  title: string;
+  slug: string;
+  subTitle: string;
+  description: string;
+  service: string;
+  property: string;
+  propertyType: SimpleType;
+  apartmentName: string;
+  apartmentNo: string;
+  locality: string;
+  city: string;
+  state: string;
+  area: {
+    _id: string;
+    name: string;
+    area: number;
+    areaMeasurement: string;
+  }[];
+  reraNumber: string;
+  reraPossessionDate: string;
+  noOfBedrooms: number;
+  noOfBathrooms: number;
+  noOfBalconies: number;
+  parking: string;
+  furnishing: string;
+  entranceFacing: string;
+  availability: string;
+  propertyAge: string;
+  isOCAvailable: boolean;
+  isCCAvailable: boolean;
+  ownership: string;
+  expectedPrice: number;
+  isPriceNegotiable: boolean;
+  isBrokerageCharge: boolean;
+  brokerage: number;
+  bankOfApproval?: string[];
+  aminities?: string[];
+  waterSource?: string;
+  otherFeatures?: string[];
+  propertyFlooring?: string;
+  imageGallery?: [
+    {
+      secure_url: string;
+      public_id: string;
+    }
+  ];
+  isFeatured?: boolean;
+  youtubeEmbedLink?: string;
+}
 export interface ImageGallery {
   secure_url: string;
   public_id: string;
@@ -140,8 +192,8 @@ export interface PropertyState {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
-  propertyData: PropertyData;
-  searchedPropertyData: PropertyData;
+  propertyData: PropertyData[];
+  searchedPropertyData: SearchedPropertyData;
   singlePropertyData: SingleProperty;
   paginate: Paginate;
 }
@@ -150,59 +202,57 @@ export const initialPropertyState: PropertyState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
-  propertyData: [
-    {
+  propertyData: [{
+    _id: "",
+    user: "",
+    title: "",
+    slug: "",
+    subTitle: "",
+    description: "",
+    service: "",
+    property: "",
+    propertyType: {
       _id: "",
-      user: "",
-      title: "",
-      slug: "",
-      subTitle: "",
-      description: "",
-      service: "",
-      property: "",
-      propertyType: {
-        _id: "",
-        name: "",
-        type: "",
-      },
-      apartmentName: "",
-      apartmentNo: "",
-      locality: "",
-      city: "",
-      state: "",
-      area: [],
-      reraNumber: "",
-      reraPossessionDate: "",
-      noOfBedrooms: 0,
-      noOfBathrooms: 0,
-      noOfBalconies: 0,
-      parking: "",
-      furnishing: "",
-      entranceFacing: "",
-      availability: "",
-      propertyAge: "",
-      isOCAvailable: false,
-      isCCAvailable: false,
-      ownership: "",
-      expectedPrice: 0,
-      isPriceNegotiable: false,
-      isBrokerageCharge: false,
-      brokerage: 0,
-      bankOfApproval: [],
-      aminities: [],
-      waterSource: "",
-      otherFeatures: [],
-      propertyFlooring: "",
-      imageGallery: [
-        {
-          secure_url: "",
-          public_id: "",
-        },
-      ],
-      isFeatured: false,
-      youtubeEmbedLink: "",
+      name: "",
+      type: "",
     },
-  ],
+    apartmentName: "",
+    apartmentNo: "",
+    locality: "",
+    city: "",
+    state: "",
+    area: [],
+    reraNumber: "",
+    reraPossessionDate: "",
+    noOfBedrooms: 0,
+    noOfBathrooms: 0,
+    noOfBalconies: 0,
+    parking: "",
+    furnishing: "",
+    entranceFacing: "",
+    availability: "",
+    propertyAge: "",
+    isOCAvailable: false,
+    isCCAvailable: false,
+    ownership: "",
+    expectedPrice: 0,
+    isPriceNegotiable: false,
+    isBrokerageCharge: false,
+    brokerage: 0,
+    bankOfApproval: [],
+    aminities: [],
+    waterSource: "",
+    otherFeatures: [],
+    propertyFlooring: "",
+    imageGallery: [
+      {
+        secure_url: "",
+        public_id: "",
+      },
+    ],
+    isFeatured: false,
+    youtubeEmbedLink: "",
+  }],
   searchedPropertyData: {
     _id: "",
     user: "",
@@ -245,7 +295,7 @@ export const initialPropertyState: PropertyState = {
     waterSource: "",
     otherFeatures: [],
     propertyFlooring: "",
-    imageGallary: [],
+    imageGallery: [{ secure_url:"", public_id:""}],
     isFeatured: false,
     youtubeEmbedLink: "",
   },

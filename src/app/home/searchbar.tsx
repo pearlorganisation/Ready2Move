@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { motion } from "framer-motion";
 import {
   Building2,
@@ -132,7 +132,15 @@ export default function SearchBar() {
     debouncedQ,
   ]);
 
-  const onSubmit = (data) => {
+  interface Search {
+    service: string,
+    projectType:string,
+    propertyType:string,
+    propertyCategory?: string,
+    q?:string,
+    tab?: string
+  }
+  const onSubmit:SubmitHandler<Search> = (data) => {
     const payload = {
       tab: activeTab,
       ...data,
