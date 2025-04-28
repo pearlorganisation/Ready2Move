@@ -9,7 +9,7 @@ import { Paginate } from "@/lib/util/paginateInterface";
 import { SingleProject } from "@/lib/Interfaces/project";
 import { boolean } from "yup";
 export interface ProjectData {
-  id: string;
+  _id: string;
   user: string;
   title: string;
   slug: string;
@@ -53,7 +53,7 @@ const initialState: Project = {
   isSuccess: false,
   isError: false,
   projectData: {
-    id: "",
+    _id: "",
     user: "",
     title: "",
     slug: "",
@@ -172,7 +172,7 @@ const createProjectSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.projectData = {
-          id: "",
+          _id: "",
           user: "",
           title: "",
           slug: "",
@@ -272,8 +272,6 @@ const createProjectSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.singleProjectData = action.payload.data.data;
-        // state.projectData = action.payload.data;
-        // assuming `data` is in `data.data`
       })
       .addCase(getSingleProject.rejected, (state) => {
         state.isLoading = false;
@@ -310,30 +308,6 @@ const createProjectSlice = createSlice({
           updatedAt: "",
           __v: 0,
         };
-        // state.projectData = {
-        //   id: "",
-        //   user: "",
-        //   title: "",
-        //   slug: "",
-        //   subTitle: "",
-        //   description: "",
-        //   locality: "",
-        //   city: "",
-        //   state: "",
-        //   service: "",
-        //   projectType: "",
-        //   areaRange: { min: "", max: "" },
-        //   priceRange: { min: "", max: "" },
-        //   pricePerSqFt: 0,
-        //   reraNumber: "",
-        //   availability: "",
-        //   reraPossessionDate: "",
-        //   aminities: [],
-        //   bankOfApproval: [],
-        //   imageGallary: [],
-        //   isFeatured: false,
-        //   youtubeLink: "",
-        // };
       });
   },
 });

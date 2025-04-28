@@ -81,7 +81,7 @@ export interface FeaturedProject {
   projectType: string;
   pricePerSqFt: number;
   reraNumber: string;
-  availability: string;
+  availability: {name:string};
   reraPossessionDate: string;
   aminities: string[];
   bankOfApproval: string[];

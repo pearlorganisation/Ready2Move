@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { fetchCurrentUser, loginUser } from "../actions/userAction"
+import { fetchCurrentUser, loginUser, updateUser } from "../actions/userAction"
 
 interface UserUpdated{
-    
+    isSuccess:boolean,
+    isError:boolean,
+    isLoading:boolean
 }
 
 interface Login {
@@ -18,7 +20,8 @@ interface Login {
         role: string,
         isVerified: string
     },
-    users:{}
+    users:{},
+    isUserUpdated:UserUpdated
 }
 const initialState: Login={
   isLoading: false,
@@ -33,7 +36,12 @@ const initialState: Login={
     role: '',
     isVerified: ''
   },
-  users:{}
+  users:{},
+  isUserUpdated:{
+    isLoading:false,
+    isSuccess:false,
+    isError:false
+  }
 }
 
 const logInUserSlice = createSlice({
@@ -74,24 +82,60 @@ const logInUserSlice = createSlice({
             state.isSuccess= false
             state.isLoading= false
             state.isLoggedIn= false
-            state.userData ={_id:"", 
-                            name: '',
-                            email: '',
-                            phoneNumber: '',
-                            role: '',
-                            isVerified: ''}
+            // state.userData ={_id:"", 
+            //                 name: '',
+            //                 email: '',
+            //                 phoneNumber: '',
+            //                 role: '',
+            //                 isVerified: ''}
         })
         .addCase(loginUser.fulfilled,(state,action)=>{
             state.isError= false
             state.isSuccess= true
             state.isLoading= false
             state.isLoggedIn= true
-            state.userData = action.payload.user
+            // state.userData = action.payload.user
         })
-        // .addCase(fetchCurrentUser.pending,state=>{
-            
-        // })
-    }
+        .addCase(updateUser.pending,state=>{
+            state.isError=false
+            state.isLoading= true
+            state.isSuccess= true
+        })
+        .addCase(updateUser.rejected,state=>{
+            state.isError=true
+            state.isLoading=false
+            state.isSuccess=false
+        })
+        .addCase(updateUser.fulfilled,state=>{
+            state.isLoading=false
+            state.isSuccess= true
+            state.isError=false
+        })
+        .addCase(fetchCurrentUser.pending,state=>{
+            state.isLoading = true
+            state.isSuccess= false
+            state.isError= false 
+        })
+        .addCase(fetchCurrentUser.rejected,state=>{
+            state.isSuccess= false
+            state.isError=true
+            state.isLoading=false
+            state.userData ={
+                    _id:"", 
+                    name: '',
+                    email: '',
+                    phoneNumber: '',
+                    role: '',
+                    isVerified: ''
+                }
+        })
+        .addCase(fetchCurrentUser.fulfilled,(state,action)=>{
+            state.isLoading= false
+            state.isError= false
+            state.isSuccess= true
+            state.userData = action.payload.data
+        })
+     }
 })
 
 export const { resetLogin, logoutUser } = logInUserSlice.actions

@@ -30,7 +30,7 @@ export type ProjectFormInputs = {
   bankOfApproval?: string[]
   imageGallary?: File[];
   isFeatured?: boolean
-  youtubeLink?: string
+  youtubeEmbedLink?: string
 }
 
 const CreateProject = () => {
@@ -750,7 +750,7 @@ const CreateProject = () => {
                                   id="youtubeLink"
                                   placeholder="e.g. https://www.youtube.com/embed/abcdefg"
                                   className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                  {...register("youtubeLink")}
+                                  {...register("youtubeEmbedLink")}
                                 />
                               </div>
 

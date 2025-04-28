@@ -1,17 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { forgotPassword, resetPasswordFunction } from "../actions/passwordAction";
+import { forgotPassword, resetPasswordFunction, updateUserPassword } from "../actions/passwordAction";
 interface ResetPassowrd{
     isPasswordReset:boolean;
     isPasswordResetFailed:boolean;
     isPasswordResetLoading:boolean
 }
 
+/** for when the user is logged in */
+export interface PasswordUpdated{
+    isUpdated:boolean;
+    isLoading:boolean;
+    isError:boolean;
+}
 export interface ForgotPassword {
     isLoading:boolean;
     isSuccess:boolean;
     isError:boolean;
-    resetPassword: ResetPassowrd ; // for resetting the password
+    resetPassword: ResetPassowrd ; // for resetting the password when not logged in
+    updatedPassword: PasswordUpdated
 }
+
+ 
 
 const initialState:ForgotPassword ={
     isLoading:false,
@@ -21,7 +30,13 @@ const initialState:ForgotPassword ={
         isPasswordReset:false,
         isPasswordResetFailed:false,
         isPasswordResetLoading:false
+    },
+    updatedPassword:{
+        isUpdated:false,
+        isLoading:false,
+        isError:false
     }
+
 }
 
 const createForgotPasswordSlice = createSlice({
@@ -63,6 +78,25 @@ const createForgotPasswordSlice = createSlice({
             state.resetPassword.isPasswordReset= true
             state.resetPassword.isPasswordResetFailed= false
         })
+        .addCase(updateUserPassword.pending,state=>{
+            state.updatedPassword = state.updatedPassword ?? {}
+            state.updatedPassword.isError=false
+            state.updatedPassword.isLoading=true
+            state.updatedPassword.isUpdated=false
+        })
+        .addCase(updateUserPassword.rejected,state=>{
+            state.updatedPassword = state.updatedPassword ?? {}
+            state.updatedPassword.isError=true
+            state.updatedPassword.isLoading=false
+            state.updatedPassword.isUpdated=false
+        })
+        .addCase(updateUserPassword.fulfilled,state=>{
+            state.updatedPassword = state.updatedPassword ?? {}
+            state.updatedPassword.isError=false
+            state.updatedPassword.isLoading=false
+            state.updatedPassword.isUpdated=true
+        })
+
     }
 })
 

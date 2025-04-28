@@ -1,11 +1,13 @@
 import MySlugProperty from "@/components/MySlugProperty";
 
-interface Props {
-  params: { slug: string };
-}
+// interface Props {
+//   params: { slug: string };
+// }
 
-export default function PropertyDetails({ params }: Props) {
-  const slug = params.slug;
+export default async function ProjectDetails(params:{
+  params:Promise<{slug:string}>
+}) {
+  const { slug } = await params.params;
 
   return (
     <div className="mt-20">

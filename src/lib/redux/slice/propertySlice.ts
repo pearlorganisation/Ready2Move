@@ -19,7 +19,7 @@ export interface PriceRange {
 }
 
 export interface PropertyData {
-  id: string;
+  _id: string;
   user: string;
   title: string;
   slug: string;
@@ -61,7 +61,10 @@ export interface PropertyData {
   waterSource?: string;
   otherFeatures?: string[];
   propertyFlooring?: string;
-  imageGallary?: File[];
+  imageGallery?: [{ 
+          secure_url: string,
+          public_id: string
+        }];
   isFeatured?: boolean;
   youtubeLink?: string;
 }
@@ -79,7 +82,7 @@ export interface SimpleField {
 }
 
 export interface AreaField {
-  _id: string;
+  // _id: string;
   name: string;
   area: number;
   areaMeasurement: string;
@@ -131,15 +134,6 @@ export interface SingleProperty {
   __v: number;
 }
 
-// export interface Paginate {
-//   total: number;
-//   current_page: number;
-//   limit: number;
-//   next: number | null;
-//   prev: number | null;
-//   pages: number[];
-// }
-
 export interface PropertyState {
   isLoading: boolean;
   isSuccess: boolean;
@@ -154,8 +148,8 @@ export const initialPropertyState: PropertyState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
-  propertyData: {
-    id: "",
+  propertyData: [{
+    _id: "",
     user: "",
     title: "",
     slug: "",
@@ -196,7 +190,10 @@ export const initialPropertyState: PropertyState = {
     waterSource: "",
     otherFeatures: [],
     propertyFlooring: "",
-    imageGallary: [],
+    imageGallery:  [{
+      secure_url:"",
+      public_id:""
+    }],
     isFeatured: false,
     youtubeLink: "",
   },
@@ -265,7 +262,7 @@ export const initialPropertyState: PropertyState = {
     locality: "",
     city: "",
     state: "",
-    area: [],
+    area: [{name:"", area:0, areaMeasurement:""}],
     reraNumber: "",
     reraPossessionDate: "",
     noOfBedrooms: 0,

@@ -1,13 +1,21 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from "react"
 import Link from "next/link"
 // import { Play, Facebook, Twitter, Instagram, Phone, Mail, MapPin } from "lucide-react"
 import { ChevronDown, Facebook, Instagram, Twitter, MapPin, Phone, Mail, Play } from "lucide-react"
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook'
+import { getAllCityData } from '@/lib/redux/actions/footerAction'
 
 
 const Footer = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false)
+  const{projectsCityWithLocality,propertiesCityWithLocality}=useAppSelector((state=>state.footer))
+
+  console.log("pro",projectsCityWithLocality,"property",propertiesCityWithLocality)
+  const dispatch = useAppDispatch()
+  useEffect(()=>{
+    dispatch(getAllCityData())},[])
 
   const toggleLanguage = () => {
     setIsLanguageOpen(!isLanguageOpen)
@@ -61,166 +69,56 @@ const Footer = () => {
 
           {/* Property In Maharashtra Column */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Property In Maharashtra</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Mumbai
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Navi Mumbai
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Thane
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Pune
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Palghar
-                </Link>
-              </li>
-            </ul>
+            {
+projectsCityWithLocality?.map((item,i)=>(
+  <>
+<h3 className="text-lg font-semibold mb-4" key={i}>Project In {item.city}</h3>
+<ul className="space-y-3">
 
-            <h3 className="text-lg font-semibold mt-8 mb-4">Property In UP</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Ayodhya
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Lucknow
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Varanasi
-                </Link>
-              </li>
-            </ul>
+    
+      {item.localities?.map((locality,i)=>
+        <li>
+      <Link href="#" className="hover:text-gray-300">
+      <div key={i}>{locality}</div>
+      </Link>
+      </li>)}</ul>
+      </>
+))
+            }
+ 
+         
+        
+            
+              
+  
+
+           
           </div>
 
           {/* Property In Gujarat Column */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Property In Gujarat</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Ahmedabad
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Surat
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Vadodara
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Vapi
-                </Link>
-              </li>
-            </ul>
+            {
+              propertiesCityWithLocality?.map((item,i)=>(
+                <>
+                <h3 className="text-lg font-semibold mb-4"  key={i}>       
+           
+Property In {item?.city}
+                </h3>
+                <ul>
+                 {item.localities.map((locality,i)=>(
+ <li className="hover:text-gray-300"  
+  key={i}>{locality}</li>
+                  ))
+                    }
+                </ul>
+                </>
+              ))
+            }
 
-            <h3 className="text-lg font-semibold mt-8 mb-4">Property In MP</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Jabalpur
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Indore
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="hover:text-gray-300">
-                  Bhopal
-                </Link>
-              </li>
-            </ul>
+
           </div>
 
-          {/* Other Regions Column */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Property In Goa</h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Property In Chhattisgarh
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Raipur
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Property In Delhi</h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Property In Kerala
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Kochi
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Properties
-                  </Link>
-                </li>
-                {/* <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    My Account
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-gray-300">
-                    Create Listing
-                  </Link>
-                </li> */}
-              </ul>
-            </div>
-          </div>
+         
         </div>
 
         {/* Bottom Section */}
@@ -230,8 +128,11 @@ const Footer = () => {
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 5L5 20L20 35L35 20L20 5Z" fill="white" />
               </svg>
-              <span className="text-sm">© 2025 Ready2Move. All rights reserved.</span>
-            </div>
+<span className="text-sm">
+  © 2025 All Rights Reserved. 
+  <a href="https://ready2move.co.in/" className="text-blue-500 hover:underline" target="_self"> Ready2Move</a> Powered By 
+  <a href="https://www.pearlorganisation.com/" className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer"> Pearl Organisation</a>
+</span>            </div>
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <div className="relative">
                 <button onClick={toggleLanguage} className="flex items-center space-x-1 hover:text-gray-300">

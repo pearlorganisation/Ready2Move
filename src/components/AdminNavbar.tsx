@@ -10,7 +10,7 @@ const AdminNavbar = () => {
 const dispatch = useAppDispatch()
   const { isLoggedIn, userData } = useAppSelector(state=> state.user)
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false)
-
+  
   const handleShowDetails =()=>{
     setShowUpdateModal(!showUpdateModal)
   }

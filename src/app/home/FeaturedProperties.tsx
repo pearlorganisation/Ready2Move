@@ -26,10 +26,10 @@ const FeaturedProperties = () => {
           <div className="h-1.5 w-16 bg-yellow-500 mt-1 rounded-full" />
         </div>
 
-        <button className="flex items-center gap-2 text-red-600 font-medium hover:underline transition">
+        {/* <button className="flex items-center gap-2 text-red-600 font-medium hover:underline transition">
           <span>See All Properties</span>
           <ArrowRight size={20} />
-        </button>
+        </button> */}
       </div>
 
       {/* Grid */}
