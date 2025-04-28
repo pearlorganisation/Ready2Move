@@ -4,12 +4,14 @@ import logo from "../assets/logo.png";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { logoutUser } from "@/lib/redux/slice/userSlice";
+import { logout } from "@/lib/redux/actions/userAction";
  
 const Header = () => {
   const dispatch = useAppDispatch()
   const { userData, isLoggedIn } = useAppSelector((state)=> state?.user)
    const HandleLogout = ()=>{
-       dispatch(logoutUser())   
+       dispatch(logoutUser());   
+       dispatch(logout());
   }
   
 console.log("is logged in", isLoggedIn)

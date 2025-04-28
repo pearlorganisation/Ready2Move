@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { fetchCurrentUser, loginUser, updateUser } from "../actions/userAction"
+import { fetchCurrentUser, loginUser, logout, updateUser } from "../actions/userAction"
 
 interface UserUpdated{
     isSuccess:boolean,
@@ -82,12 +82,6 @@ const logInUserSlice = createSlice({
             state.isSuccess= false
             state.isLoading= false
             state.isLoggedIn= false
-            // state.userData ={_id:"", 
-            //                 name: '',
-            //                 email: '',
-            //                 phoneNumber: '',
-            //                 role: '',
-            //                 isVerified: ''}
         })
         .addCase(loginUser.fulfilled,(state,action)=>{
             state.isError= false
@@ -134,6 +128,17 @@ const logInUserSlice = createSlice({
             state.isError= false
             state.isSuccess= true
             state.userData = action.payload.data
+        })
+        .addCase(logout.pending,state=>{
+            state.isLoading= true
+        })
+        .addCase(logout.rejected,state=>{
+            state.isError= true
+        })
+        .addCase(logout.fulfilled,state=>{
+            state.isError=false
+            state.isLoading= false
+            state.isSuccess= true
         })
      }
 })
