@@ -357,31 +357,7 @@ export const initialPropertyState: PropertyState = {
     pages: [],
   },
 };
-// interface Property {
-//   isLoading: boolean;
-//   isSuccess: boolean;
-//   isError: boolean;
-//   propertyData: any[];
-//   singleProperty: any;
-//   paginate: Paginate;
-// }
-
-// const initialState: Property = {
-//   isLoading: false,
-//   isSuccess: false,
-//   isError: false,
-//   propertyData: [],
-//   singleProperty: {},
-//   paginate: {
-//     total: 0,
-//     current_page: 0,
-//     limit: 0,
-//     next: null,
-//     prev: null,
-//     pages: [],
-//   },
-// };
-
+ 
 const createPropertySlice = createSlice({
   name: "property",
   initialState: initialPropertyState,
