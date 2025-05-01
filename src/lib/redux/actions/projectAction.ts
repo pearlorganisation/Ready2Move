@@ -2,6 +2,8 @@ import { ProjectFormInputs } from "@/app/admin/builder/addproject/page";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+import { toast } from "react-toastify";
+
 export const createProjectsByBuilder = createAsyncThunk(
   "create/project",
   async (
@@ -166,6 +168,7 @@ export const getSingleProject = createAsyncThunk(
         },
       };
       const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
+      toast.success("fetched succcessfully ")
 
       return data;
     } catch (error) {
@@ -173,3 +176,65 @@ export const getSingleProject = createAsyncThunk(
     }
   }
 );
+
+
+export const updateProject = createAsyncThunk(
+  "patch/updateProject",
+  async ({ slug }: { slug: string }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
+      if (data && data.status === 200) {
+        toast.success("Project updated successfully!");
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
+export const deleteImagesProject = createAsyncThunk(
+  "delete/Images",
+  async ({ slug, deleteImages }: { slug: string; deleteImages: string[] }, { rejectWithValue }) => {
+    console.log(slug,"i",deleteImages)
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      };
+      // Sending the array of image IDs (deleteImages) in the request body
+      const data = await axiosInstance.patch(`/api/v1/projects/${slug}`, { deleteImages }, config);
+      toast.success("Images deleted succcessfully ")
+      return data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete Project");
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteProject = createAsyncThunk(
+  "delete/Project",
+  async (id: string, { rejectWithValue }) => {
+    console.log("Deleting project with id:", id);
+
+    try {
+      const data = await axiosInstance.delete(`/api/v1/projects/${id}`);
+      toast.success("Project deleted successfully");
+      return data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete project");
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
+
