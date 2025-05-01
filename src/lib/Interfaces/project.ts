@@ -3,7 +3,7 @@ interface Range {
   max: number;
 }
 
-interface Amenity {
+export interface Amenity {
   _id: string;
   name: string;
   type: string; // e.g., "AMENITIES"

@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createProjectsByBuilder,
+  deleteImagesProject,
+
+  deleteProject,
+
   getAllProjects,
   getAllSearchProjects,
   getSingleProject,
@@ -8,6 +12,7 @@ import {
 import { Paginate } from "@/lib/util/paginateInterface";
 import { SingleProject } from "@/lib/Interfaces/project";
 import { boolean } from "yup";
+import { rejects } from "assert";
 export interface ProjectData {
   _id: string;
   user: string;
@@ -308,7 +313,39 @@ const createProjectSlice = createSlice({
           updatedAt: "",
           __v: 0,
         };
-      });
+      })
+      .addCase(deleteProject.pending,(state)=>{
+     state.isLoading=true;
+        state.isError=false;
+        state.isSuccess=false;
+      })
+      .addCase(deleteProject.fulfilled,(state,action)=>{
+        state.isLoading=false;
+        state.isError=false;
+        state.isSuccess=true;
+      
+      })
+      .addCase(deleteProject.rejected,(state,action)=>{
+        state.isError=true;
+        state.isLoading=false;
+        state.isSuccess=false
+      })
+      .addCase(deleteImagesProject.pending,(state)=>{
+        state.isLoading=true;
+        state.isError=false;
+        state.isSuccess=false;
+      })
+      .addCase(deleteImagesProject.fulfilled,(state,action)=>{
+        state.isLoading=false;
+        state.isError=false;
+        state.isSuccess=true;
+       
+      })
+      .addCase(deleteImagesProject.rejected,(state,action)=>{
+        state.isError=true;
+        state.isLoading=false;
+        state.isSuccess=false
+      })
   },
 });
 

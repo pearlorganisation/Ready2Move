@@ -7,6 +7,7 @@ import {
 } from "../actions/propertyAction";
 import { Paginate } from "@/lib/util/paginateInterface";
 import { SimpleType } from "@/lib/Interfaces/property";
+import { stat } from "fs/promises";
 
 export interface AreaRange {
   min: string;
@@ -434,6 +435,7 @@ const createPropertySlice = createSlice({
         state.isError = true;
         state.singlePropertyData = initialPropertyState.singlePropertyData;
       });
+      
   },
 });
 

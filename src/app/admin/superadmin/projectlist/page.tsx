@@ -5,11 +5,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { getAllProjects } from "@/lib/redux/actions/projectAction";
+import { deleteProject, getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
 
 import { useRouter } from 'next/navigation'
+import DeleteModal from "@/components/DeletedModal";
 
 
 
@@ -39,6 +40,27 @@ const handleModalOpen = (slug: string) => {
   useEffect(() => {
     dispatch(getAllProjects({page: currentPage,limit:10}))
   }, [dispatch, currentPage])
+  const [isopen,setModalOpen]=useState(false)
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+
+  
+  const handleDeleteClick = (id: string) => {
+    setSelectedId(id);   // Save the id
+    setModalOpen(true);  // Open the modal
+  };
+  
+  const confirmDelete = () => {
+    if (selectedId) {
+      dispatch(deleteProject(selectedId));  // Now dispatch happens only after confirmation
+    }
+    setModalOpen(false);  // Close the modal after deletion
+  };
+  
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <div className="p-4 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">All Projects</h2>
@@ -87,7 +109,7 @@ const handleModalOpen = (slug: string) => {
                     <FaEdit />
                     
                   </button>
-                  <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600">
+                  <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600" onClick={()=>handleDeleteClick(project?._id)}>
                     <FaTrash />
                   </button>
                 </td>
@@ -105,6 +127,7 @@ const handleModalOpen = (slug: string) => {
       handlePageClick={handlePageClick}
     /></div>
 
+{isopen &&( <DeleteModal isOpen={isopen} onClose={closeModal} onDelete={confirmDelete}/>)}
     </div>
   );
 };
