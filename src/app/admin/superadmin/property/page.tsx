@@ -348,7 +348,8 @@ const CustomCalendar = ({
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 p-2">
+        <div className="absolute w-max z-10 mt-1  bg-white shadow-lg rounded-md border border-gray-200 p-2" 
+>
           <div className="flex justify-between items-center mb-2">
             <button
               type="button"
@@ -609,7 +610,7 @@ export default function PropertyForm() {
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
     dispatch(createPropertyByAdmin({ userdata: formData }));
-    alert("Property form submitted successfully!");
+    // alert("Property form submitted successfully!");
   }
 
   useEffect(()=>{
