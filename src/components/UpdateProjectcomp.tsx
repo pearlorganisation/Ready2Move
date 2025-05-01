@@ -5,6 +5,7 @@ import { axiosInstance } from '@/lib/constants/axiosInstance';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook';
 import { getSingleProject } from '@/lib/redux/actions/projectAction';
 import slugify from 'slugify';
+import { useRouter } from 'next/navigation';
 
 export interface Project {
   _id?: string;
@@ -64,10 +65,12 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   }, [title]);
   
 
+  const router = useRouter()
   const onSubmit = async (data: Project) => {
     try {
       await axiosInstance.patch(`/api/v1/projects/${slug}`, data);
       alert('Project updated successfully!');
+      router.push('/admin/superadmin/projects')
     } catch (err) {
       console.error(err);
       alert('Failed to update project.');

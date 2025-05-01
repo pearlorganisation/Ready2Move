@@ -6,6 +6,7 @@ import { axiosInstance } from '@/lib/constants/axiosInstance';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook';
 import { getSingleProject } from '@/lib/redux/actions/projectAction';
 import { getSingleProperty } from '@/lib/redux/actions/propertyAction';
+import { useRouter } from 'next/navigation';
 
 export interface Property {
   _id?: string;
@@ -93,12 +94,12 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
 //     }
 //   }, [slug, reset]);
 
-  
+  const router = useRouter()
   const onSubmit = async (data: Property) => {
     try {
       await axiosInstance.patch(`/api/v1/properties/${slug}`, data);
       alert('Property updated successfully!');
- 
+      router.push('/admin/superadmin/property')
     } catch (err) {
       console.error(err);
       alert('Failed to update Property.');
