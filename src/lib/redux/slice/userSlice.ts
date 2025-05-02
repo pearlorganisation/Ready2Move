@@ -138,7 +138,7 @@ const logInUserSlice = createSlice({
         .addCase(logout.fulfilled,state=>{
             state.isError=false
             state.isLoading= false
-            state.isSuccess= true
+            // state.isSuccess= true
         })
      }
 })
