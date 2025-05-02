@@ -199,9 +199,9 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       });
   
       // Availability
-      // if (data.availability) {
-      //   formData.append("availability", data.availability._id || data.availability);
-      // }
+      if (data.availability) {
+        formData.append("availability", data.availability || "");
+      }
   
       // Bank Approvals
       // if (Array.isArray(data.bankOfApproval)) {
