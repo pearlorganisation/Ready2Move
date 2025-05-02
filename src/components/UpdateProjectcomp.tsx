@@ -26,7 +26,7 @@ export interface Project {
   service: "RENT" | "SALE";
   projectType: "RESIDENTIAL" | "COMMERCIAL";
   pricePerSqFt: number;
-  aminities: Amenity[];
+  aminities:  string[];
   isFeatured: boolean;
   availability: string;
   bankOfApproval:string;
@@ -41,9 +41,9 @@ interface Image {
 
 interface Amenity {
   _id: string;
-  name: string;
-  type: string; // e.g., "AMENITIES"
-}
+  // name: string;
+  // type: string; 
+ }
 interface Availability {
   _id: string; 
 }
@@ -120,7 +120,6 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
        const {areaRange,priceRange,availability,...rest} = singleProjectData;
        console.log("rest",rest);
       reset({
-        //  ...rest,
         subTitle:singleProjectData?.subTitle,
         description:singleProjectData?.description,
         locality:singleProjectData?.locality,
@@ -130,15 +129,11 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         areaRange,priceRange,
         reraPossessionDate: singleProjectData.reraPossessionDate?.split("T")[0],
         pricePerSqFt: singleProjectData.pricePerSqFt,
-        aminities: singleProjectData?.aminities?.map((item: Amenity) => ({
-          _id: item._id,
-          name: item.name,
-          type: item.type,
-        })),
+        aminities: singleProjectData?.aminities?.map((item) => item._id),
         bankOfApproval:singleProjectData?.bankOfApproval?.[0]?._id,
         imageGallery: singleProjectData?.imageGallery,
-        youtubeEmbedLink:singleProjectData?.youtubeEmbedLink
-
+        youtubeEmbedLink:singleProjectData?.youtubeEmbedLink,
+        reraNumber:singleProjectData?.reraNumber
       })
     }
   }, [singleProjectData, reset]);
@@ -200,7 +195,7 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   
       // Amenities
       data.aminities.forEach((amenity) => {
-        formData.append("aminities", typeof amenity === "string" ? amenity : amenity.name);
+        formData.append("aminities", typeof amenity === "string" ? amenity : "");
       });
   
       // Availability
@@ -444,6 +439,7 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                           id={`amenity-${feature._id}`}
                           {...register("aminities")}
                           value={feature._id}
+                          
                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
                         <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
