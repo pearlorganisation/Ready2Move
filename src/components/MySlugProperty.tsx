@@ -14,7 +14,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { createLeads } from "@/lib/redux/actions/leadsAction";
 import { getSingleProperty } from "@/lib/redux/actions/propertyAction";
-
+import { normalizeYouTubeLink } from "@/lib/constants/urlConverter"
 const MySlugProperty = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -27,6 +27,10 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
 
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+const embedUrl = normalizeYouTubeLink(singlePropertyData?.youtubeEmbedLink)
+  
+
 
   const [activeTab, setActiveTab] = useState("overview");
   const [formData, setFormData] = useState({
@@ -723,7 +727,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   <div className="w-full h-0 pb-[56.25%] relative bg-gray-200">
                     <iframe
                       className="absolute inset-0 w-full h-full"
-                      src={singlePropertyData?.youtubeEmbedLink}
+                      src={embedUrl}
                       title="YouTube video player"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
