@@ -152,7 +152,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-blue-100">
+    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-blue-100 rounded-sm">
       <div className="w-full max-w-6xl">
         {/* Tabs */}
         <div className="flex border border-gray-200 bg-white rounded-t-lg overflow-hidden">

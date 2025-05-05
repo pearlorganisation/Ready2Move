@@ -52,7 +52,7 @@ console.log("is logged in", isLoggedIn)
             Projects
           </Link>
           <Link
-            href="properties"
+            href="/properties"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >
             Properties

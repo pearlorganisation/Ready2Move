@@ -47,16 +47,20 @@ export interface Project {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
+  isProjectAdded:boolean;
   projectData: ProjectData;
   searchedProjectData: ProjectData;
   singleProjectData: SingleProject;
   paginate: Paginate;
+  isDeleted:boolean
 }
 
 const initialState: Project = {
   isLoading: false,
   isSuccess: false,
   isError: false,
+  isProjectAdded:false,
+  isDeleted:false,
   projectData: {
     _id: "",
     user: "",
@@ -166,16 +170,21 @@ const createProjectSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
+        state.isProjectAdded=true
       })
       .addCase(getAllProjects.pending, (state) => {
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
+        state.isProjectAdded=false
+        state.isDeleted=false
       })
       .addCase(getAllProjects.rejected, (state) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
+        state.isProjectAdded=false
+        state.isDeleted=false
         state.projectData = {
           _id: "",
           user: "",
@@ -213,6 +222,8 @@ const createProjectSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
+        state.isProjectAdded=false
+        state.isDeleted=false
         state.projectData = action.payload.data;
         state.paginate = action.payload.pagination;
       })
@@ -266,7 +277,6 @@ const createProjectSlice = createSlice({
         state.searchedProjectData = action.payload.data;
         state.paginate = action.payload.pagination;
       })
-
       .addCase(getSingleProject.pending, (state) => {
         state.isLoading = true;
         state.isSuccess = false;
@@ -315,20 +325,24 @@ const createProjectSlice = createSlice({
         };
       })
       .addCase(deleteProject.pending,(state)=>{
-     state.isLoading=true;
-        state.isError=false;
-        state.isSuccess=false;
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.isDeleted = false
       })
       .addCase(deleteProject.fulfilled,(state,action)=>{
-        state.isLoading=false;
-        state.isError=false;
-        state.isSuccess=true;
-      
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.isDeleted = true
+
       })
       .addCase(deleteProject.rejected,(state,action)=>{
-        state.isError=true;
-        state.isLoading=false;
-        state.isSuccess=false
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.isDeleted = false
+
       })
       .addCase(deleteImagesProject.pending,(state)=>{
         state.isLoading=true;
