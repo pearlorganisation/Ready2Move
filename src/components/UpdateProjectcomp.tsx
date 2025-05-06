@@ -5,6 +5,7 @@ import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { deleteImagesProject, getSingleProject } from "@/lib/redux/actions/projectAction";
 import slugify from "slugify";
+import { useRouter } from "next/navigation";
 
 
 export interface Project {
@@ -174,6 +175,7 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     alert("Failed to update project.");
   //   }
   // };
+  const router=useRouter()
 
   const onSubmit = async (data: Project) => {
     try {
@@ -239,6 +241,7 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
       });
   
       alert("Project updated successfully!");
+      router.push("/admin/superadmin/project")
     } catch (err) {
       console.error(err);
       alert("Failed to update project.");

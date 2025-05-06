@@ -48,7 +48,9 @@ const PropertiesPage = () => {
         bedRooms: debouncedBedRoom,
         bathRooms: debouncedBathRoom,
       })
-    );
+    ).then((res)=>{
+      console.log(res,"res")
+    })
   }, [currentPage, debouncedBedRoom, debouncedPriceRange, debouncedBathRoom]);
   return (
     <div className="p-6 max-w-7xl mx-auto">

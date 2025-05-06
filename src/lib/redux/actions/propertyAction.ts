@@ -1,5 +1,6 @@
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 // Interface for the structure within the 'area' array
 interface AreaDetail {
   name: string;
@@ -343,6 +344,23 @@ export const getSingleProperty = createAsyncThunk(
 
       return data.data;
     } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
+export const deleteProperty = createAsyncThunk(
+  "delete/Project",
+  async (id: string, { rejectWithValue }) => {
+    console.log("Deleting project with id:", id);
+
+    try {
+      const data = await axiosInstance.delete(`/api/v1/properties/${id}`);
+      toast.success("Project deleted successfully");
+      return data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete project");
       return rejectWithValue(error);
     }
   }

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import { createLeads } from "@/lib/redux/actions/leadsAction";

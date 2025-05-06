@@ -14,6 +14,7 @@ import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { Sidebar } from "@/components/sidebar";
 
 import Propertylisting from "../propertylist/page"
+import { useRouter } from "next/navigation";
 type FormData = {
   title: string;
   slug: string;
@@ -466,6 +467,8 @@ export default function PropertyForm() {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const dispatch = useAppDispatch()
+  const router = useRouter();
+
   const[OpenPropertyModal,setPropertyModal]=useState<boolean>(false)
   const handleModalOpen=()=>{
     setPropertyModal(!OpenPropertyModal)
@@ -609,8 +612,10 @@ export default function PropertyForm() {
 
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
-    dispatch(createPropertyByAdmin({ userdata: formData }));
-    // alert("Property form submitted successfully!");
+    dispatch(createPropertyByAdmin({ userdata: formData }))
+  router.push("/admin/superadmin/property")
+setPropertyModal(false)
+  
   }
 
   useEffect(()=>{

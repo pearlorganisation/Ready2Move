@@ -38,6 +38,7 @@ type User = {
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
   const dashboardData: any = useAppSelector((state) => state.dashboard.data);
+  console.log("dashbore",dashboardData)
   const users: User[] = useAppSelector((state) => state.leads.users);
   console.log("users", users)
 
@@ -83,15 +84,15 @@ export default function DashboardPage() {
 
   const onSubmit = (data: any) => {
     console.log("Submitting edited lead:", { id: selectedLeadId, ...data });
-    dispatch(updateLeadById({ id: selectedLeadId, ...data }));
+    dispatch(updateLeadById({ id: selectedLeadId,updatedData:{ ...data} }));
     setIsEditDialogOpen(false);
   };
 
   return (
     <div>
        {/* <Sidebar /> */}
-       <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Dashboard</h1>
+       <div className="space-y-6 px-4 py-4">
+   
 
       {/* Stats Section */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -121,12 +122,12 @@ export default function DashboardPage() {
         />
       </div>
 
-      <h1 className="text-3xl font-bold text-gray-800 pb-2 w-fit text-center">
+      <h1 className="text-3xl font-bold text-gray-800 pb-2 w-fit text-center ml-4">
         Recent Leads
       </h1>
 
       {/* Leads Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto px-4">
         <table className="w-full border rounded-lg overflow-hidden">
           <thead className="bg-gray-200">
             <tr>

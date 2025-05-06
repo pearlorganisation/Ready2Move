@@ -85,7 +85,7 @@ const CreateProject = () => {
   /** for opening the modal for adding project and updating the project and deleting the project */
   const [openAddProjectModal, setOpenAddProjectModal] = useState<boolean>(false)
 
-  
+
   const {
     register,
     handleSubmit,
@@ -125,6 +125,7 @@ const handleOpenAddProject =()=>{
     }
   }, [title, setValue])
 
+
   const submitForm = (data: ProjectFormInputs) => {
     const formData = {
       ...data,
@@ -138,6 +139,8 @@ const handleOpenAddProject =()=>{
     }
     try {
       dispatch(createProjectsByBuilder({ userdata: formData }))
+
+      setOpenAddProjectModal(false)
     } catch (error) {
       console.log("the error is", error)
     }
@@ -199,13 +202,15 @@ const handleOpenAddProject =()=>{
        <div className="flex  flex-col w-full">
       {/* Sidebar */}
           <div className="w-full  px-4 py-4">
-              <div className="flex ">
-                <button
+              <div className="flex flex-row justify-between ">
+                <div></div>
+                <div><button
                   className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition"
                   onClick={handleOpenAddProject}
                 >
                 Add New Project
-                </button>
+                </button></div>
+             
               </div>
           </div>
           {/* Modal for adding project */}

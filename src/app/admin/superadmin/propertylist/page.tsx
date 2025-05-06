@@ -8,16 +8,18 @@ import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
 import { Delete } from "lucide-react";
-import { getAllProperties } from "@/lib/redux/actions/propertyAction";
+import { deleteProperty, getAllProperties } from "@/lib/redux/actions/propertyAction";
 
 
 import { useRouter } from 'next/navigation';
+import DeleteModal from "@/components/DeletedModal";
 
 const ProjectListing = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [loading, setLoading] = useState(true);
   const { propertyData, paginate } = useAppSelector((state) => state.property)
- 
+ const[isOpenModal,setOpenModal]=useState(false)
+ const[selectedData,setseletedData]=useState<string|null>(null)
   console.log("propertyData", propertyData)
 const dispatch = useAppDispatch();
 const totalPages = Math.ceil(paginate?.total/paginate?.limit)
@@ -39,8 +41,28 @@ const handleModalOpen = (slug: string) => {
     dispatch(getAllProperties({page:currentPage, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
   }, [dispatch, currentPage])
 
- 
+ const handleDelete=(id:string)=>{
+  setseletedData(id)
+  setOpenModal(true)
+ }
   
+ const confirmDelete=()=>{
+  if(selectedData){
+    dispatch(deleteProperty(selectedData)).then((res:any)=>{
+   if(res.payload.data.success){
+    dispatch(getAllProperties({page:currentPage, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
+    setOpenModal(false)
+   }
+    })
+
+
+   
+
+  }
+ }
+ const closeModal=()=>{
+setOpenModal(false)
+ }
   return (
     <div className="p-4 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">All Property</h2>
@@ -87,7 +109,9 @@ const handleModalOpen = (slug: string) => {
 
                     <FaEdit />
                   </button>
-                  <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600">
+                  <button className="bg-red-500 p-2 rounded text-white hover:bg-red-600" onClick={()=>{
+                    handleDelete(project._id)
+                  }}>
                     <FaTrash />
                   </button>
                 </td>
@@ -108,7 +132,9 @@ const handleModalOpen = (slug: string) => {
      <div>
     
      </div>
-
+{
+isOpenModal&&(
+ <DeleteModal isOpen={isOpenModal} onClose={closeModal} onDelete={confirmDelete}/>)}
 
 
    </div>

@@ -115,6 +115,8 @@ export const updateLeadById = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
+
+      alert(JSON.stringify(updatedData));
       const { data } = await axiosInstance.patch(
         `/api/v1/leads/${id}`,
         updatedData,
