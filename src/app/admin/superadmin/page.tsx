@@ -60,7 +60,10 @@ console.log("the pathname is ", pathname)
        <div>
     
          <h1>Welcome Admin, {userdata.name}!</h1>
-       </div>
+
+         {/** dashboard all data */}
+
+          </div>
      );
   }
    

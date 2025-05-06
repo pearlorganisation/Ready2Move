@@ -16,6 +16,8 @@ export function Sidebar() {
         <SidebarLink href="/admin/superadmin/project" icon={<FolderKanban className="mr-2 h-4 w-4" />} label="Projects" />
         <SidebarLink href="/admin/superadmin/leads" icon={<Users className="mr-2 h-4 w-4" />} label="Leads" />
         <SidebarLink href="/admin/superadmin/features" icon={<Users className="mr-2 h-4 w-4" />} label="Features" />
+        <SidebarLink href="/admin/superadmin/users" icon={<Users className="mr-2 h-4 w-4" />} label="Users" />
+
       </nav>
     </div>
   )

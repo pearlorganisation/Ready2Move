@@ -5,6 +5,8 @@ import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { deleteImagesProject, getSingleProject } from "@/lib/redux/actions/projectAction";
 import slugify from "slugify";
+import { getFeatures } from "@/lib/redux/actions/featuresAction";
+import { useRouter } from "next/router";
 
 
 export interface Project {
@@ -62,6 +64,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   // const [bankAproval, setBankAproval] = useState<BankApproval>();
   const [newImages, setNewImages] = useState<File[]>([]);
   console.log("new Images",newImages)
+  const router=useRouter()
   // console.log(availability, "availability");
   useEffect(() => {
      dispatch(getFeatures())     
