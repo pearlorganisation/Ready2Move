@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { motion } from "framer-motion";
 import {
   Building2,
@@ -13,10 +13,17 @@ import {
 } from "lucide-react";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { useDispatch } from "react-redux";
-import { getAllProjects } from "@/lib/redux/actions/projectAction";
-import { getAllProperties } from "@/lib/redux/actions/propertyAction";
+import {
+  getAllProjects,
+  getAllSearchProjects,
+} from "@/lib/redux/actions/projectAction";
+import {
+  getAllProperties,
+  getAllSearchedProperties,
+} from "@/lib/redux/actions/propertyAction";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import Link from "next/link";
 
 export default function SearchBar() {
   const dispatch = useAppDispatch();
@@ -30,14 +37,18 @@ export default function SearchBar() {
   const [debouncedQ, setDebouncedQ] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
 
-  const { projectData } = useAppSelector((state) => state.projects);
-  const { propertyData } = useAppSelector((state) => state.property);
+  const { projectData, searchedProjectData } = useAppSelector(
+    (state) => state.projects
+  );
+  const { propertyData, searchedPropertyData } = useAppSelector(
+    (state) => state.property
+  );
 
   const { control, handleSubmit, reset, watch } = useForm({
     defaultValues: {
       service: "ALL",
       projectType: "ALL",
-      property: "ALL",
+      propertyType: "ALL",
       propertyCategory: "ALL",
       q: "",
     },
@@ -45,7 +56,7 @@ export default function SearchBar() {
 
   const service = watch("service");
   const projectType = watch("projectType");
-  const property = watch("property");
+  const propertyType = watch("propertyType");
   const propertyCategory = watch("propertyCategory");
   const q = watch("q");
 
@@ -104,12 +115,12 @@ export default function SearchBar() {
 
     if (activeTab === "projects") {
       if (projectType !== "ALL") filters.projectType = projectType;
-      dispatch(getAllProjects(filters));
+      dispatch(getAllSearchProjects(filters));
     } else {
-      if (property !== "ALL") filters.property = property;
+      if (propertyType !== "ALL") filters.propertyType = propertyType;
       if (propertyCategory !== "ALL")
         filters.propertyCategory = propertyCategory;
-      dispatch(getAllProperties(filters));
+      dispatch(getAllSearchedProperties(filters));
     }
   }, [
     dispatch,
@@ -117,12 +128,20 @@ export default function SearchBar() {
     currentPage,
     service,
     projectType,
-    property,
+    propertyType,
     propertyCategory,
     debouncedQ,
   ]);
 
-  const onSubmit = (data:any) => {
+  interface Search {
+    service: string,
+    projectType:string,
+    propertyType:string,
+    propertyCategory?: string,
+    q?:string,
+    tab?: string
+  }
+  const onSubmit:SubmitHandler<Search> = (data) => {
     const payload = {
       tab: activeTab,
       ...data,
@@ -133,7 +152,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-blue-100">
+    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-blue-100 rounded-sm">
       <div className="w-full max-w-6xl">
         {/* Tabs */}
         <div className="flex border border-gray-200 bg-white rounded-t-lg overflow-hidden">
@@ -176,133 +195,157 @@ export default function SearchBar() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Service */}
-            <SelectField
-              control={control}
-              name="service"
-              icon={<Landmark />}
-              label="Service"
-              options={["ALL", "SELL", "RENT"]}
-            />
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  {/* Service */}
+  <SelectField
+    control={control}
+    name="service"
+    icon={<Landmark />}
+    label="Service"
+    options={["ALL", "SELL", "RENT"]}
+  />
 
-            {/* Project Type */}
-            <SelectField
-              control={control}
-              name="projectType"
-              icon={<Building2 />}
-              label="Project Type"
-              options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
-            />
+  {/* Project Type (ONLY for Projects tab) */}
+  {activeTab === "projects" && (
+    <SelectField
+      control={control}
+      name="projectType"
+      icon={<Building2 />}
+      label="Project Type"
+      options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
+    />
+  )}
 
-            {/* Property Type (ONLY for Properties tab) */}
-            {activeTab === "properties" && (
-              <SelectField
-                control={control}
-                name="property"
-                icon={<Building2 />}
-                label="Property Type"
-                options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
-              />
-            )}
+  {/* Property Type (ONLY for Properties tab) */}
+  {activeTab === "properties" && (
+    <SelectField
+      control={control}
+      name="propertyType"
+      icon={<Building2 />}
+      label="Property Type"
+      options={["ALL", "RESIDENTIAL", "COMMERCIAL"]}
+    />
+  )}
 
-            {/* Property Category (ONLY for Properties tab) */}
-            {activeTab === "properties" && (
-              <SelectField
-                control={control}
-                name="propertyCategory"
-                icon={<Home />}
-                label="Property Category"
-                loading={loading}
-                options={[
-                  "ALL",
-                  ...propertyCategories.map((cat) => ({
-                    value: cat._id,
-                    label: cat.name,
-                  })),
-                ]}
-              />
-            )}
+  {/* Property Category (ONLY for Properties tab) */}
+  {activeTab === "properties" && (
+    <SelectField
+      control={control}
+      name="propertyCategory"
+      icon={<Home />}
+      label="Property Category"
+      loading={loading}
+      options={[
+        "ALL",
+        ...propertyCategories.map((cat) => ({
+          value: cat._id,
+          label: cat.name,
+        })),
+      ]}
+    />
+  )}
 
-            {/* Search Field */}
-            <div className="space-y-2 relative">
-              <label
-                htmlFor="q"
-                className="text-sm font-medium text-gray-700 flex items-center gap-1"
-              >
-                <MapPin className="h-4 w-4" /> Search
-              </label>
-              <Controller
-                name="q"
-                control={control}
-                render={({ field }) => (
-                  <>
-                    <input
-                      {...field}
-                      id="q"
-                      type="text"
-                      placeholder="Enter query"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500"
-                    />
-                    {activeTab === "projects" && suggestions.length > 0 && (
-                      <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        { Array.isArray(projectData)&&projectData?.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
-                            onClick={() => {
-                              field.onChange(item.title);
-                              setSuggestions([]);
-                            }}
-                          >
-                            <img
-                              src={item?.imageGallery?.[0]?.secure_url}
-                              alt={item.title}
-                              className="w-12 h-12 object-cover rounded-md border"
-                            />
-                            <span className="text-sm text-gray-800">
-                              {item.title}
-                            </span>
+  {/* Search Field */}
+  <div
+    className={`space-y-2 relative w-full ${
+      activeTab === "projects" ? "lg:col-span-2" : "lg:col-span-1"
+    } md:col-span-2`}
+  >
+    <label
+      htmlFor="q"
+      className="text-sm font-medium text-gray-700 flex items-center gap-1"
+    >
+      <MapPin className="h-4 w-4" /> Search
+    </label>
+    <Controller
+      name="q"
+      control={control}
+      render={({ field }) => (
+        <>
+          <input
+            {...field}
+            id="q"
+            type="text"
+            placeholder="Search by name, locality, city or state"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500"
+          />
+          {activeTab === "projects" && (
+            <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
+             {Array.isArray(searchedProjectData) &&
+                        searchedProjectData.length > 0 ? (
+                          searchedProjectData.map((item, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
+                              onClick={() => {
+                                field.onChange(item.title);
+                                setSuggestions([]);
+                              }}
+                            >
+                              <Link href={`/projects/${item?.slug}`}>
+                               <div>
+                              <img
+                                src={item?.imageGallery?.[0]?.secure_url}
+                                alt={item.title}
+                                className="w-12 h-12 object-cover rounded-md border"
+                              />
+                              <span className="text-sm text-gray-800">
+                                {item.title}
+                              </span>
+                               </div>
+                              </Link>
+                            </li>
+                          ))
+                        ) : Array.isArray(searchedProjectData) &&
+                          searchedProjectData.length === 0 ? (
+                          <li className="px-4 py-2 text-sm text-gray-500">
+                            No results found
                           </li>
-                        ))}
-                      </ul>
-                    )}
+                        ) : null}
+            </ul>
+          )}
 
-                    {activeTab === "properties" && suggestions.length > 0 && (
-                      <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
-                        {propertyData.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
-                            onClick={() => {
-                              field.onChange(item.title);
-                              setSuggestions([]);
-                            }}
-                          >
-                            <img
-                              src={item?.imageGallery?.[0]?.secure_url}
-                              alt={item.title}
-                              className="w-12 h-12 object-cover rounded-md border"
-                            />
-                            <span className="text-sm text-gray-800">
-                              {item.title}
-                            </span>
+          {activeTab === "properties" && (
+            <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
+           {Array.isArray(searchedPropertyData) &&
+                        searchedPropertyData.length > 0 ? (
+                          searchedPropertyData.map((item, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-center gap-3 px-4 py-2 hover:bg-teal-100 cursor-pointer"
+                              onClick={() => {
+                                field.onChange(item.title);
+                                setSuggestions([]);
+                              }}
+                            >
+                              <Link href={`/properties/${item?.slug}`}> 
+                              <div>
+                                <img
+                                src={item?.imageGallery?.[0]?.secure_url}
+                                alt={item.title}
+                                className="w-12 h-12 object-cover rounded-md border"
+                              />
+                              <span className="text-sm text-gray-800">
+                                {item.title}
+                              </span>
+                              </div>
+                               </Link>
+                            </li>
+                          ))
+                        ) : Array.isArray(searchedPropertyData) &&
+                          searchedPropertyData.length === 0 ? (
+                          <li className="px-4 py-2 text-sm text-gray-500">
+                            No results found
                           </li>
-                        ))}
-                      </ul>
-                    )}
-                  </>
-                )}
-              />
-            </div>
-          </div>
+                        ) : null}
+            </ul>
+          )}
+        </>
+      )}
+    />
+  </div>
+</div>
 
-          <button
-            type="submit"
-            className="mt-6 w-full bg-teal-600 text-white py-2 px-4 rounded-md"
-          >
-            Search
-          </button>
         </motion.form>
       </div>
     </div>

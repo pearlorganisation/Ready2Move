@@ -16,13 +16,16 @@ const RoleRedirect = ({role}:{role:string}) => {
         const response = await axiosInstance.get(`/api/v1/users/me`)
         console.log(response.data, "the data is")
 
-        if (response?.data?.data?.role != role) {
+        if (response?.data?.data?.role != role || response?.data?.success == false) {
           router.push("/")
         }
 
         setuserdata(response?.data?.data)
       } catch (error) {
-        console.error("Error fetching user data:", error)
+        // console.error("Error fetching user data:", error)
+        if(error){
+          router.push("/")
+        }
       }
     }
 

@@ -1,30 +1,32 @@
 "use client"
 import Image from "next/image";
-import logo from "../assets/logo.png";
+import logo from "../assets/mainlogo.jpg";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { logoutUser } from "@/lib/redux/slice/userSlice";
+import { logout } from "@/lib/redux/actions/userAction";
  
 const Header = () => {
   const dispatch = useAppDispatch()
   const { userData, isLoggedIn } = useAppSelector((state)=> state?.user)
    const HandleLogout = ()=>{
-       dispatch(logoutUser())   
+       dispatch(logoutUser());   
+       dispatch(logout());
   }
   
 console.log("is logged in", isLoggedIn)
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-      <nav className="max-w-screen-xl mx-auto px-4 py-3 flex justify-between items-center">
+    <header className="sticky top-0 left-0 w-full bg-white shadow-md z-50">
+      <nav className="max-w-screen-xl mx-auto px-4 py-1 flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-3">
           <Image
             src={logo}
-            className="h-8"
+            className="h-16"
             alt="Ready2Move Logo"
-            width={32}
-            height={32}
+            width={100}
+            height={100}
           />
-          <span className="text-xl font-bold text-gray-900">Ready2Move</span>
+          {/* <span className="text-xl font-bold text-gray-900">Ready2Move</span> */}
         </Link>
         <input type="checkbox" id="menu-toggle" className="hidden peer" />
         <label
@@ -50,7 +52,7 @@ console.log("is logged in", isLoggedIn)
             Projects
           </Link>
           <Link
-            href="properties"
+            href="/properties"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >
             Properties

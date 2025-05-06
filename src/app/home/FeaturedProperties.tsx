@@ -33,17 +33,13 @@ const FeaturedProperties = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-20 mt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 mx-auto px-8 lg:grid-cols-3 gap-12 mt-12">
         {Array.isArray(featuredProperties) &&
           featuredProperties?.slice(0, 3).map((data, index) => {
-            // const carpetArea =
-            //   data.area?.find((a) => a.name === "CARPET_AREA")?.area || "N/A";
-            // const superArea =
-            //   data.area?.find((a) => a.name === "SUPER_AREA")?.area || "N/A";
-            const minArea = Math.min(...data.area.map((a) => a.area));
-            const maxArea = Math.max(...data.area.map((a) => a.area));
-            const minPrice = (data.expectedPrice / 10000000).toFixed(2);
-            const maxPrice = ((data.expectedPrice * 1.1) / 10000000).toFixed(2);
+            // const minArea = Math.min(...data.area.map((a) => a.area));
+            // const maxArea = Math.max(...data.area.map((a) => a.area));
+            const expectedPrice = data.expectedPrice || 0;
+            // const maxPrice = ((data.expectedPrice * 1.1) / 10000000).toFixed(2);
 
             return (
               <div
@@ -76,11 +72,11 @@ const FeaturedProperties = () => {
                     <p className="text-sm text-gray-500 mt-1">
                       {data?.city}, {data?.state}
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    {/* <p className="text-sm text-gray-600 mt-1">
                       {minArea} - {maxArea} Sq.ft
-                    </p>
+                    </p> */}
                     <p className="text-md font-bold text-green-700 mt-1">
-                      ₹ {minPrice} - {maxPrice} Cr
+                      ₹ {expectedPrice}
                     </p>
 
                     <div className="bg-blue-600 rounded-full mt-3 px-3 py-1 inline-block text-white text-sm font-medium shadow-sm">

@@ -5,7 +5,6 @@ import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { deleteImagesProject, getSingleProject } from "@/lib/redux/actions/projectAction";
 import slugify from "slugify";
-import { useRouter } from "next/navigation";
 
 
 export interface Project {
@@ -25,11 +24,12 @@ export interface Project {
   service: "RENT" | "SALE";
   projectType: "RESIDENTIAL" | "COMMERCIAL";
   pricePerSqFt: number;
-  aminities: Amenity[];
+  aminities:  string[];
   isFeatured: boolean;
-  availability: Availability;
-  bankOfApproval: BankApproval[];
+  availability: string;
+  bankOfApproval:string;
   imageGallery: Image[];
+
 }
 interface Image {
   secure_url: string;
@@ -39,74 +39,67 @@ interface Image {
 
 interface Amenity {
   _id: string;
-  name: string;
-  type: string; // e.g., "AMENITIES"
-}
+  // name: string;
+  // type: string; 
+ }
 interface Availability {
-  _id: string;
-  name: string;
-  type: string; // e.g., "AVAILABILITY"
+  _id: string; 
 }
 interface BankApproval {
   _id: string;
   name: string;
-  type: string; // e.g., "BANKS"
+  type: string;  
 }
-
 const EditProjectComp = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
   const { singleProjectData } = useAppSelector((state) => state.projects);
   console.log(singleProjectData.availability, "avail");
+  const { featureData } = useAppSelector((state)=> state.features);
 
   const [generatedSlug, setGeneratedSlug] = useState(slug);
   const [allAmenities, setAllAmenities] = useState<Amenity[]>([]);
-  const [availability, setAvailability] = useState<Availability | []>();
-  const [bankAproval, setBankAproval] = useState<BankApproval>();
+  // const [availability, setAvailability] = useState<Availability | []>();
+  // const [bankAproval, setBankAproval] = useState<BankApproval>();
   const [newImages, setNewImages] = useState<File[]>([]);
   console.log("new Images",newImages)
-  console.log(availability, "availability");
+  // console.log(availability, "availability");
   useEffect(() => {
-    const fetchAmenities = async () => {
-      const response = await axiosInstance.get("/api/v1/features");
+     dispatch(getFeatures())     
+    // const fetchAmenities = async () => {
+    //   const response = await axiosInstance.get("/api/v1/features");
 
-      const amenitiesSection = response.data.data.find(
-        (item: any) => item.type === "AMENITIES"
-      );
+    //   const amenitiesSection = response.data.data.find(
+    //     (item: any) => item.type === "AMENITIES"
+    //   );
 
-      const safeAmenities = amenitiesSection
-        ? amenitiesSection.features
-        : response.data.data.find(
-            (item: any) =>
-              Array.isArray(item.features) &&
-              item.features.length &&
-              item.features.some((f: any) => f.name?.toLowerCase())
-          )?.features || [];
-      console.log("safeAmenities", safeAmenities);
+    //   const safeAmenities = amenitiesSection
+    //     ? amenitiesSection.features
+    //     : response.data.data.find(
+    //         (item: any) =>
+    //           Array.isArray(item.features) &&
+    //           item.features.length &&
+    //           item.features.some((f: any) => f.name?.toLowerCase())
+    //       )?.features || [];
+    //   console.log("safeAmenities", safeAmenities);
 
-      setAllAmenities(safeAmenities);
-      const availabilityFeature = response.data.data.find(
-        (item: any) => item.type === "AVAILABILITY"
-      );
+    //   setAllAmenities(safeAmenities);
+    //   const availabilityFeature = response.data.data.find(
+    //     (item: any) => item.type === "AVAILABILITY"
+    //   );
 
-      const availabilityOptions = availabilityFeature?.features || [];
-      setAvailability(availabilityOptions);
+    //   const availabilityOptions = availabilityFeature?.features || [];
+    //   setAvailability(availabilityOptions);
 
-      const bankFeature = response.data.data.find(
-        (item: any) => item.type === "BANKS"
-      );
-      const bankOptions = bankFeature?.features || [];
+    //   const bankFeature = response.data.data.find(
+    //     (item: any) => item.type === "BANKS"
+    //   );
+    //   const bankOptions = bankFeature?.features || [];
 
-      setBankAproval(bankOptions);
-    };
-    fetchAmenities();
+    //   setBankAproval(bankOptions);
+    // };
+    // fetchAmenities();
   }, []);
-
-  interface Availability {
-    _id: string;
-    name: string;
-    type: string; // e.g., "AVAILABILITY"
-  }
-
+ 
   const { register, handleSubmit, reset, watch, setValue, control } =
     useForm<Project>();
 
@@ -122,15 +115,24 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
     if (singleProjectData?.title) {
       setTitle(singleProjectData.title);
       setGeneratedSlug(slugify(singleProjectData.title, { lower: true }));
+       const {areaRange,priceRange,availability,...rest} = singleProjectData;
+       console.log("rest",rest);
       reset({
-        ...singleProjectData,
+        subTitle:singleProjectData?.subTitle,
+        description:singleProjectData?.description,
+        locality:singleProjectData?.locality,
+        city:singleProjectData?.city,
+        state:singleProjectData?.state,
+        availability:availability? availability?._id : undefined,
+        areaRange,priceRange,
         reraPossessionDate: singleProjectData.reraPossessionDate?.split("T")[0],
         pricePerSqFt: singleProjectData.pricePerSqFt,
-        aminities: singleProjectData.aminities.map((item: any) => item.name),
-        bankOfApproval: singleProjectData?.bankOfApproval?.[0]?._id, // Pre-fill with the first item or a specific value
-        // bankOfApproval: singleProjectData?.bankOfApproval,
+        aminities: singleProjectData?.aminities?.map((item) => item._id),
+        bankOfApproval:singleProjectData?.bankOfApproval?.[0]?._id,
         imageGallery: singleProjectData?.imageGallery,
-      } as Project);
+        youtubeEmbedLink:singleProjectData?.youtubeEmbedLink,
+        reraNumber:singleProjectData?.reraNumber
+      })
     }
   }, [singleProjectData, reset]);
 
@@ -175,7 +177,6 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     alert("Failed to update project.");
   //   }
   // };
-  const router=useRouter()
 
   const onSubmit = async (data: Project) => {
     try {
@@ -209,20 +210,20 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
   
       // Amenities
       data.aminities.forEach((amenity) => {
-        formData.append("aminities", typeof amenity === "string" ? amenity : amenity.name);
+        formData.append("aminities", typeof amenity === "string" ? amenity : "");
       });
   
       // Availability
       if (data.availability) {
-        formData.append("availability", data.availability._id || data.availability);
+        formData.append("availability", data.availability || "");
       }
   
       // Bank Approvals
-      if (Array.isArray(data.bankOfApproval)) {
-        data.bankOfApproval.forEach((bank) => {
-          formData.append("bankOfApproval", bank._id || bank.name);
-        });
-      }
+      // if (Array.isArray(data.bankOfApproval)) {
+      //   data.bankOfApproval.forEach((bank) => {
+          formData.append("bankOfApproval", data.bankOfApproval);
+      //   });
+      // }
   
     
   
@@ -248,13 +249,6 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     }
   };
   
- 
-  
-  
-
-  
-
-
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-xl mt-6">
       <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
@@ -436,7 +430,7 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Amenities</label>
           <div className="grid grid-cols-2 gap-2">
-            {allAmenities.map((option: any, index) => (
+            {/* {allAmenities.map((option: any, index) => (
               <label key={index} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -446,13 +440,37 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
                 />
                 <span>{option.name}</span>
               </label>
-            ))}
+            ))} */}
+          {featureData
+                ?.filter((item) => item?.type == "AMENITIES")
+                ?.map((category) => (
+                  <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
+                    <legend className="px-2 font-medium text-gray-700">
+                      {category.type.replace("_", " ")}
+                    </legend>
+                    {category?.features?.map((feature) => (
+                      <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
+                        <input
+                          type="checkbox"
+                          id={`amenity-${feature._id}`}
+                          {...register("aminities")}
+                          value={feature._id}
+                          
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
+                          {feature.name}
+                        </label>
+                      </div>
+                    ))}
+                  </fieldset>
+                ))}
           </div>
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Availability</label>
-          {availability?.map((option: any) => (
+          {/* {availability?.map((option: any) => (
             <label key={option?._id} className="flex items-center gap-2">
               <input
                 type="radio"
@@ -464,21 +482,63 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
               />
               {option.name}
             </label>
-          ))}
+          ))} */}
+
+        {featureData
+  ?.filter((item) => item?.type === "AVAILABILITY")
+  ?.map((category) => (
+    <fieldset key={category.type} className="border border-gray-300 w-48 rounded-md p-4">
+      <legend className="px-2 font-medium text-gray-700">
+        {category.type.replace("_", " ")}
+      </legend>
+      {category?.features?.map((feature) => (
+        <div key={feature._id} className="flex items-center space-x-2 py-1">
+          <input
+            type="radio"
+            id={`availability-${feature._id}`}
+            {...register("availability")}
+            value={feature._id}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+          />
+          <label htmlFor={`availability-${feature._id}`} className="text-sm text-gray-700">
+            {feature.name}
+          </label>
+        </div>
+      ))}
+    </fieldset>
+))}
+
         </div>
 
-        {singleProjectData?.bankOfApproval?.map((option: any) => (
+        {/* {singleProjectData?.bankOfApproval?.map((option: any) => (
         <label key={option?._id} className="flex items-center gap-2">
           <input
             type="radio"
             value={option._id}
             {...register("bankOfApproval", { required: true })}
-            checked={watch("bankOfApproval") === option._id} // Ensure this matches the selected _id
+            checked={watch("bankOfApproval") === option._id}  
           />
           {option.name}
         </label>
-      ))}
-
+      ))} */}
+  {featureData
+                                    ?.filter((item) => item?.type === "BANKS")
+                                    ?.flatMap((item) =>
+                                      item?.features?.map((bank) => (
+                                        <div key={bank?._id} className="flex items-center space-x-2 py-1">
+                                          <input
+                                             type="checkbox"
+                                            id={`bank-${bank?._id}`}
+                                            {...register("bankOfApproval")}
+                                            value={bank?._id}
+                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                          />
+                                          <label htmlFor={`bank-${bank?._id}`} className="text-sm text-gray-700">
+                                            {bank?.name}
+                                          </label>
+                                        </div>
+                                      )),
+                                    )}
 
         {/* YouTube */}
         <div className="col-span-2">

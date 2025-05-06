@@ -94,7 +94,7 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
 //     }
 //   }, [slug, reset]);
 
- const router = useRouter() 
+  const router = useRouter()
   const onSubmit = async (data: Property) => {
     try {
       await axiosInstance.patch(`/api/v1/properties/${slug}`, data);

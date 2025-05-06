@@ -36,7 +36,7 @@ console.log("the pathname is ", pathname)
           setIsAuthorized(true);
         } else {
           console.log("User is not ADMIN or data fetch failed, redirecting.");
-          router.push("/login");
+          router.push("/");
         }
  
       } catch (error) {

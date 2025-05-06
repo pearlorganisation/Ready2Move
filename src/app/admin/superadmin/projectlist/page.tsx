@@ -15,23 +15,23 @@ import DeleteModal from "@/components/DeletedModal";
 
 
 const ProjectListing = () => {
+   
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [loading, setLoading] = useState(true);
-  const { projectData, paginate } = useAppSelector((state) => state.projects)
+  const { projectData, paginate ,isDeleted,isProjectAdded} = useAppSelector((state) => state.projects)
   console.log("projectData", projectData)
-const dispatch = useAppDispatch();
-const totalPages = Math.ceil(paginate?.total/paginate?.limit)
-const[isModalopen,setModalopen]=useState(false) 
+  const dispatch = useAppDispatch();
+  const totalPages = Math.ceil(paginate?.total/paginate?.limit)
+  const[isModalopen,setModalopen]=useState(false) 
  
 const handlePageClick = (page:number)=>{
-  if(page >0 && page < totalPages){
+  if(page >0 && page <= totalPages){
       setCurrentPage(page)
   }
 }
 
 const router = useRouter();
-
-
+ 
 const handleModalOpen = (slug: string) => {
   console.log("slug", slug);
   router.push(`/admin/superadmin/project/edit/${slug}`);
@@ -40,22 +40,44 @@ const handleModalOpen = (slug: string) => {
   useEffect(() => {
     dispatch(getAllProjects({page: currentPage,limit:10}))
   }, [dispatch, currentPage])
+
+ 
   const [isopen,setModalOpen]=useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-
+ /** dispatch call to get the projects when added successfully */  
+useEffect(()=>{
+   if(isProjectAdded){
+    dispatch(getAllProjects({page:currentPage, limit:10}))
+   }
+},[isProjectAdded])
   
-  const handleDeleteClick = (id: string) => {
+/**fixed */
+// useEffect(()=>{
+//    if(isDeleted){
+//     dispatch(getAllProjects({page:currentPage, limit:10}))
+//    }
+// },[isDeleted])
+
+const handleDeleteClick = (id: string) => {
     setSelectedId(id);   // Save the id
     setModalOpen(true);  // Open the modal
   };
   
   const confirmDelete = () => {
     if (selectedId) {
-      dispatch(deleteProject(selectedId));  // Now dispatch happens only after confirmation
+      dispatch(deleteProject(selectedId)).unwrap().then((res) => {
+        console.log("the response is", res);
+        if (res?.data?.success === true) {
+          console.log("Project deleted successfully");
+          dispatch(getAllProjects({page: currentPage,limit:10}))
+          setModalOpen(false);  // Close the modal after deletion
+        }
+      }).catch((error) => {
+        console.error("Error deleting project:", error);
+      });
     }
-    setModalOpen(false);  // Close the modal after deletion
-  };
+   };
   
   const closeModal = () => {
     setModalOpen(false);
@@ -120,14 +142,14 @@ const handleModalOpen = (slug: string) => {
       </table>
       
       <div className="mt-12 flex justify-center">
-    <PaginationMainComponent
-      totalPages={totalPages}
-      currentPage={currentPage}
-      paginate={paginate}
-      handlePageClick={handlePageClick}
-    /></div>
+      <PaginationMainComponent
+        totalPages={totalPages}
+        currentPage={currentPage}
+        paginate={paginate}
+        handlePageClick={handlePageClick}
+      /></div>
 
-{isopen &&( <DeleteModal isOpen={isopen} onClose={closeModal} onDelete={confirmDelete}/>)}
+     {isopen &&( <DeleteModal isOpen={isopen} onClose={closeModal} onDelete={confirmDelete}/>)}
     </div>
   );
 };
