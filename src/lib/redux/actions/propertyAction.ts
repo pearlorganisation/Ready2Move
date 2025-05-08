@@ -186,7 +186,7 @@ export const createPropertyByAdmin = createAsyncThunk(
       // ✅ Append Amenities & Features
       if (Array.isArray(userdata?.amenities)) {
         userdata.amenities.forEach((amenity) => {
-          formData.append("amenities", amenity);
+          formData.append("aminities", amenity);
         });
       }
 

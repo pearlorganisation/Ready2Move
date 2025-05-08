@@ -14,79 +14,78 @@ import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { Sidebar } from "@/components/sidebar";
 
 import Propertylisting from "../propertylist/page"
-import { useRouter } from "next/navigation";
-type FormData = {
-  title: string;
-  slug: string;
-  subTitle: string;
-  description: string;
-  service: "SELL" | "RENT";
-  property: "RESIDENTIAL" | "COMMERCIAL";
-  propertyType: string;
+  type FormData = {
+    title: string;
+    slug: string;
+    subTitle: string;
+    description: string;
+    service: "SELL" | "RENT";
+    property: "RESIDENTIAL" | "COMMERCIAL";
+    propertyType: string;
 
-  // Location Details
-  apartmentName: string;
-  apartmentNo: string;
-  locality: string;
-  city: string;
-  state: string;
+    // Location Details
+    apartmentName: string;
+    apartmentNo: string;
+    locality: string;
+    city: string;
+    state: string;
 
-  // Property Size & Configuration
-  area: {
-    name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
-    area: number;
-    areaMeasurement: "SQ_FT" | "SQ_M";
-  }[];
-  landArea: { area: number; measurement: string };
-  propertyFloor: number;
-  totalFloors: number;
-  roadWidth: number;
+    // Property Size & Configuration
+    area: {
+      name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
+      area: number;
+      areaMeasurement: "SQ_FT" | "SQ_M";
+    }[];
+    landArea: { area: number; measurement: string };
+    propertyFloor: number;
+    totalFloors: number;
+    roadWidth: number;
 
-  // Legal & Registration
-  reraNumber: string;
-  reraPossessionDate: Date | null;
+    // Legal & Registration
+    reraNumber: string;
+    reraPossessionDate: Date | null;
 
-  // Property Features
-  noOfBedrooms: number;
-  noOfBathrooms: number;
-  noOfBalconies: number;
-  parking: string;
-  furnishing: string;
-  entranceFacing: string;
-  availability: string;
-  propertyAge: string;
-  isOCAvailable: boolean;
-  isCCAvailable: boolean;
-  ownership: string;
+    // Property Features
+    noOfBedrooms: number;
+    noOfBathrooms: number;
+    noOfBalconies: number;
+    parking: string;
+    furnishing: string;
+    entranceFacing: string;
+    availability: string;
+    propertyAge: string;
+    isOCAvailable: boolean;
+    isCCAvailable: boolean;
+    ownership: string;
 
-  // Pricing & Charges
-  expectedPrice: number;
-  isPriceNegotiable: boolean;
-  isBrokerageCharge: boolean;
-  brokerage: number;
-  maintenanceCharge: number;
-  maintenanceFrequency: string;
+    // Pricing & Charges
+    expectedPrice: number;
+    isPriceNegotiable: boolean;
+    isBrokerageCharge: boolean;
+    brokerage: number;
+    maintenanceCharge: number;
+    maintenanceFrequency: string;
 
-  // Financial & Legal
-  bankOfApproval: string[];
+    // Financial & Legal
+    bankOfApproval: string[];
 
-  // Amenities & Features
-  amenities: string[];
-  waterSource: string;
-  otherFeatures: string[];
-  propertyFlooring: string;
-  powerBackup: string;
-  nearbyLandmarks: string[];
+    // Amenities & Features
+    amenities: string[];
+    waterSource: string;
+    otherFeatures: string[];
+    propertyFlooring: string;
+    powerBackup: string;
+    nearbyLandmarks: string[];
 
-  // Media
-  imageGallery: File[];
-  youtubeEmbedLink: string;
-  isFeatured: boolean;
-};
-type PropertyFormValues = Pick<
-  FormData,
-  "noOfBedrooms" | "noOfBalconies" | "noOfBathrooms"
->;
+    // Media
+    imageGallery: File[];
+    youtubeEmbedLink: string;
+    isFeatured: boolean;
+  };
+  type PropertyFormValues = Pick<
+    FormData,
+    "noOfBedrooms" | "noOfBalconies" | "noOfBathrooms"
+  >;
 
 
 // Custom Input component
@@ -1399,7 +1398,7 @@ Close
                 } else {
                   newValue.splice(index, 1);
                 }
-                field.onChange(newValue);
+                   field.onChange(newValue);
               }}
             >
               {field.value.includes(amenity._id) && (
