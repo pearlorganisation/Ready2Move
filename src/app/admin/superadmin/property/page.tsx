@@ -11,7 +11,7 @@ import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation"; // ✅ App Router
 import Propertylisting from "../propertylist/page"
   type FormData = {
     title: string;

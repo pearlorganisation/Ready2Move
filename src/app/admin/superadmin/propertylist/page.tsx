@@ -11,7 +11,7 @@ import { Delete } from "lucide-react";
 import { deleteProperty, getAllProperties } from "@/lib/redux/actions/propertyAction";
 
 
-import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation"; // ✅ App Router
 import DeleteModal from "@/components/DeletedModal";
 
 const ProjectListing = () => {
