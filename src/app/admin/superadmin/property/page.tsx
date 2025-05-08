@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { Sidebar } from "@/components/sidebar";
-
+import { useRouter } from "next/router";
 import Propertylisting from "../propertylist/page"
   type FormData = {
     title: string;
