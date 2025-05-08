@@ -45,7 +45,7 @@ export default function DashboardPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [newAssignee, setNewAssignee] = useState<{ name: string; role: string } | null>(null);
-  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [selectedLeadId, setSelectedLeadId] = useState<string>("");
 
   const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
 
@@ -288,7 +288,7 @@ export default function DashboardPage() {
                   onClick={() => setIsEditDialogOpen(false)}
                   className="px-4 py-2 text-gray-700 bg-gray-200 rounded"
                 >
-                  Cancel
+                  Close
                 </button>
                 <button
                   type="submit"

@@ -471,7 +471,7 @@ export default function PropertyForm() {
 
   const[OpenPropertyModal,setPropertyModal]=useState<boolean>(false)
   const handleModalOpen=()=>{
-    setPropertyModal(!OpenPropertyModal)
+    setPropertyModal(true)
   }
 
   const {
@@ -613,9 +613,9 @@ export default function PropertyForm() {
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
     dispatch(createPropertyByAdmin({ userdata: formData }))
-  router.push("/admin/superadmin/property")
+
 setPropertyModal(false)
-  
+router.push("/admin/superadmin/property")
   }
 
   useEffect(()=>{
@@ -644,7 +644,7 @@ setPropertyModal(false)
       onClick={() =>setPropertyModal(false)}
       className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
     >
-      Cancel
+Close
     </button>
   </div>
                 <div className="space-y-2 rounded-md  px-6 py-6">
@@ -1544,13 +1544,22 @@ setPropertyModal(false)
                           </div>
 
                           <div className="space-y-4">
-                            <CustomInput
-                              id="youtubeEmbedLink"
-                              label="Youtube Embed Link"
-                              placeholder="Youtube Link"
-                              {...register("youtubeEmbedLink")}
-                            />
+                          <CustomInput
+    id="youtubeEmbedLink"
+    label="YouTube Embed Link"
+    placeholder="YouTube Link"
+    {...register("youtubeEmbedLink")}
+  />
+<p className="mt-1 text-sm text-gray-500">
+  👉 Please paste the <strong>embed link</strong> (e.g., <code>https://www.youtube.com/embed/VIDEO_ID</code>).<br />
+  To get it: Click "Share" → "Embed" on the YouTube video and copy the <strong>src</strong> from the iframe tag.<br />
+  Example:
+  <code className="block mt-1 bg-gray-100 p-1 rounded">
+    &lt;iframe src="<span className='text-red-600'>https://www.youtube.com/embed/VIDEO_ID</span>" /&gt;
+  </code>
+</p>
 
+</div>
                             <div className="space-y-2">
                               <label className="block text-sm font-medium text-gray-700">
                                 Featured Property
@@ -1665,7 +1674,7 @@ setPropertyModal(false)
                                 </div>
                               )}
                             </div>
-                          </div>
+                        
                         </div>
                       )}
                     </div>

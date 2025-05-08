@@ -1,6 +1,7 @@
 "use client"
 import AddFeatureComponent from "@/components/AddFeatureComponent"
 import ListingFeatureComponent from "@/components/ListingFeatureComponent"
+
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook"
 import { getFeatures } from "@/lib/redux/actions/featuresAction"
 import { useEffect, useState } from "react"
@@ -24,6 +25,9 @@ import { useEffect, useState } from "react"
       <ListingFeatureComponent />
       {addFeatureOpen && <><AddFeatureComponent /></>}
      </div>
+
+
+
    )
  }
  

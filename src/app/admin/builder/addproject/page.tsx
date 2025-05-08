@@ -173,7 +173,7 @@ const CreateProject = () => {
        
             <div  className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
                 <div className="w-64 bg-white border-r border-slate-200 p-4">
-                        <div className="flex justify-end"><button className="bg-red rounded-sm">Cancel</button></div>
+                        <div className="flex justify-end"><button className="bg-red rounded-sm">Close</button></div>
 
                   <div className="space-y-6">
                     {steps.map((step, index) => (

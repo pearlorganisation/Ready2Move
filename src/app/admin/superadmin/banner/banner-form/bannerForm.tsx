@@ -78,7 +78,7 @@ useEffect(() => {
   onClick={onclose}
   className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
 >
-  Cancel
+Close
 </button>
           </div>
 

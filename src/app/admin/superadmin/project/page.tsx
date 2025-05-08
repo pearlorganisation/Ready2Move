@@ -86,8 +86,10 @@ const CreateProject = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const {isSuccess, isLoading, isError , isProjectAdded} = useAppSelector(state=> state.projects)
-  /** for opening the modal for adding project and updating the project and deleting the project */
+  /** for opening the Project for adding project and updating the project and deleting the project */
   const [openAddProjectModal, setOpenAddProjectModal] = useState<boolean>(false)
+
+
 
 
   const {
@@ -145,6 +147,7 @@ const handleOpenAddProject =()=>{
     }
     try {
       dispatch(createProjectsByBuilder({ userdata: formData }))
+      setOpenAddProjectModal(false)
     } catch (error) {
       console.log("the error is", error)
     }
@@ -161,14 +164,14 @@ const handleOpenAddProject =()=>{
       subtitle: "Add basic details",
     },
     {
-      id: "property-location",
-      title: "Property Location",
-      subtitle: "Where is your property located?",
+      id: "Project-location",
+      title: "Project Location",
+      subtitle: "Where is your Project located?",
     },
     {
-      id: "property-details",
-      title: "Property Details",
-      subtitle: "Tell us about your property",
+      id: "Project-details",
+      title: "Project Details",
+      subtitle: "Tell us about your Project",
     },
     {
       id: "price-details",
@@ -183,7 +186,7 @@ const handleOpenAddProject =()=>{
     {
       id: "photo-gallery",
       title: "Photo Gallery",
-      subtitle: "Add photos of your property",
+      subtitle: "Add photos of your Project",
     },
   ]
 
@@ -218,7 +221,7 @@ const handleOpenAddProject =()=>{
              
               </div>
           </div>
-          {/* Modal for adding project */}
+          {/* Project for adding project */}
  
         { openAddProjectModal &&
             <div  className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"> 
@@ -226,12 +229,12 @@ const handleOpenAddProject =()=>{
             <div className="w-64 bg-white border border-slate-200 rounded-xl shadow-lg p-4">
                 {/* Header with Cancel Button */}
                     <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
+                      <h2 className="text-lg font-semibold text-slate-700">Add Project</h2>
                       <button
                         onClick={() => setOpenAddProjectModal(false)}
                         className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
                       >
-                        Cancel
+                       Close
                       </button>
                     </div>
                     <div className="space-y-6">
@@ -272,7 +275,7 @@ const handleOpenAddProject =()=>{
                                 <div className="space-y-4">
                                   <div>
                                     <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                                      Property Title
+                                      Project Title
                                     </label>
                                     <input
                                       id="title"
@@ -298,7 +301,7 @@ const handleOpenAddProject =()=>{
 
                                   <div>
                                     <label htmlFor="subTitle" className="block text-sm font-medium text-gray-700 mb-1">
-                                      Property Subtitle (optional)
+                                      Project Subtitle (optional)
                                     </label>
                                     <input
                                       id="subTitle"
@@ -310,11 +313,11 @@ const handleOpenAddProject =()=>{
 
                                   <div>
                                     <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                                      Property Description
+                                      Project Description
                                     </label>
                                     <textarea
                                       id="description"
-                                      placeholder="Describe your property in detail"
+                                      placeholder="Describe your Project in detail"
                                       className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[100px]"
                                       {...register("description", { required: "Description is required" })}
                                     />
@@ -363,7 +366,7 @@ const handleOpenAddProject =()=>{
                                   </div>
 
                                   <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
                                     <div className="flex space-x-6 mt-2">
                                       <Controller
                                         name="projectType"
@@ -409,8 +412,8 @@ const handleOpenAddProject =()=>{
                             {currentStep === 1 && (
                               <div className="space-y-6">
                                 <div>
-                                  <h2 className="text-2xl font-semibold text-slate-800">Property Location</h2>
-                                  <p className="text-slate-500 text-sm">Where is your property located?</p>
+                                  <h2 className="text-2xl font-semibold text-slate-800">Project Location</h2>
+                                  <p className="text-slate-500 text-sm">Where is your Project located?</p>
                                 </div>
 
                                 <div className="space-y-4">
@@ -459,8 +462,8 @@ const handleOpenAddProject =()=>{
                             {currentStep === 2 && (
                               <div className="space-y-6">
                                 <div>
-                                  <h2 className="text-2xl font-semibold text-slate-800">Property Details</h2>
-                                  <p className="text-slate-500 text-sm">Tell us about your property</p>
+                                  <h2 className="text-2xl font-semibold text-slate-800">Project Details</h2>
+                                  <p className="text-slate-500 text-sm">Tell us about your Project</p>
                                 </div>
 
                                 <div className="space-y-4">
@@ -711,7 +714,7 @@ const handleOpenAddProject =()=>{
                               <div className="space-y-6">
                                 <div>
                                   <h2 className="text-2xl font-semibold text-slate-800">Photo Gallery</h2>
-                                  <p className="text-slate-500 text-sm">Add photos of your property</p>
+                                  <p className="text-slate-500 text-sm">Add photos of your Project</p>
                                 </div>
 
                                 <div className="space-y-4">
@@ -725,7 +728,14 @@ const handleOpenAddProject =()=>{
                                       className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                       {...register("youtubeEmbedLink")}
                                     />
-                                  </div>
+   <p className="mt-1 text-sm text-gray-500">
+  👉 Please paste the <strong>embed link</strong> (e.g., <code>https://www.youtube.com/embed/VIDEO_ID</code>).<br />
+  To get it: Click "Share" → "Embed" on the YouTube video and copy the <strong>src</strong> from the iframe tag.<br />
+  Example:
+  <code className="block mt-1 bg-gray-100 p-1 rounded">
+    &lt;iframe src="<span className='text-red-600'>https://www.youtube.com/embed/VIDEO_ID</span>" /&gt;
+  </code>
+</p>                           </div>
 
                                   <div>
                                     <div className="flex items-center space-x-2">
@@ -736,7 +746,7 @@ const handleOpenAddProject =()=>{
                                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                       />
                                       <label htmlFor="isFeatured" className="text-sm text-gray-700">
-                                        Featured Property
+                                        Featured Project
                                       </label>
                                     </div>
                                   </div>
