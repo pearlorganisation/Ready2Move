@@ -11,18 +11,19 @@ import { Delete } from "lucide-react";
 import { deleteProperty, getAllProperties } from "@/lib/redux/actions/propertyAction";
 
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import DeleteModal from "@/components/DeletedModal";
 
 const ProjectListing = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [loading, setLoading] = useState(true);
   const { propertyData, paginate } = useAppSelector((state) => state.property)
  const[isOpenModal,setOpenModal]=useState(false)
  const[selectedData,setseletedData]=useState<string|null>(null)
   console.log("propertyData", propertyData)
-const dispatch = useAppDispatch();
-const totalPages = Math.ceil(paginate?.total/paginate?.limit)
+ const totalPages = Math.ceil(paginate?.total/paginate?.limit)
  const limit = paginate?.limit
 const handlePageClick = (page:number)=>{
   if(page >0 && page < totalPages){
@@ -30,7 +31,7 @@ const handlePageClick = (page:number)=>{
   }
 }
 
-const router = useRouter();
+ 
 
 
 const handleModalOpen = (slug: string) => {

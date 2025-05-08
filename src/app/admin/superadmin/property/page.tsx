@@ -11,7 +11,6 @@ import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
-import { Sidebar } from "@/components/sidebar";
 import { useRouter } from "next/router";
 import Propertylisting from "../propertylist/page"
   type FormData = {
@@ -459,14 +458,15 @@ const CustomPopover = ({
 };
 
 export default function PropertyForm() {
+  const dispatch = useAppDispatch()
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const { featureData } = useAppSelector((state) => state.features)
   const { userData } = useAppSelector((state) => state.user)
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const dispatch = useAppDispatch()
-  const router = useRouter();
+    
 
   const[OpenPropertyModal,setPropertyModal]=useState<boolean>(false)
   const handleModalOpen=()=>{
