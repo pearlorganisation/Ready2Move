@@ -56,7 +56,7 @@ export const updateFeature = createAsyncThunk(
     "features/delete",
     async (id:string) => {
       console.log("id,cde",id)
-      const response = await axiosInstance.patch(`/api/v1/features/${id}`)
+      const response = await axiosInstance.delete(`/api/v1/features/${id}`)
       return response.data
     }
   )
