@@ -60,46 +60,11 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
 
   const [generatedSlug, setGeneratedSlug] = useState(slug);
   const [allAmenities, setAllAmenities] = useState<Amenity[]>([]);
-  // const [availability, setAvailability] = useState<Availability | []>();
-  // const [bankAproval, setBankAproval] = useState<BankApproval>();
+  
   const [newImages, setNewImages] = useState<File[]>([]);
-  console.log("new Images",newImages)
-  // console.log(availability, "availability");
+  
   useEffect(() => {
-     dispatch(getFeatures())     
-    // const fetchAmenities = async () => {
-    //   const response = await axiosInstance.get("/api/v1/features");
-
-    //   const amenitiesSection = response.data.data.find(
-    //     (item: any) => item.type === "AMENITIES"
-    //   );
-
-    //   const safeAmenities = amenitiesSection
-    //     ? amenitiesSection.features
-    //     : response.data.data.find(
-    //         (item: any) =>
-    //           Array.isArray(item.features) &&
-    //           item.features.length &&
-    //           item.features.some((f: any) => f.name?.toLowerCase())
-    //       )?.features || [];
-    //   console.log("safeAmenities", safeAmenities);
-
-    //   setAllAmenities(safeAmenities);
-    //   const availabilityFeature = response.data.data.find(
-    //     (item: any) => item.type === "AVAILABILITY"
-    //   );
-
-    //   const availabilityOptions = availabilityFeature?.features || [];
-    //   setAvailability(availabilityOptions);
-
-    //   const bankFeature = response.data.data.find(
-    //     (item: any) => item.type === "BANKS"
-    //   );
-    //   const bankOptions = bankFeature?.features || [];
-
-    //   setBankAproval(bankOptions);
-    // };
-    // fetchAmenities();
+     dispatch(getFeatures())
   }, []);
  
   const { register, handleSubmit, reset, watch, setValue, control } =
@@ -414,17 +379,6 @@ const handleNewImagesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Amenities</label>
           <div className="grid grid-cols-2 gap-2">
-            {/* {allAmenities.map((option: any, index) => (
-              <label key={index} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  value={option._id}
-                  {...register("aminities")}
-                  defaultChecked={watch("aminities")?.includes(option?.name)}
-                />
-                <span>{option.name}</span>
-              </label>
-            ))} */}
           {featureData
                 ?.filter((item) => item?.type == "AMENITIES")
                 ?.map((category) => (

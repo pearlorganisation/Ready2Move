@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getFeaturedListings } from "@/lib/redux/actions/featuredListingsAction";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import Link from "next/link";
 
 const FeaturedProjects = () => {
   const dispatch = useAppDispatch();
@@ -19,10 +20,13 @@ const FeaturedProjects = () => {
   }, []);
 
   return (
-    <div className="mt-12 lg:mt-4 ">
+    <div className="mt-12 lg:mt-24 ">
       <div className="flex flex-row justify-between">
-        <div className="">
-          Featured Projects{" "}
+        <div className="ml-6">
+        
+           <h2 className="text-2xl font-bold text-gray-800">
+               Featured Projects{" "}
+          </h2>
           <div className="h-1.5 w-12 bg-yellow-500 mt-1 rounded-e-md rounded-s-md">
             {" "}
           </div>
@@ -83,8 +87,9 @@ const FeaturedProjects = () => {
                  {Array.isArray(featuredProjects) && featuredProjects.length > 0 ? (
                   featuredProjects.map((data, index) => (
                     <SwiperSlide key={data?._id || index}>
-                     
-                      <div className="w-full h-full overflow-hidden border-2 rounded-2xl relative mx-auto flex flex-col">  
+                     <Link href={`/projects/${data?.slug}`}
+>
+                     <div className="w-full h-full overflow-hidden border-2 rounded-2xl relative mx-auto flex flex-col">  
                         <div className="relative">  
                           {data?.imageGallery?.[0]?.secure_url ? (
                             <Image
@@ -137,6 +142,8 @@ const FeaturedProjects = () => {
                           </div>
                         </div>
                       </div>
+                     </Link>
+                       
                     </SwiperSlide>
                   ))
                 ) : (

@@ -50,7 +50,7 @@ export default function HeroSection() {
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
-        <div className="container mx-auto px-4 z-10 text-center lg:mt-44">
+        <div className="container mx-auto px-4 z-10 text-center lg:mt-96 shadow-xl/20">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-teal-100 to-blue-50 bg-clip-text text-transparent">
   {bannerData?.[0]?.headline}
 </h1>
