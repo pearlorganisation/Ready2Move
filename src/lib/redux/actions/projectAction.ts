@@ -1,4 +1,4 @@
-import { ProjectFormInputs } from "@/app/admin/builder/addproject/page";
+import { ProjectFormInputs } from "@/components/CreateProjectByBuilder";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
