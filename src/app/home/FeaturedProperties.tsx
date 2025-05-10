@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getFeaturedListings } from "@/lib/redux/actions/featuredListingsAction";
+import Link from "next/link";
 
 const FeaturedProperties = () => {
   const dispatch = useAppDispatch();
@@ -36,17 +37,14 @@ const FeaturedProperties = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 mx-auto px-8 lg:grid-cols-3 gap-12 mt-12">
         {Array.isArray(featuredProperties) &&
           featuredProperties?.slice(0, 3).map((data, index) => {
-            // const minArea = Math.min(...data.area.map((a) => a.area));
-            // const maxArea = Math.max(...data.area.map((a) => a.area));
             const expectedPrice = data.expectedPrice || 0;
-            // const maxPrice = ((data.expectedPrice * 1.1) / 10000000).toFixed(2);
-
             return (
               <div
                 key={index}
                 className="transition hover:scale-105 duration-300"
               >
-                <div className="w-80 shadow-lg border border-gray-200 rounded-2xl overflow-hidden bg-white relative min-h-72">
+                <Link href={`/properties/${data?.slug}`}>
+                   <div className="w-80 shadow-lg border border-gray-200 rounded-2xl overflow-hidden bg-white relative min-h-72">
                   {/* Image */}
                   <Image
                     width={200}
@@ -84,6 +82,8 @@ const FeaturedProperties = () => {
                     </div>
                   </div>
                 </div>
+                </Link>
+              
               </div>
             );
           })}
