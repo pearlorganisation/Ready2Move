@@ -66,7 +66,7 @@ const PropertiesPage = () => {
         >
           <option value="">All Services</option>
           <option value="BUY">BUY</option>
-          <option value="SELL">SELL</option>
+          {/* <option value="SELL">SELL</option> */}
           <option value="RENT">RENT</option>
         </select>
 
@@ -110,17 +110,6 @@ const PropertiesPage = () => {
               onChange={(e) => setPriceRange(Number(e.target.value))}
               className="w-full accent-blue-500"
             />
-            {/* <input
-              type="range"
-              min="0"
-              max="2000000"
-              step="50000"
-              value={priceRange[1]}
-              onChange={(e) =>
-                setPriceRange([priceRange[0], Number(e.target.value)])
-              }
-              className="w-full accent-blue-500 mt-2"
-            /> */}
             <p className="text-gray-700 text-sm font-medium mt-2">
               Rs. {priceRange.toLocaleString()}
             </p>

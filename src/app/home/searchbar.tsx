@@ -202,7 +202,7 @@ export default function SearchBar() {
     name="service"
     icon={<Landmark />}
     label="Service"
-    options={["ALL", "SELL", "RENT"]}
+    options={["ALL", "BUY", "RENT"]}
   />
 
   {/* Project Type (ONLY for Projects tab) */}

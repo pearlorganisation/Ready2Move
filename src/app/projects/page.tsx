@@ -409,7 +409,7 @@ const Page = () => {
           className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
         >
           <option value="">All Services</option>
-          <option value="SELL">SELL</option>
+          <option value="BUY">BUY</option>
           <option value="RENT">RENT</option>
         </select>
 
