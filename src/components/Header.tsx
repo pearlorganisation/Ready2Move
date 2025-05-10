@@ -72,7 +72,7 @@ console.log("is logged in", isLoggedIn)
          { isLoggedIn ? 
          userData.role === "ADMIN" ? (
           <div className="flex flex-col md:flex-row">
-              <Link href={`/admin/superadmin`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700">
+              <Link href={`/admin/superadmin/dashboard`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700">
                 Go to Dashboard
               </Link>
               <button className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" onClick={() => HandleLogout()}>

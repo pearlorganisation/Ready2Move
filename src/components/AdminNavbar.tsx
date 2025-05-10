@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import DetailsModal from "./DetailsModal"
+import { User } from "lucide-react"
 
 const AdminNavbar = () => {
 const dispatch = useAppDispatch()
@@ -25,10 +26,10 @@ const dispatch = useAppDispatch()
     <div>  
         <header className="bg-white shadow">
             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900"></h1>
               <div className="flex items-center">
                 <div className="relative">
-                  <button onClick={handleShowDetails}>Profile</button>
+                  <button onClick={handleShowDetails} className="flex flex-row"><User/><span className="mt-1">Profile</span></button>
                 </div>
               </div>
             </div>

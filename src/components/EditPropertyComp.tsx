@@ -55,15 +55,12 @@ export interface Property {
   // imageGallery: string[]    will add later
 
 }
-
-
+ 
 const EditProPertyComp = ({slug}:{slug:string}) => {
-
- const router = useRouter()
+  const router = useRouter()
   const dispatch=useAppDispatch();
   const { singlePropertyData, paginate } = useAppSelector((state) => state.property);
   const { featureData } = useAppSelector(state=> state.features);
-
   useEffect(()=>{
     dispatch(getSingleProperty({slug:slug}))
   },[])
