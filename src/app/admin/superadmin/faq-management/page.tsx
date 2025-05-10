@@ -41,7 +41,6 @@ export default function FAQManagement() {
   //     dateUpdated: "5/7/2025",
   //   },
   // ])
-  const [searchQuery, setSearchQuery] = useState("")
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const[deleteModal,setDeletemodal]=useState<boolean>(false)
@@ -130,7 +129,12 @@ const[Id,setID]=useState<string>("")
         answer: data.answer,
       };
    
-      dispatch(updateFaq({id:currentFaq._id,updatedata:updatedFaq}))
+      dispatch(updateFaq({id:currentFaq._id,updatedata:updatedFaq})).then((res)=>{
+        if(res.payload.success){
+          dispatch(getAllFaqs())
+
+        }
+      })
       setShowEditModal(false);
     }
   };
