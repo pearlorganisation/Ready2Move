@@ -6,27 +6,24 @@ export async function generateMetadata(params: {
 }): Promise<Metadata> {
   // Extract slug the same way as in your page component
   const { slug } = await params.params;
-  console.log("the slug is", slug)
+  // console.log("the slug is", slug)
   try {
     const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
-    console.log("the res is", res)
+    // console.log("the res is", res)
     const project = (await res.json())?.data;
-    console.log("the project is", project)
+
+    console.log("the project image gallery is",project?.imageGallery?.[0]?.secure_url)
      return {
       title: project?.title || 'Project Details',
       description: project?.description || 'View project details on Ready2Move',
       openGraph: {
         title: project?.title || 'Ready2Move Project',
         description: project?.description || '',
-        images: [
-          {
-            url: `${project?.imageGallery?.[0]?.secure_url}`,
-            width: 1200,
-            height: 630,
-          },
-        ],
+        images:`${project?.imageGallery?.[0]?.secure_url}`,
         url: `https://ready2move.co.in/projects/${slug}`,
         type: 'website',
+        locale: 'en_US',
+        siteName: 'Ready2Move',
       }
       // twitter: {
       //   card: 'summary_large_image',
