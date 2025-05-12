@@ -19,7 +19,9 @@ export async function generateMetadata(params: {
       openGraph: {
         title: project?.title || 'Ready2Move Project',
         description: project?.description || '',
-        images:`${project?.imageGallery?.[0]?.secure_url}`,
+        images:'https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg' 
+        // `${project?.imageGallery?.[0]?.secure_url}`
+        ,
         url: `https://ready2move.co.in/projects/${slug}`,
         type: 'website',
         locale: 'en_US',
