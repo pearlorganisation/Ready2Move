@@ -6,12 +6,13 @@ export async function generateMetadata(params: {
 }): Promise<Metadata> {
   // Extract slug the same way as in your page component
   const { slug } = await params.params;
-  
+  console.log("the slug is", slug)
   try {
     const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
+    console.log("the res is", res)
     const project = (await res.json())?.data;
-
-    return {
+    console.log("the project is", project)
+     return {
       title: project?.title || 'Project Details',
       description: project?.description || 'View project details on Ready2Move',
       openGraph: {
@@ -19,20 +20,20 @@ export async function generateMetadata(params: {
         description: project?.description || '',
         images: [
           {
-            url: `https://ready2move.co.in/projects/${slug}/opengraph-image`,
+            url: `${project?.imageGallery?.[0]?.secure_url}`,
             width: 1200,
             height: 630,
           },
         ],
         url: `https://ready2move.co.in/projects/${slug}`,
         type: 'website',
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: project?.title || 'Ready2Move Project',
-        description: project?.description || '',
-        images: [`https://ready2move.co.in/projects/${slug}/opengraph-image`],
-      },
+      }
+      // twitter: {
+      //   card: 'summary_large_image',
+      //   title: project?.title || 'Ready2Move Project',
+      //   description: project?.description || '',
+      //   images: [`https://ready2move.co.in/projects/${slug}/opengraph-image`],
+      // },
     };
   } catch (error) {
     return {
