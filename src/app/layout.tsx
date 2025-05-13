@@ -21,14 +21,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Ready2Move",
   description: "Created By Pearl",
-  openGraph:{
+  openGraph: {
     title: 'Ready2Move',
     description: 'Best Buying and Rental Properties',
     url: 'https://ready2move.co.in/',
     siteName: 'Ready2Move',
     locale: 'en_US',
     type: 'website',
-    images:"https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
+    images: "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
+  },
+  twitter: {
+    card: "summary_large_image",
   }
 };
 export default function RootLayout({
