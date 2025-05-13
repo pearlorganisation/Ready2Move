@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import MySlugProperty from "@/components/MySlugProperty";
 import axios from "axios";
 //  import type { Metadata } from 'next';
