@@ -30,9 +30,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
   },
-  twitter: {
-    card: "summary_large_image",
-  }
+
 };
 export default function RootLayout({
   children,
