@@ -23,7 +23,7 @@ export async function generateMetadata(params: {
     openGraph: {
       title: property.title,
       description: property.description,
-      images: [property?.imageGallery?.[0]?.secure_url
+      images: ["https://res.cloudinary.com/dcycgqmut/image/upload/v1746619542/R2M/Property/ylwnkoselzvf2hy0qpyt.jpg"
       ],
       type: "website",
     },
