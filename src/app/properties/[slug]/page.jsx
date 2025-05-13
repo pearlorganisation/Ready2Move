@@ -50,7 +50,7 @@ export async function generateMetadata({params}){
   };
 }
 
-export default async function ProjectDetails({params}) {
+export default async function Page({params}) {
   const { slug } = params;
 
   console.log("slug",slug);
