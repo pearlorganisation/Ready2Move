@@ -24,12 +24,7 @@ export async function generateMetadata(params: {
       title: property.title,
       description: property.description,
       images: [
-        {
-          url: property?.imageGallery?.[0]?.secure_url || "https://example.com/default.jpg", // Make sure the URL is absolute
-          width: 1200,
-          height: 630,
-          alt: property.title,
-        },
+        "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
       ],
       type: "website",
     },
