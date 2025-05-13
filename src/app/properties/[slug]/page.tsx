@@ -16,15 +16,14 @@ export async function generateMetadata(params: {
       title: "Property Not Found",
     };
   }
-
+  console.log("property?.imageGallery?.[0]?.secure_url",property?.imageGallery?.[0]?.secure_url)
   return {
     title: property.title,
     description: property.description,
     openGraph: {
       title: property.title,
       description: property.description,
-      images: [
-        "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
+      images: [property?.imageGallery?.[0]?.secure_url
       ],
       type: "website",
     },
