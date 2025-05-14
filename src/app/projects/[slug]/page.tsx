@@ -88,8 +88,8 @@ export async function generateMetadata(params: {
   }
 }
 
-export default async function ProjectDetails(params:{
-  params:Promise<{slug: string}>
+export default async function ProjectDetails(params: {
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params.params;
 

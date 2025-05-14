@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 
 import { ArrowRight, Image as MyImage } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules" 
+import { Navigation } from "swiper/modules";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getFeaturedListings } from "@/lib/redux/actions/featuredListingsAction";
@@ -32,12 +32,11 @@ const FeaturedProjects = () => {
           </div>
         </div>
       </div>
- <div className="mt-12 relative group">
-
-      <div
-        className="swiper-button-prev-custom group-hover:opacity-100 opacity-0 sm:opacity-100 transition-opacity duration-300
+      <div className="mt-12 relative group px-8">
+        <div
+          className="swiper-button-prev-custom group-hover:opacity-100 opacity-0 sm:opacity-100 transition-opacity duration-300
                    absolute top-1/2 -translate-y-1/2
-                   left-2 md:left-[-10px] lg:left-[1px] z-10
+                   left-2 md:left-[-10px] lg:left-[-6px] z-10
                    cursor-pointer
                    bg-blue-200 rounded-full shadow-md
                    w-10 h-10 md:w-12 md:h-12 flex items-center justify-center
@@ -105,15 +104,15 @@ const FeaturedProjects = () => {
                             </div>
                           )}
 
-                          {data?.imageGallery && data.imageGallery.length > 0 && (
-                            <div className="absolute bottom-2 left-3 flex flex-row gap-1 items-center justify-center bg-black bg-opacity-70 px-2 py-1 rounded-md">  
-                              <MyImage size={16} color="white" />
-                              <h1 className="text-white text-sm font-medium">
-                                {data.imageGallery.length}
-                              </h1>
-                            </div>
-                          )}
+                      {data?.imageGallery && data.imageGallery.length > 0 && (
+                        <div className="absolute bottom-2 left-3 flex flex-row gap-1 items-center justify-center bg-black bg-opacity-70 px-2 py-1 rounded-md">
+                          <MyImage size={16} color="white" />
+                          <h1 className="text-white text-sm font-medium">
+                            {data.imageGallery.length}
+                          </h1>
                         </div>
+                      )}
+                    </div>
 
                          <div className="p-4 flex flex-col flex-grow">  
                           <h1 className="text-base font-semibold mt-1 mb-2 min-h-[48px] line-clamp-2">
@@ -165,12 +164,11 @@ const FeaturedProjects = () => {
                    w-10 h-10 md:w-12 md:h-12 flex items-center justify-center
                    text-gray-700 hover:text-blue-600 // Color for Swiper's default icon
                    after:!text-xl md:after:!text-2xl // Control size of Swiper's default icon
-                   swiper-button-disabled:opacity-30 swiper-button-disabled:cursor-not-allowed"  
-      >
-        <span>Next</span>
-       </div>
-
-    </div>  
+                   swiper-button-disabled:opacity-30 swiper-button-disabled:cursor-not-allowed"
+        >
+          <span>Next</span>
+        </div>
+      </div>
     </div>
   );
 };
