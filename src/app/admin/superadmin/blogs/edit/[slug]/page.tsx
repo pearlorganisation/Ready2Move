@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import JoditEditor from "jodit-react";
-import { useAppSelector } from "@/lib/hooks/dispatchHook";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getSingleBlog, updateBlog } from "@/lib/redux/actions/blogAction";
 import slugify from "slugify";
 
@@ -81,7 +80,7 @@ const Page = () => {
   const params = useParams();
   const slug = params?.slug as string;
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { singleBlog } = useAppSelector((state) => state.blogs);
 
   const [loading, setLoading] = useState(false);
@@ -132,7 +131,7 @@ const Page = () => {
     }
 
     await dispatch(
-      updateBlog({ slug: singleBlog.slug, updatedData: formData }) as any
+      updateBlog({ slug: singleBlog?.slug, updatedData: formData }) as any
     );
 
     setLoading(false);

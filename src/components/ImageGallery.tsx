@@ -1,9 +1,9 @@
-const ImageGallery = ({ images }) => {
+const ImageGallery = ({ images }:any) => {
   return (
     <section className="py-8 px-4">
       <h2 className="text-2xl font-bold mb-6 text-center">Image Gallery</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {images.map((src, index) => (
+        {images.map((src:string, index:number) => (
           <div key={index} className="overflow-hidden rounded-lg shadow-md">
             <img
               src={src}

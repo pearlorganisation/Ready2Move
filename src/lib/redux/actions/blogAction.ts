@@ -48,7 +48,7 @@ export const updateBlog = createAsyncThunk(
       slug,
       updatedData,
     }: {
-      slug: string | null;
+      slug: string | undefined;
       updatedData: FormData;
     },
     { rejectWithValue }
@@ -81,7 +81,7 @@ export const updateBlog = createAsyncThunk(
 
 export const deleteBlog = createAsyncThunk(
   "delete/blog",
-  async (id, { rejectWithValue }) => {
+  async (id:string, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
