@@ -479,6 +479,7 @@ export default function PropertyForm() {
     control,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -593,6 +594,8 @@ export default function PropertyForm() {
     setValue("slug", slugify(value, { lower: true, strict: true, trim: true }));
   };
 
+  console.log("the steps are", steps.length)
+  console.log("the current steps are", currentStep)
   // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -612,9 +615,8 @@ export default function PropertyForm() {
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
     dispatch(createPropertyByAdmin({ userdata: formData }))
-
-setPropertyModal(false)
-router.push("/admin/superadmin/property")
+    setPropertyModal(false)
+    router.push("/admin/superadmin/property")
   }
 
   useEffect(()=>{
@@ -628,22 +630,20 @@ router.push("/admin/superadmin/property")
       <div></div>
       <div className="flex  justify-end"><button  onClick={handleModalOpen} className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
       >Create Property</button></div>
-
-      
-
 <div>
   <Propertylisting />
 </div>
-        <div className="flex max-w-full">
+
+
+  <div className="flex max-w-full">
           {OpenPropertyModal && <div className="flex flex-row w-full px-20 inset-0 fixed  bg-black bg-opacity-50  z-50 "> 
             <div className="w-64 bg-white border-r p-4 hidden md:block mt-6 rounded-md mb-4">
             <div className="flex justify-between items-center mb-4">
-    <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
-    <button
-      onClick={() =>setPropertyModal(false)}
-      className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
-    >
-Close
+              <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
+              <button
+                onClick={() =>setPropertyModal(false)}
+                className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
+              >Close
     </button>
   </div>
                 <div className="space-y-2 rounded-md  px-6 py-6">
@@ -684,7 +684,8 @@ Close
               </div>
 
    {/* Main Content */}
-   <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6 w-full">
+              <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6 w-full overflow-y-auto">
+
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full mx-auto">
                   <div className="bg-white rounded-lg shadow w-full">
                     {/* Step Content */}
@@ -867,8 +868,8 @@ Close
                           </div>
                         </div>
                       )}
-                      {/* Property Details */}
-{currentStep === 2 && (
+                    {/* Property Details */}
+                    {currentStep === 2 && (
   <div className="space-y-8">
     {/* Heading */}
     <div>
@@ -1076,7 +1077,7 @@ Close
       </div>
     </div>
   </div>
-)}
+                     )}
 
                       {currentStep === 3 && (
                         <div className="space-y-6">
@@ -1544,21 +1545,21 @@ Close
 
                           <div className="space-y-4">
                           <CustomInput
-    id="youtubeEmbedLink"
-    label="YouTube Embed Link"
-    placeholder="YouTube Link"
-    {...register("youtubeEmbedLink")}
-  />
-<p className="mt-1 text-sm text-gray-500">
-  👉 Please paste the <strong>embed link</strong> (e.g., <code>https://www.youtube.com/embed/VIDEO_ID</code>).<br />
-  To get it: Click "Share" → "Embed" on the YouTube video and copy the <strong>src</strong> from the iframe tag.<br />
-  Example:
-  <code className="block mt-1 bg-gray-100 p-1 rounded">
-    &lt;iframe src="<span className='text-red-600'>https://www.youtube.com/embed/VIDEO_ID</span>" /&gt;
-  </code>
-</p>
+                            id="youtubeEmbedLink"
+                            label="YouTube Embed Link"
+                            placeholder="YouTube Link"
+                            {...register("youtubeEmbedLink",{ required: "This field is required" })}
+                          />
+                            <p className="mt-1 text-sm text-gray-500">
+                              👉 Please paste the <strong>embed link</strong> (e.g., <code>https://www.youtube.com/embed/VIDEO_ID</code>).<br />
+                              To get it: Click "Share" → "Embed" on the YouTube video and copy the <strong>src</strong> from the iframe tag.<br />
+                              Example:
+                              <code className="block mt-1 bg-gray-100 p-1 rounded">
+                                &lt;iframe src="<span className='text-red-600'>https://www.youtube.com/embed/VIDEO_ID</span>" /&gt;
+                              </code>
+                            </p>
 
-</div>
+               </div>
                             <div className="space-y-2">
                               <label className="block text-sm font-medium text-gray-700">
                                 Featured Property
@@ -1689,24 +1690,44 @@ Close
                         Back
                       </CustomButton>
 
-                      {currentStep === steps.length - 1 ? (
-                        <CustomButton type="submit">Publish</CustomButton>
-                      ) : (
-                        <CustomButton type="button" onClick={handleNext}>
-                          Next
-                        </CustomButton>
-                      )}
+                       {currentStep === steps.length - 1 ? (
+                                  <button
+                                    type="submit"
+                                    onClick={async (e) => {
+                                      const valid = await trigger(); // validate all fields before submitting
+                                      if (!valid) {
+                                        e.preventDefault(); // prevent submission if validation fails
+                                      }
+                                    }}
+                                  >
+                                    Publish
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      const valid = await trigger(); // validate current step
+                                      if (valid) {
+                                        handleNext();
+                                      }
+                                    }}
+                                  >
+                                    Next
+                                  </button>
+                                )}
+
+                     
                     </div>
                   </div>
                 </form>
               </div>
-              </div>
+    </div>
 }
     
            
            
-        </div>
-        </div>
+  </div>
+</div>
     
    
   );

@@ -8,7 +8,7 @@ import axios from "axios";
 
 async function getPropertyBySlug(slug) {
   try {
-    const res = await axios.get(`https://api.ready2move.co.in/api/v1/properties/${slug}`);
+    const res = await axios.get(`http://localhost:5000/api/v1/properties/${slug}`); //https://api.ready2move.co.in/api/v1/properties/${slug}
     return res.data.data; // This is how you access data with Axios
   } catch (err) {
     console.error("Failed to fetch property", err);
@@ -31,20 +31,21 @@ export async function generateMetadata({params}){
     };
   }
   console.log("property?.imageGallery?.[0]?.secure_url",property?.imageGallery?.[0]?.secure_url)
+  const imageUrl = property?.imageGallery?.[0]?.secure_url;
   return {
-    title: property.title,
-    description: property.description,
+    title: property?.title,
+    description: property?.description,
     openGraph: {
-      title: property.title,
-      description: property.description,
+      title: property?.title,
+      description: property?.description,
       images: [property?.imageGallery?.[0]?.secure_url
       ],
       type: "website",
     },
     twitter: {
     card: "summary_large_image",
-    title:property.title,
-    description:property.description
+    title:property?.title,
+    description:property?.description
   },
 
   };
