@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createBanner, deleteBanner, getBanner, updateBanner } from "../actions/bannerAction";
+import {
+  createBanner,
+  deleteBanner,
+  getBanner,
+  updateBanner,
+} from "../actions/bannerAction";
 
 interface BgImage {
   secure_url: string;
@@ -17,26 +22,25 @@ interface BannerState {
   isLoading: boolean;
   isError: boolean;
   isSuccess: boolean;
-  bannerData: BannerData[]; // Changed to array
+  bannerData: BannerData[];
   Banner: BannerData;
-
 }
 
 const initialState: BannerState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
-  bannerData: [], // Changed from single object to array
-  Banner:{
-    _id:'',
-    bgImage:{
-      secure_url:'',
-      public_id:''
+  bannerData: [],
+  Banner: {
+    _id: "",
+    bgImage: {
+      secure_url: "",
+      public_id: "",
     },
-    headline:"",quote:""
-  }
+    headline: "",
+    quote: "",
+  },
 };
-
 
 const createBannerSlice = createSlice({
   name: "banner",
@@ -92,19 +96,21 @@ const createBannerSlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
       })
-      .addCase(deleteBanner.pending,(state,action)=>{
-        state.isLoading=true;
-        state.isError=false;
-        state.isSuccess=false
+      .addCase(deleteBanner.pending, (state, action) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
       })
-      .addCase(deleteBanner.fulfilled,(state,action)=>{
-        state.isSuccess=true;
-        state.bannerData=state.bannerData.filter((item:any)=>item._id !== action.meta.arg)
+      .addCase(deleteBanner.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        state.bannerData = state.bannerData.filter(
+          (item: any) => item._id !== action.meta.arg
+        );
       })
-      .addCase(deleteBanner.rejected,(state)=>{
-        state.isError=true;
-        state.isSuccess=false
-      })
+      .addCase(deleteBanner.rejected, (state) => {
+        state.isError = true;
+        state.isSuccess = false;
+      });
   },
 });
 
