@@ -1,4 +1,4 @@
-// import type { Metadata } from 'next';
+   import type { Metadata } from 'next';
 import MySlugComp from "@/components/MySlugComp";
 
 // export async function generateMetadata(params: {
@@ -88,9 +88,11 @@ import MySlugComp from "@/components/MySlugComp";
 //   }
 // }
 
-export default async function ProjectDetails({params}) {
-  const { slug } =  params;
-  console.log("slug",slug)
+export default async function ProjectDetails(params: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params.params;
+
   return (
     <div className="mt-20">
       <MySlugComp slug={slug} />
