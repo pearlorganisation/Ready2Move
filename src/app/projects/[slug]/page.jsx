@@ -7,6 +7,7 @@ import { url } from "inspector";
 export async function generateMetadata({ params }) {
   const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
   const project = await res.json();
+  console.log("the res is", project);
   const title = project?.data?.title ?? 'Project Preview';
   const imageUrl = project?.data?.imageGallery?.[0]?.secure_url
   return {
