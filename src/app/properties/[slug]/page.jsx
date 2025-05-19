@@ -8,7 +8,7 @@ import axios from "axios";
 
 async function getPropertyBySlug(slug) {
   try {
-    const res = await axios.get(`http://localhost:5000/api/v1/properties/${slug}`); //https://api.ready2move.co.in/api/v1/properties/${slug}
+    const res = await axios.get(`https://api.ready2move.co.in/api/v1/properties/${slug}`); //https://api.ready2move.co.in/api/v1/properties/${slug}
     return res.data.data; // This is how you access data with Axios
   } catch (err) {
     console.error("Failed to fetch property", err);
