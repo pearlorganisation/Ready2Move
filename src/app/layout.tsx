@@ -18,19 +18,44 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-export const metadata: Metadata = {
- title: "Ready2Move",
-  description: "Created By Pearl",
-  openGraph: {
-    title: 'Ready2Move',
-    description: 'Best Buying and Rental Properties',
-    url: 'https://ready2move.co.in/',
-    siteName: 'Ready2Move',
-    locale: 'en_US',
-    type: 'website',
-    images: "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
-  },
-};
+
+// export const metadata: Metadata = {
+//  title: "Ready2Move",
+//   description: "Created By Pearl",
+//   openGraph: {
+//     title: 'Ready2Move',
+//     description: 'Best Buying and Rental Properties',
+//     url: 'https://ready2move.co.in/',
+//     siteName: 'Ready2Move',
+//     locale: 'en_US',
+//     type: 'website',
+//     images: "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg"
+//   },
+// };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Ready2Move",
+    description: "Created by Pearl",
+    openGraph: {
+      title: "Ready2Move",
+      description: "Best Buying and Rental Properties",
+      url: "https://ready2move.co.in/",
+      siteName: "Ready2Move",
+      locale: "en_US",
+      type: "website",
+      images: [
+        {
+          url: "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg",
+          width: 1200,
+          height: 630,
+          alt: "Ready2Move OG Image",
+        },
+      ],
+    },
+  };
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
