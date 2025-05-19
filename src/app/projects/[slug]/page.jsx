@@ -2,39 +2,82 @@
 // app/projects/[slug]/page.tsx
 
 import MySlugComp from "@/components/MySlugComp";
-import { url } from "inspector";
-
+ 
 export async function generateMetadata({ params }) {
+  // const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
+  // const project = await res.json();
+  // console.log("the res is", project);
+  // const title = project?.data?.title ?? 'Project Preview';
+  // const imageUrl = project?.data?.imageGallery?.[0]?.secure_url
+  // return {
+  //   title,
+  //   openGraph: {
+  //     title,
+  //     description: project?.data?.description ?? "Explore this project",
+  //     type: 'website',
+  //     locale: 'en_US',
+  //     url: `https://ready2move.co.in/projects/${params.slug}`,
+  //     images: [
+  //       {
+  //         url: `https://ready2move.co.in/projects/${params.slug}/opengraph-image`,
+  //         // url:imageUrl,
+  //         width: 1200,
+  //         height: 630,
+  //         alt: title,
+  //       },
+  //     ],
+  //   },
+  //   twitter: {
+  //     card: "summary_large_image",
+  //     title,
+  //     description: project?.data?.description ?? "Explore this project",
+  //     images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
+  //     // images: [imageGallery]
+  //   },
+  // };
+
   const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
-  const project = await res.json();
-  console.log("the res is", project);
-  const title = project?.data?.title ?? 'Project Preview';
-  const imageUrl = project?.data?.imageGallery?.[0]?.secure_url
+  const projectData = await res.json(); // Renamed to avoid conflict with 'project' variable name if you declare one later
+  // console.log("the res is", projectData);
+  const title = projectData?.data?.title ?? 'Project Preview';
+  const description = projectData?.data?.description ?? "Explore this project";
+  const pageUrl = `https://ready2move.co.in/projects/${params.slug}`; // The canonical URL of THIS page
+  const ogImageUrl = `${pageUrl}/opengraph-image`; // The URL for the OG image itself
+
   return {
     title,
     openGraph: {
       title,
-      description: project?.data?.description ?? "Explore this project",
-      type: 'website',
+      description,
+      type: 'website', // or 'article' if more appropriate
       locale: 'en_US',
-      url: `https://ready2move.co.in/projects/${params.slug}`,
+      url: pageUrl, // **** THIS IS THE KEY TAG FOR THE LINK BACK ****
       images: [
         {
-          url: `https://ready2move.co.in/projects/${params.slug}/opengraph-image`,
-          // url:imageUrl,
+          url: ogImageUrl, // Correct: points to the image generation route
           width: 1200,
           height: 630,
           alt: title,
+          // type: 'image/png' // You can optionally add this
         },
+        // You can add more images if desired, Facebook will pick one or let user choose
+        // { url: projectData?.data?.imageGallery?.[0]?.secure_url } // For example, if you wanted to offer the raw image too
       ],
+      // siteName: 'Ready2Move' // Optional but good for branding
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description: project?.data?.description ?? "Explore this project",
-      images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
-      // images: [imageGallery]
+      description,
+      // site: "@yourTwitterHandle", // Optional
+      // creator: "@authorTwitterHandle", // Optional
+      images: [ogImageUrl], // Correct: points to the image generation route
     },
+    // Optional: Add a canonical link tag directly as well for SEO best practices
+    // It's often redundant if og:url is set, but doesn't hurt.
+    // alternates: {
+    //   canonical: pageUrl,
+    // },
   };
 }
 
