@@ -24,7 +24,7 @@ export async function generateMetadata({params}){
   // Fetch property details from your backend or API using the slug
   // const property = await getSinglePropertyBySlug(slug);
   const property = await getPropertyBySlug(slug);
-  console.log("the property is", property)
+  // console.log("the property is", property)
   if (!property) {
     return {
       title: "Property Not Found",
@@ -37,28 +37,26 @@ export async function generateMetadata({params}){
     description: property?.description,
     openGraph: {
       title: property?.title,
-      description: property?.description,
-      images: [property?.imageGallery?.[0]?.secure_url
+      description: property?.description.slice(1,180),
+      images: [imageUrl
       ],
       type: "website",
     },
     twitter: {
     card: "summary_large_image",
     title:property?.title,
-    description:property?.description
+    description:property?.description.slice(1,180)
   },
 
   };
 }
 
-export default async function Page({params}) {
-  const { slug } = params;
+export default  function Page({params}) {
 
-  console.log("slug",slug);
 
   return (
     <div className="mt-20">
-      <MySlugProperty slug={slug} />
+      <MySlugProperty slug={params.slug} />
     </div>
   );
 }
