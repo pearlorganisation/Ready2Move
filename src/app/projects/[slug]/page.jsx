@@ -33,7 +33,7 @@ export async function generateMetadata({ params }) {
       title,
       description: project?.data?.description ?? "Explore this project",
       images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
-      images: [imageGallery]
+      // images: [imageGallery]
     },
   };
 }
