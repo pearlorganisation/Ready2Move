@@ -2,12 +2,13 @@
 // app/projects/[slug]/page.tsx
 
 import MySlugComp from "@/components/MySlugComp";
+import { url } from "inspector";
 
 export async function generateMetadata({ params }) {
   const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
   const project = await res.json();
   const title = project?.data?.title ?? 'Project Preview';
-
+  const imageUrl = project?.data?.imageGallery?.[0]?.secure_url
   return {
     title,
     openGraph: {
@@ -18,7 +19,8 @@ export async function generateMetadata({ params }) {
       url: `https://ready2move.co.in/projects/${params.slug}`,
       images: [
         {
-          url: `https://ready2move.co.in/projects/${params.slug}/opengraph-image`,
+          // url: `https://ready2move.co.in/projects/${params.slug}/opengraph-image`,
+          url:imageUrl,
           width: 1200,
           height: 630,
           alt: title,
@@ -29,7 +31,8 @@ export async function generateMetadata({ params }) {
       card: "summary_large_image",
       title,
       description: project?.data?.description ?? "Explore this project",
-      images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
+      // images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
+      images: [imageGallery]
     },
   };
 }
