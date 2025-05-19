@@ -19,37 +19,38 @@ async function getPropertyBySlug(slug) {
 
 
 
-export async function generateMetadata({params}){
- const { slug } =  params;
-  // Fetch property details from your backend or API using the slug
-  // const property = await getSinglePropertyBySlug(slug);
+export async function generateMetadata({ params }) {
+  const { slug } = params;
   const property = await getPropertyBySlug(slug);
-  // console.log("the property is", property)
+
   if (!property) {
     return {
       title: "Property Not Found",
     };
   }
-  console.log("property?.imageGallery?.[0]?.secure_url",property?.imageGallery?.[0]?.secure_url)
-  const imageUrl = property?.imageGallery?.[0]?.secure_url;
+
+  const imageUrl = property?.imageGallery?.[0]?.secure_url || "https://yourdomain.com/default-og-image.jpg";
+  const description = property?.description?.slice(0, 180) || "Find amazing properties on Ready2Move";
+
   return {
-    title: property?.title,
-    description: property?.description,
+    title: property.title,
+    description,
     openGraph: {
-      title: property?.title,
-      description: property?.description.slice(1,180),
-      images: [imageUrl
-      ],
+      title: property.title,
+      description,
+      images: [imageUrl],
       type: "website",
+      url: `https://ready2move.co.in/projects/${slug}`,
     },
     twitter: {
-    card: "summary_large_image",
-    title:property?.title,
-    description:property?.description.slice(1,180)
-  },
-
+      card: "summary_large_image",
+      title: property.title,
+      description,
+      images: [imageUrl],
+    },
   };
 }
+
 
 export default  function Page({params}) {
 
