@@ -19,8 +19,8 @@ export async function generateMetadata({ params }) {
       url: `https://ready2move.co.in/projects/${params.slug}`,
       images: [
         {
-          // url: `https://ready2move.co.in/projects/${params.slug}/opengraph-image`,
-          url:imageUrl,
+          url: `https://ready2move.co.in/projects/${params.slug}/opengraph-image`,
+          // url:imageUrl,
           width: 1200,
           height: 630,
           alt: title,
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }) {
       card: "summary_large_image",
       title,
       description: project?.data?.description ?? "Explore this project",
-      // images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
+      images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`],
       images: [imageGallery]
     },
   };
