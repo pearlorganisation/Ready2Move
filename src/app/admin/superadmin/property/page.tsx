@@ -9,7 +9,7 @@ import slugify from "slugify";
 import { CalendarIcon, Check } from "lucide-react";
 import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
-import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
+import { createPropertyByAdmin, getAllProperties } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
 import Propertylisting from "../propertylist/page"
@@ -614,9 +614,14 @@ export default function PropertyForm() {
 
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
-    dispatch(createPropertyByAdmin({ userdata: formData }))
-    setPropertyModal(false)
-    router.push("/admin/superadmin/property")
+    dispatch(createPropertyByAdmin({ userdata: formData })).then(res=>{
+      console.log("the res is", res);
+      if(res?.payload?.success == true){
+       dispatch(getAllProperties({page:1, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
+       setPropertyModal(false)
+       }
+    })
+   
   }
 
   useEffect(()=>{
@@ -630,11 +635,9 @@ export default function PropertyForm() {
       <div></div>
       <div className="flex  justify-end"><button  onClick={handleModalOpen} className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
       >Create Property</button></div>
-<div>
-  <Propertylisting />
-</div>
-
-
+      <div>
+        <Propertylisting />
+      </div>
   <div className="flex max-w-full">
           {OpenPropertyModal && <div className="flex flex-row w-full px-20 inset-0 fixed  bg-black bg-opacity-50  z-50 "> 
             <div className="w-64 bg-white border-r p-4 hidden md:block mt-6 rounded-md mb-4">
@@ -1721,11 +1724,7 @@ export default function PropertyForm() {
                   </div>
                 </form>
               </div>
-    </div>
-}
-    
-           
-           
+           </div>}           
   </div>
 </div>
     
