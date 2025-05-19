@@ -1,7 +1,21 @@
 import type { Metadata } from 'next';
 import MySlugComp from "@/components/MySlugComp";
 
-// export async function generateMetadata(params: {
+ 
+
+export default async function ProjectDetails(params: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params.params;
+
+  return (
+    <div className="mt-20">
+      <MySlugComp slug={slug} />
+    </div>
+  );
+}
+
+ // export async function generateMetadata(params: {
 //   params: Promise<{ slug: string }>
 // }): Promise<Metadata> {
 //   // Extract slug the same way as in your page component
@@ -87,17 +101,3 @@ import MySlugComp from "@/components/MySlugComp";
 //     };
 //   }
 // }
-
-export default async function ProjectDetails(params: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params.params;
-
-  return (
-    <div className="mt-20">
-      <MySlugComp slug={slug} />
-    </div>
-  );
-}
-
- 
