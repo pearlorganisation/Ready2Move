@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
 import MySlugComp from "@/components/MySlugComp";
 
 // export async function generateMetadata(params: {
@@ -37,13 +37,11 @@ import MySlugComp from "@/components/MySlugComp";
 // }
 
 
-export async function generateMetadata(params: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
-  const { slug } = await params.params;
+export async function generateMetadata({params}){
+  const { slug } =  params;
   
   try {
-    const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DEV_BASE_URL}/api/v1/projects/${slug}`);
     const project = (await res.json())?.data;
 
     // Use first image from gallery or fallback
@@ -88,11 +86,9 @@ export async function generateMetadata(params: {
   }
 }
 
-export default async function ProjectDetails(params: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params.params;
-
+export default async function ProjectDetails({params}) {
+  const { slug } =  params;
+  console.log("slug",slug)
   return (
     <div className="mt-20">
       <MySlugComp slug={slug} />

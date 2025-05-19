@@ -77,7 +77,7 @@ type BlogFormInputs = {
 
 const Page = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean | false>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
@@ -177,7 +177,7 @@ const Page = () => {
             >
               Blog Content
             </label>
-            <div className="border border-gray-300 rounded-lg overflow-hidden">
+            {/* <div className="border border-gray-300 rounded-lg overflow-hidden">
               <Controller
                 control={control}
                 name="content"
@@ -196,7 +196,7 @@ const Page = () => {
                   {errors.content.message}
                 </p>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Image Upload */}
