@@ -41,7 +41,7 @@ export async function generateMetadata({params}){
   const { slug } =  params;
   
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DEV_BASE_URL}/api/v1/projects/${slug}`);
+    const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
     const project = (await res.json())?.data;
 
     // Use first image from gallery or fallback
