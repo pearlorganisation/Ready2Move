@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
     title,
     openGraph: {
       title,
-      images: [`/projects/${params.slug}/opengraph-image`], // 👈 dynamic OG image path
+      images: [`https://ready2move.co.in/projects/${params.slug}/opengraph-image`], // 👈 dynamic OG image path
     },
   };
 }
