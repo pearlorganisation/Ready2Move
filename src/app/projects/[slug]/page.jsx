@@ -1,7 +1,29 @@
 // import type { Metadata } from 'next';
 import MySlugComp from "@/components/MySlugComp";
+export async function generateMetadata({ params }) {
+  const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
+  const project = await res.json();
+  const title = project?.data?.title ?? 'Project Preview';
 
-// export async function generateMetadata(params: {
+  return {
+    title,
+    openGraph: {
+      title,
+      images: [`/projects/${params.slug}/opengraph-image`], // 👈 dynamic OG image path
+    },
+  };
+}
+export default async function ProjectDetails({params}) {
+  const { slug } =  params;
+  console.log("slug",slug)
+  return (
+    <div className="mt-20">
+      <MySlugComp slug={slug} />
+    </div>
+  );
+}
+
+ // export async function generateMetadata(params: {
 //   params: Promise<{ slug: string }>
 // }): Promise<Metadata> {
 //   // Extract slug the same way as in your page component
@@ -87,15 +109,3 @@ import MySlugComp from "@/components/MySlugComp";
 //     };
 //   }
 // }
-
-export default async function ProjectDetails({params}) {
-  const { slug } =  params;
-  console.log("slug",slug)
-  return (
-    <div className="mt-20">
-      <MySlugComp slug={slug} />
-    </div>
-  );
-}
-
- 
