@@ -55,10 +55,6 @@ const handleModalOpen = (slug: string) => {
     setOpenModal(false)
    }
     })
-
-
-   
-
   }
  }
  const closeModal=()=>{

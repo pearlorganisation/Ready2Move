@@ -21,10 +21,18 @@ export function Sidebar() {
 
       </nav>
     </div>
-  )
+  );
 }
 
-function SidebarLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+function SidebarLink({
+  href,
+  icon,
+  label,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+}) {
   return (
     <Link
       href={href}
@@ -33,6 +41,5 @@ function SidebarLink({ href, icon, label }: { href: string; icon: React.ReactNod
       {icon}
       {label}
     </Link>
-  )
+  );
 }
-

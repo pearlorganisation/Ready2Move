@@ -2,7 +2,9 @@ import { encryptTransform } from "redux-persist-transform-encrypt";
 import rootReducer, { RootState } from ".";
 import { persistReducer, persistStore } from "redux-persist";
 import { configureStore } from "@reduxjs/toolkit";
-import storage from "../util/customStorage";
+// import storage from "../util/customStorage";
+import storage from "redux-persist/lib/storage";
+
 
 const rootReducerWithClear = (state: RootState | undefined, action: any) => {
   if (action.type === "readyToMove/clearReduxState") {
