@@ -18,7 +18,7 @@ export function Sidebar() {
         <SidebarLink href="/admin/superadmin/leads" icon={<BookHeadphones  className="mr-2 h-4 w-4" />} label="Leads" />      
         <SidebarLink href="/admin/superadmin/users" icon={<Users className="mr-2 h-4 w-4" />} label="Users" />
         <SidebarLink href="/admin/superadmin/faq-management" icon={<HelpCircle className="mr-2 h-4 w-4" />}label="FAQ-Management" />
-
+        <SidebarLink href="/admin/superadmin/blogs" icon={<HelpCircle className="mr-2 h-4 w-4" />}label="Blogs" />
       </nav>
     </div>
   );
