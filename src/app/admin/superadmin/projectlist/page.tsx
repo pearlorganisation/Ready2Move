@@ -84,7 +84,7 @@ const handleDeleteClick = (id: string) => {
   };
 
   return (
-    <div className="p-4 overflow-x-auto">
+    <div className="p-4 overflow-x-auto w-full">
       <h2 className="text-2xl font-bold mb-4">All Projects</h2>
       <table className="w-full table-auto border border-gray-200 text-sm">
         <thead className="bg-gray-100">
