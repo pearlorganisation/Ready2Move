@@ -13,6 +13,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { createLeads } from "@/lib/redux/actions/leadsAction";
+import ImageGallery from "./ImageGallery";
 
 const MySlugComp = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
@@ -432,7 +433,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
               <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
                 <h1 className="font-bold text-2xl mt-4 mb-4">Image Gallery </h1>
                 <div className="flex flex-row gap-2">
-                  {singleProjectData?.imageGallery
+                  {/* {singleProjectData?.imageGallery
                     ?.slice(0, 5)
                     .map((image, index) => (
                       <div className="">
@@ -442,7 +443,8 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                           className="w-40 h-40"
                         />
                       </div>
-                    ))}
+                    ))} */}
+                    <ImageGallery images={singleProjectData?.imageGallery} />
                 </div>
               </div>
 

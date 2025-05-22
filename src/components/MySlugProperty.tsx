@@ -14,6 +14,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { createLeads } from "@/lib/redux/actions/leadsAction";
 import { getSingleProperty } from "@/lib/redux/actions/propertyAction";
+import ImageGallery from "./ImageGallery";
 
 const MySlugProperty = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
@@ -713,6 +714,24 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       {bank?.name}
                     </div>
                   ))}
+                </div>
+              </div>
+
+    <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
+                <h1 className="font-bold text-2xl mt-4 mb-4">Image Gallery </h1>
+                <div className="flex flex-row gap-2">
+                  {/* {singleProjectData?.imageGallery
+                    ?.slice(0, 5)
+                    .map((image, index) => (
+                      <div className="">
+                        <img
+                          src={image?.secure_url}
+                          alt="Image "
+                          className="w-40 h-40"
+                        />
+                      </div>
+                    ))} */}
+                    <ImageGallery images={singlePropertyData?.imageGallery} />
                 </div>
               </div>
 
