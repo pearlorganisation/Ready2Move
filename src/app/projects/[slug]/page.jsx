@@ -1,12 +1,56 @@
-import type { Metadata } from 'next';
+// import type { Metadata } from 'next';
+// app/projects/[slug]/page.tsx
+
 import MySlugComp from "@/components/MySlugComp";
-
  
+export async function generateMetadata({ params }) {
+  const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
+  const projectData = await res.json(); // Renamed to avoid conflict with 'project' variable name if you declare one later
+  // console.log("the res is", projectData);
+  const title = projectData?.data?.title ?? 'Project Preview';
+  const description = projectData?.data?.description ?? "Explore this project";
+  const pageUrl = `https://ready2move.co.in/projects/${params.slug}`; // The canonical URL of THIS page
+  const ogImageUrl = `${pageUrl}/opengraph-image`; // The URL for the OG image itself
 
-export default async function ProjectDetails(params: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params.params;
+  return {
+    title,
+    openGraph: {
+      title,
+      description,
+      type: 'website', // or 'article' if more appropriate
+      locale: 'en_US',
+      url: pageUrl, // **** THIS IS THE KEY TAG FOR THE LINK BACK ****
+      images: [
+        {
+          url: ogImageUrl, // Correct: points to the image generation route
+          width: 1200,
+          height: 630,
+          alt: title,
+          // type: 'image/png' // You can optionally add this
+        },
+        // You can add more images if desired, Facebook will pick one or let user choose
+        // { url: projectData?.data?.imageGallery?.[0]?.secure_url } // For example, if you wanted to offer the raw image too
+      ],
+      // siteName: 'Ready2Move' // Optional but good for branding
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      // site: "@yourTwitterHandle", // Optional
+      // creator: "@authorTwitterHandle", // Optional
+      images: [ogImageUrl], // Correct: points to the image generation route
+    },
+    // Optional: Add a canonical link tag directly as well for SEO best practices
+    // It's often redundant if og:url is set, but doesn't hurt.
+    // alternates: {
+    //   canonical: pageUrl,
+    // },
+  };
+}
+
+export default async function ProjectDetails({ params }) {
+  const { slug } = params;
 
   return (
     <div className="mt-20">

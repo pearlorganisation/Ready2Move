@@ -73,10 +73,7 @@ export const createPropertyByAdmin = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       };
-
-      console.log("The form data before is", userdata);
       const formData = new FormData();
-
       // ✅ Append Basic Details
       formData.append("user", userdata?.id || "");
       formData.append("title", userdata?.title || "");

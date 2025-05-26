@@ -1,11 +1,11 @@
 "use client";
-
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Controller, useForm } from "react-hook-form";
-import JoditEditor from "jodit-react";
 import slugify from "slugify";
 import { createBlog } from "@/lib/redux/actions/blogAction";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 const config = {
   readonly: false,
@@ -77,7 +77,7 @@ type BlogFormInputs = {
 
 const Page = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean | false>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {

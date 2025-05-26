@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { axiosInstance } from '@/lib/constants/axiosInstance';
@@ -8,6 +8,7 @@ import { getSingleProject } from '@/lib/redux/actions/projectAction';
 import { getSingleProperty } from '@/lib/redux/actions/propertyAction';
 import { useRouter } from "next/navigation"; // ✅ App Router
 import { getFeatures } from '@/lib/redux/actions/featuresAction';
+import Image from 'next/image';
 
 export interface Property {
   _id?: string;
@@ -27,7 +28,7 @@ export interface Property {
   reraNumber: string;//
   reraPossessionDate: string;//
   youtubeEmbedLink: string;//
-  service: 'RENT' | 'SALE';//
+  service: 'BUY' | 'RENT';//
   property: 'RESIDENTIAL' | 'COMMERCIAL';//
   isFeatured: boolean;//
   propertyType:string;//
@@ -52,23 +53,23 @@ export interface Property {
   waterSource: string;
   otherFeatures: string[];
   propertyFlooring: string;
-  // imageGallery: string[]    will add later
+  imageGallery: File[]    // will add late
 
 }
-
-
+ 
 const EditProPertyComp = ({slug}:{slug:string}) => {
-
- const router = useRouter()
+    const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const router = useRouter()
   const dispatch=useAppDispatch();
   const { singlePropertyData, paginate } = useAppSelector((state) => state.property);
   const { featureData } = useAppSelector(state=> state.features);
-
   useEffect(()=>{
     dispatch(getSingleProperty({slug:slug}))
   },[])
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-  const { register, handleSubmit, reset, control, setValue, formState: { errors } } = useForm<Property>({
+  const { register, handleSubmit, reset, control, setValue, formState: { errors }, watch } = useForm<Property>({
     defaultValues: {
       service: 'RENT',
       property: 'RESIDENTIAL',
@@ -110,6 +111,13 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
     },
   });
 
+   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.files) return;
+      const files = Array.from(e.target.files);
+      setValue("imageGallery", files);
+      setPreviewImages(files.map((file) => URL.createObjectURL(file)));
+    };
+  
    useEffect(() => {
     
     if (singlePropertyData) {
@@ -172,13 +180,163 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
     name: 'area',
   });
 
-
-   
+const servicename= watch('service')
+   console.log("the service name", servicename)
   const onSubmit = async (data: Property) => {
+       const formData = new FormData();
+
+      // ✅ Append Basic Details
+      // formData.append("user", data?.id || "");
+      formData.append("title", data?.title || "");
+      // formData.append("slug", data?.slug || "");
+      formData.append("subTitle", data?.subTitle || "");
+      formData.append("description", data?.description || "");
+      formData.append("service", data?.service);
+      formData.append("property", data?.property || "RESIDENTIAL");
+      formData.append("propertyType", data?.propertyType || "");
+
+      // ✅ Append Location Details
+      formData.append("apartmentName", data?.apartmentName || "");
+      formData.append("apartmentNo", data?.apartmentNo || "");
+      formData.append("locality", data?.locality || "");
+      formData.append("city", data?.city || "");
+      formData.append("state", data?.state || "");
+
+      // ✅ Append Property Size & Configuration
+      data?.area?.forEach((areaItem, index) => {
+        formData.append(`area[${index}][name]`, areaItem.name);
+        formData.append(`area[${index}][area]`, areaItem.area.toString());
+        formData.append(
+          `area[${index}][areaMeasurement]`,
+          areaItem.areaMeasurement
+        );
+      });
+
+      // if (data?.area) {
+      //   formData.append("area[area]", data.area.toString());
+      //   formData.append("area[measurement]", data.measurement);
+      // }
+
+      // formData.append(
+      //   "propertyFloor",
+      //   data?.propertyFloor?.toString() || "0"
+      // );
+      // formData.append("totalFloors", data?.totalFloors?.toString() || "0");
+      // formData.append("roadWidth", data?.roadWidth?.toString() || "0");
+
+      // ✅ Append Legal & Registration
+      if (data?.reraNumber)
+        formData.append("reraNumber", data.reraNumber);
+      if (data?.reraPossessionDate)
+        formData.append(
+          "reraPossessionDate",
+          data.reraPossessionDate
+        );
+
+      // ✅ Append Property Features
+      formData.append(
+        "noOfBedrooms",
+        data?.noOfBedrooms?.toString() || "0"
+      );
+      formData.append(
+        "noOfBathrooms",
+        data?.noOfBathrooms?.toString() || "0"
+      );
+      formData.append(
+        "noOfBalconies",
+        data?.noOfBalconies?.toString() || "0"
+      );
+      formData.append("parking", data?.parking || "");
+      formData.append("furnishing", data?.furnishing || "");
+      formData.append("entranceFacing", data?.entranceFacing || "");
+      formData.append("availability", data?.availability || "");
+      formData.append("propertyAge", data?.propertyAge || "");
+      formData.append(
+        "isOCAvailable",
+        data?.isOCAvailable ? "true" : "false"
+      );
+      formData.append(
+        "isCCAvailable",
+        data?.isCCAvailable ? "true" : "false"
+      );
+      formData.append("ownership", data?.ownership || "");
+
+      // ✅ Append Pricing & Charges
+      formData.append(
+        "expectedPrice",
+        data?.expectedPrice?.toString() || "0"
+      );
+      formData.append(
+        "isPriceNegotiable",
+        data?.isPriceNegotiable ? "true" : "false"
+      );
+      formData.append(
+        "isBrokerageCharge",
+        data?.isBrokerageCharge ? "true" : "false"
+      );
+      formData.append("brokerage", data?.brokerage?.toString() || "0");
+      // formData.append(
+      //   "maintenanceCharge",
+      //   data?.maintenanceCharge?.toString() || "0"
+      // );
+      // formData.append(
+      //   "maintenanceFrequency",
+      //   data?.maintenanceFrequency || ""
+      // );
+
+      // ✅ Append Financial & Legal
+      if (Array.isArray(data?.bankOfApproval)) {
+        data.bankOfApproval.forEach((bank) => {
+          formData.append("bankOfApproval", bank);
+        });
+      }
+
+      // ✅ Append Amenities & Features
+      if (Array.isArray(data?.aminities)) {
+        data.aminities.forEach((amenity) => {
+          formData.append("aminities", amenity);
+        });
+      }
+
+      formData.append("waterSource", data?.waterSource || "");
+
+      if (Array.isArray(data?.otherFeatures)) {
+        data.otherFeatures.forEach((feature) => {
+          formData.append("otherFeatures", feature);
+        });
+      }
+
+      formData.append("propertyFlooring", data?.propertyFlooring || "");
+      // formData.append("powerBackup", data?.powerBackup || "");
+
+      // if (Array.isArray(data?.nearbyLandmarks)) {
+      //   data.nearbyLandmarks.forEach((landmark) => {
+      //     formData.append("nearbyLandmarks", landmark);
+      //   });
+      // }
+
+      // ✅ Append Media
+      if (Array.isArray(data?.imageGallery)) {
+        data.imageGallery.forEach((file) => {
+          formData.append("imageGallery", file);
+        });
+      }
+
+      if (data?.youtubeEmbedLink) {
+        formData.append("youtubeEmbedLink", data.youtubeEmbedLink);
+      }
+
+      formData.append("isFeatured", data?.isFeatured ? "true" : "false");
+
+      const config = {
+        headers:{
+             "Content-Type": 'multipart/form-data' 
+          }
+      }
     try {
-      await axiosInstance.patch(`/api/v1/properties/${slug}`, data);
+      await axiosInstance.patch(`/api/v1/properties/${slug}`, formData,config);
       alert('Property updated successfully!');
-      router.push('/admin/superadmin/property')
+      // router.push('/admin/superadmin/property')
     } catch (err) {
       console.error(err);
       alert('Failed to update Property.');
@@ -623,40 +781,40 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
                     ))}
                   </div>
               {/* YouTube Link */}
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">YouTube Embed Link</label>
-                <input {...register('youtubeEmbedLink')} placeholder="YouTube Link" className="w-full p-3 border rounded-md" />
-              </div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">YouTube Embed Link</label>
+                    <input {...register('youtubeEmbedLink')} placeholder="YouTube Link" className="w-full p-3 border rounded-md" />
+                  </div>
 
               {/* Service Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                <select {...register('service')} className="w-full p-3 border rounded-md">
-                  <option value="RENT">Rent</option>
-                  <option value="SALE">Sale</option>
-                </select>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                    <select {...register('service')} className="w-full p-3 border rounded-md">
+                      <option value="RENT">RENT</option>
+                      <option value="BUY">BUY</option>
+                    </select>
+                  </div>
 
               {/* Property Type */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
-                <select {...register('property')} className="w-full p-3 border rounded-md">
-                  <option value="RESIDENTIAL">Residential</option>
-                  <option value="COMMERCIAL">Commercial</option>
-                </select>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
+                    <select {...register('property')} className="w-full p-3 border rounded-md">
+                      <option value="RESIDENTIAL">Residential</option>
+                      <option value="COMMERCIAL">Commercial</option>
+                    </select>
+                  </div>
 
               {/* Featured */}
-              <div className="col-span-2 flex items-center space-x-3">
-              <input
-                type="checkbox"
-                {...register('isFeatured')}
-           
-              />
-              <label className="text-sm text-gray-700">Mark as Featured Property</label>
-            </div>
+                  <div className="col-span-2 flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      {...register('isFeatured')}
+                
+                    />
+                    <label className="text-sm text-gray-700">Mark as Featured Property</label>
+                  </div>
                  
-                 <div className="col-span-2 flex items-center space-x-3">
+                  <div className="col-span-2 flex items-center space-x-3">
                     <input
                       type="checkbox"
                       {...register('isCCAvailable')}
@@ -716,6 +874,25 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
                     <label className="text-sm text-gray-700">Brokerage</label>
                   </div>
                   
+                  <div>
+                    {/* <label>Add Images</label>
+                    <input 
+                     type='file'
+                     multiple
+                     id="images"
+                     {...register('imageGallery')}
+                    /> */}
+                <label>Add Images</label>
+                  <input
+                      type="file"
+                      id="imageGallery"
+                      multiple
+                      accept="image/*"
+                      // className="hidden"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                    />
+                  </div>
               {/* Submit Button */}
               <div className="col-span-2">
                 <button type="submit" className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200">
@@ -723,6 +900,28 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
                 </button>
               </div>
             </form>
+            {/** already posted images */}
+          
+          
+          <div className="flex flex-wrap gap-2.5">  
+            {singlePropertyData?.imageGallery?.map((item: { secure_url: string; public_id: string; id?: string }, index: number) => (
+              <div
+                key={item.public_id || item.id || `gallery-img-${index}`}
+                className="relative w-[200px] h-[150px] border border-gray-200 overflow-hidden"
+              >
+                <Image
+                  src={item.secure_url}
+                  alt={`Gallery image ${item.public_id || index + 1}`}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                  // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Still recommended
+                />
+    </div>
+  ))}
+          </div> 
+          
+         
           </div>
 
       </>

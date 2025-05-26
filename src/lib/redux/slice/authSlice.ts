@@ -59,11 +59,11 @@ const registerSlice = createSlice({
             state.isSuccess= false
             state.isError= false
         }).addCase(getAllUser.fulfilled,(state,action)=>{
-state.isLoading=false;
-state.users= action.payload.data
-state.pagination= action.payload.pagination
-state.isSuccess= true;
-state.isError= false
+            state.isLoading=false;
+            state.users= action.payload.data
+            state.pagination= action.payload.pagination
+            state.isSuccess= true;
+            state.isError= false
         })
         .addCase(getAllUser.rejected,(state,action)=>{
             state.isLoading= false

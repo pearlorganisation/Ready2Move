@@ -1,35 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger, motion, AnimatePresence } from "framer-motion";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { getAllFaqs } from "@/lib/redux/actions/faqAction";
 
 const FAQ = () => {
-  const faqs = [
-    {
-      id: 1,
-      question: "How can I reset my password?",
-      answer:
-        "To reset your password, go to the login page and click on 'Forgot password.' Follow the instructions to reset your password.",
-    },
-    {
-      id: 2,
-      question: "How do I update my billing information?",
-      answer:
-        "To update your billing information, navigate to 'Account Settings' > 'Billing' and enter your new payment details.",
-    },
-    {
-      id: 3,
-      question: "How can I contact customer support?",
-      answer:
-        "You can contact our support team via the 'Help' section in your dashboard or by emailing support@example.com.",
-    },
-    {
-      id: 4,
-      question: "How do I delete my account?",
-      answer:
-        "To delete your account, go to 'Settings' > 'Account' > 'Delete Account'. Please note that this action is irreversible.",
-    },
-  ];
 
+  const { faqs } = useAppSelector((state) => state.FAQ);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAllFaqs());
+  }, [dispatch]);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const listRef = useRef(null);
 
@@ -59,7 +41,7 @@ const FAQ = () => {
         </div>
         <ul ref={listRef} className="faq-list opacity-0">
           {faqs.map((faq, index) => (
-            <li key={faq.id} className="mb-4">
+            <li key={faq._id} className="mb-4">
               <div
                 className={`border p-4 rounded-xl transition-all duration-300 ${
                   openIndex === index

@@ -1,64 +1,45 @@
-export const dynamic = 'force-dynamic';
-
 import MySlugProperty from "@/components/MySlugProperty";
 import axios from "axios";
-//  import type { Metadata } from 'next';
 
- // You must create this or import from wherever you fetch property details.
-
-async function getPropertyBySlug(slug) {
-  try {
-    const res = await axios.get(`https://api.ready2move.co.in/api/v1/properties/${slug}`); //https://api.ready2move.co.in/api/v1/properties/${slug}
-    return res.data.data; // This is how you access data with Axios
-  } catch (err) {
-    console.error("Failed to fetch property", err);
-    return null;
-  }
-}
-
-
-
-
-export async function generateMetadata({params}){
- const { slug } =  params;
-  // Fetch property details from your backend or API using the slug
-  // const property = await getSinglePropertyBySlug(slug);
-  const property = await getPropertyBySlug(slug);
-  console.log("the property is", property)
-  if (!property) {
-    return {
-      title: "Property Not Found",
-    };
-  }
-  console.log("property?.imageGallery?.[0]?.secure_url",property?.imageGallery?.[0]?.secure_url)
-  const imageUrl = property?.imageGallery?.[0]?.secure_url;
+export async function generateMetadata({ params }) {
+  const res = await fetch(
+    `https://api.ready2move.co.in/api/v1/properties/${params.slug}`
+  );
+  const projectData = await res.json();
+  const title = projectData?.data?.title ?? "Project Preview";
+  const description = projectData?.data?.description ?? "Explore this project";
+  const pageUrl = `https://ready2move.co.in/properties/${params.slug}`;
+  const ogImageUrl = `${pageUrl}/opengraph-image`;
   return {
-    title: property?.title,
-    description: property?.description,
+    title,
     openGraph: {
-      title: property?.title,
-      description: property?.description,
-      images: [property?.imageGallery?.[0]?.secure_url
-      ],
+      title,
+      description,
       type: "website",
+      locale: "en_US",
+      url: pageUrl,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
     twitter: {
-    card: "summary_large_image",
-    title:property?.title,
-    description:property?.description
-  },
-
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImageUrl],
+    },
   };
 }
 
-export default async function Page({params}) {
-  const { slug } = params;
-
-  console.log("slug",slug);
-
+export default function Page({ params }) {
   return (
     <div className="mt-20">
-      <MySlugProperty slug={slug} />
+      <MySlugProperty slug={params.slug} />
     </div>
   );
 }
