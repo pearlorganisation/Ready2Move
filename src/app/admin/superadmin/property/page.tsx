@@ -18,7 +18,7 @@ import Propertylisting from "../propertylist/page"
     slug: string;
     subTitle: string;
     description: string;
-    service: "SELL" | "RENT";
+    service: "BUY" | "RENT";
     property: "RESIDENTIAL" | "COMMERCIAL";
     propertyType: string;
 
@@ -487,7 +487,7 @@ export default function PropertyForm() {
       slug: "",
       subTitle: "",
       description: "",
-      service: "SELL",
+      service: "BUY",
       property: "RESIDENTIAL",
       propertyType: "",
 
@@ -750,7 +750,7 @@ export default function PropertyForm() {
                         control={control}
                         render={({ field }) => (
                           <div className="flex gap-3">
-                            {["SELL", "RENT"].map((option) => (
+                            {["BUY", "RENT"].map((option) => (
                               <CustomButton
                                 key={option}
                                 type="button"
