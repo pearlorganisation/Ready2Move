@@ -1,3 +1,4 @@
+import { BannerForm } from "@/app/admin/superadmin/banner/page";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -43,13 +44,17 @@ export const createBanner = createAsyncThunk(
 export const updateBanner = createAsyncThunk(
   "update/banner",
   async (
-    formdata: { bgImage: File | null; id: string | null },
+    formdata: BannerForm,
+    // bgImage: File | "";
+    // headline: string | null;
+    // quote: string | null;
+    // _id: string | null;
     { rejectWithValue }
   ) => {
     try {
-      const { bgImage, id } = formdata;
+      const { bgImage, headline, quote, _id } = formdata;
 
-      if (!id) {
+      if (!_id) {
         throw new Error("Banner ID is required");
       }
 
@@ -58,9 +63,11 @@ export const updateBanner = createAsyncThunk(
       if (bgImage) {
         newFormData.append("bgImage", bgImage);
       }
+      newFormData.append("headline", headline);
+      newFormData.append("quote", quote);
 
       const response = await axiosInstance.patch(
-        `/api/v1/banners/${id}`,
+        `/api/v1/banners/${_id}`,
         newFormData
       );
 
@@ -75,7 +82,7 @@ export const updateBanner = createAsyncThunk(
 
 export const deleteBanner = createAsyncThunk(
   "delete/banner",
-  async (id, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
