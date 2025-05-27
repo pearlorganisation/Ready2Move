@@ -77,6 +77,7 @@ const onSubmit = async (data: any) => {
 const formdata ={ bgImage:selectedImage, id:id} 
   dispatch(updateBanner(formdata))
   
+  
 }
 
 
