@@ -48,3 +48,19 @@ export const updateUser = createAsyncThunk(
         }
     }
 )
+
+export const logout = createAsyncThunk(
+    "user/logout",async(_,{rejectWithValue})=>{
+        try {
+            const config ={
+                headers:{
+                    "Content-type":"Application/json"
+                }
+            }
+            const data = await axiosInstance.post(`/api/v1/auth/logout`)
+            return data
+        } catch (error) {
+            return rejectWithValue(error)            
+        }
+    }
+)

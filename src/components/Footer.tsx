@@ -62,7 +62,7 @@ const Footer = () => {
               </div>
               <div className="flex items-start">
                 <MapPin className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
-                <span>8, SM Residential Complex, Andheri East, Mumbai</span>
+                <span>1, A Wing, Neel Laxmi CHSKL, Off Shahaji Raje Road, Vile Parle east Mumbai 400057</span>
               </div>
             </div>
           </div>
@@ -128,8 +128,11 @@ Property In {item?.city}
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 5L5 20L20 35L35 20L20 5Z" fill="white" />
               </svg>
-              <span className="text-sm">© 2025 Ready2Move. All rights reserved.</span>
-            </div>
+<span className="text-sm">
+  © 2025 All Rights Reserved. 
+  <a href="https://ready2move.co.in/" className="text-blue-500 hover:underline" target="_self"> Ready2Move</a> Powered By 
+  <a href="https://www.pearlorganisation.com/" className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer"> Pearl Organisation</a>
+</span>            </div>
             <div className="flex flex-wrap items-center gap-4 text-sm">
               <div className="relative">
                 <button onClick={toggleLanguage} className="flex items-center space-x-1 hover:text-gray-300">

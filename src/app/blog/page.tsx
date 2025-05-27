@@ -1,201 +1,197 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { Pagination } from "@mui/material";
-import cardimg from "../../assets/building-4.jpg"
+import { motion } from "framer-motion";
+import gsap from "gsap";
+import parse from "html-react-parser";
+import cardimg from "../../assets/building-4.jpg";
 import banner from "../../assets/city.jpg";
+import { axiosInstance } from "@/lib/constants/axiosInstance";
+import Link from "next/link";
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "Dummy text of the printing",
-    description: "The standard chunk of Lorem Ipsum used since the 1500s",
-    image: cardimg,
-  },
-  {
-    id: 2,
-    title: "There are many variations of passages of Lorem Ipsum",
-    description: "Richard McClintock, a Latin professor at College in Virginia",
-    image: banner,
-  },
-  {
-    id: 3,
-    title: "There are many variations of passages",
-    description: "All the Lorem Ipsum generators on the Internet tend to repeat",
-    image: cardimg,
-  },
-  {
-    title: "chose your dream house",  
-    description: "All the Lorem Ipsum generators on the Internet tend to repeat",
-    image: cardimg,
-  },
-  {
-    id: 5,
-    title: "chose your dream house",
-    description: "All the Lorem Ipsum generators on the Internet tend to repeat",
-    image: cardimg,
-  },
-];
+// Blog Type
+interface Blog {
+  _id: string;
+  slug: string;
+  title: string;
+  description?: string;
+  content?: string;
+  image?: string;
+  thumbImage?: {
+    secure_url?: string;
+  };
+  publishedAt?: string;
+}
 
-const recentPosts = [
-  {
-    id: 1,
-    title: "chose your dream house",
-    date: "2024-09-13",
-    readTime: "13 min read",
-    image: banner,
-  },
-  {
-    id: 2,
-    title: "chose your dream house",
-    date: "2023-09-03",
-    readTime: "11 min read",
-    image: banner,
-  },
-  {
-    id: 3,
-    title: "chose your dream house",
-    date: "2023-10-06",
-    readTime: "12 min read",
-    image: banner,
-  },
-  {
-    id: 4,
-    title: "chose your dream house",
-    date: "2023-08-23",
-    readTime: "36 min read",
-    image: banner,
-  },
-];
+const BlogPage: React.FC = () => {
+  const [data, setData] = useState<Blog[]>([]);
+  const [recentBlogs, setRecentBlogs] = useState<Blog[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const postsPerPage = 2;
+  const bannerRef = useRef<HTMLDivElement>(null);
 
-const BlogPage = () => {
-  const [page, setPage] = useState(1);
-  const postsPerPage = 3;
+  const getAllBlogs = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/api/v1/blogs?limit=${postsPerPage}&page=${page}`
+      );
+      if (res?.data?.data) setData(res.data.data);
+    } catch (err) {
+      console.error("Failed to fetch blogs:", err);
+    }
+  };
 
-  interface HandleChangeEvent {
-    target: EventTarget;
-  }
+  const getRecentBlogs = async () => {
+    try {
+      const res = await axiosInstance.get("/api/v1/blogs/recent");
+      if (res?.data?.data) setRecentBlogs(res.data.data);
+    } catch (error) {
+      console.error("Failed to fetch recent blogs:", error);
+    }
+  };
 
-  const handleChange = (event: HandleChangeEvent, value: number): void => {
+  useEffect(() => {
+    getAllBlogs();
+    getRecentBlogs();
+    gsap.fromTo(
+      bannerRef.current,
+      { opacity: 0, y: 50 },
+      { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" }
+    );
+  }, [page]);
+
+  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
 
   const indexOfLastPost = page * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = blogPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = data.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
-    <div className=" mx-auto">
-      {/* Banner Image */}
-      <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]">
-  <Image 
-    src={banner} 
-    layout="fill" 
-    objectFit="cover" 
-    alt="Blog Banner" 
-    className="absolute inset-0 w-full h-full"
-  />
-  {/* Optional Overlay */}
-  <div className="absolute inset-0 bg-red-300 bg-opacity-50 items-center justify-center text-center flex flex-col">
-    <div>
-    <h1 className="text-white text-3xl md:text-5xl font-bold">Our Properties For Sale</h1>
-    </div>
-   
-    <p className="text-white mt-2 text-2xl font-bold">you can find here as per your location
-        </p>
-  </div>
-</div>
-
-
-      {/* Header */}
-      <div className="px-14">
-      <div className="text-center my-8">
-        {/* <h1 className="text-4xl font-bold text-gray-800">BLOG</h1> */}
-     
-      </div>
-
-      {/* Search and Filter */}
-      <div className="px-4">
-        <div className="flex items-center justify-between rounded-lg px-4 py-3 border pb-3 mb-6">
-          <div className="flex items-center gap-2 border px-3 py-2 rounded-lg">
-            <FaSearch className="text-gray-500" />
+    <div className="mx-auto text-gray-800">
+      {/* Search & Content */}
+      <div className="max-w-[85rem] mx-auto px-6 py-10">
+        {/* Search */}
+        <div className="flex items-center justify-between gap-4 flex-wrap bg-white shadow-md p-4 rounded-xl mb-8">
+          <div className="flex items-center gap-3 border px-3 py-2 rounded-md w-full md:w-auto">
+            <FaSearch className="text-gray-400" />
             <input
               type="text"
               placeholder="Search"
-              className="outline-none text-gray-700"
+              className="outline-none text-gray-700 w-full"
             />
           </div>
-          <button className="flex items-center gap-1 text-gray-700 border px-3 py-2 rounded-lg">
-            All category <MdKeyboardArrowDown />
-          </button>
         </div>
 
-        {/* Blog Posts Layout */}
-        <div className="flex flex-col md:flex-row gap-6">
-          {/* Left Side - Bigger Blog Post */}
-          <div className="md:w-2/3">
-            {currentPosts.slice(0, 1).map((post) => (
-              <div key={post.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
-                <Image src={post.image} width={600} height={350} alt={post.title} className="w-full h-[350px] object-cover" />
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold text-gray-800">{post.title}</h2>
-                  <p className="text-sm text-gray-500 mt-2">{post.description}</p>
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Blog Posts */}
+          <div className="lg:w-2/3 space-y-8">
+            {currentPosts.length > 0 ? (
+              <>
+                {/* First post */}
+                {currentPosts.slice(0, 1).map((post) => (
+                  <Link key={post._id} href={`/blog/${post.slug}`}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.2 }}
+                      className="bg-white shadow-lg rounded-xl overflow-hidden cursor-pointer"
+                    >
+                      <Image
+                        src={post?.image || cardimg}
+                        width={800}
+                        height={400}
+                        alt={post?.title || "Blog Image"}
+                        className="w-full object-cover"
+                      />
+                      <div className="p-5">
+                        <h2 className="text-2xl font-semibold">{post.title}</h2>
+                        <p className="text-gray-500 mt-3">{post.description}</p>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))}
+
+                {/* Remaining posts */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentPosts.slice(1).map((post) => (
+                    <Link key={post._id} href={`/blog/${post.slug}`}>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="bg-white shadow-lg rounded-xl overflow-hidden flex cursor-pointer"
+                      >
+                        <Image
+                          src={post?.thumbImage?.secure_url || cardimg}
+                          width={200}
+                          height={150}
+                          alt={post?.title || "Blog Thumbnail"}
+                          className="object-cover w-52 h-40"
+                        />
+                        <div className="p-4">
+                          <h2 className="text-lg font-bold">{post.title}</h2>
+                          <div className="line-clamp-3 overflow-hidden text-ellipsis text-sm text-gray-700 mt-2">
+                            {parse(post.content || "")}
+                          </div>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  ))}
                 </div>
-              </div>
-            ))}
+
+                {/* Pagination */}
+                <div className="flex justify-center mt-8">
+                  <Pagination
+                    count={Math.ceil(data.length / postsPerPage)}
+                    page={page}
+                    onChange={handleChange}
+                    color="primary"
+                  />
+                </div>
+              </>
+            ) : (
+              <p className="text-center text-gray-500">No blogs found.</p>
+            )}
           </div>
 
-          {/* Right Side - Two Blog Posts */}
-          <div className="md:w-1/2 flex flex-col gap-6">
-            {currentPosts.slice(1, 3).map((post) => (
-              <div key={post.id} className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-row">
-                <Image src={post.image} width={150} height={120} alt={post.title} className="w-[200px] h-[200px] object-cover" />
-                <div className="p-4">
-                  <h2 className="text-lg font-semibold text-gray-800">{post.title}</h2>
-                  <p className="text-sm text-gray-500 mt-2">{post.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
- {/* Right: Recent Posts */}
- <div className="flex justify-between">
-  <div></div>
-  <div className="bg-white p-5 rounded-lg  shadow-lg ">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Recent Posts</h3>
-        <div className="space-y-4">
-          {recentPosts.map((post) => (
-            <div key={post.id} className="flex items-center gap-4">
-              {/* Thumbnail Image */}
-              <Image
-                src={post.image}
-                width={80}
-                height={60}
-                alt={post.title}
-                className="rounded-lg"
-              />
-              {/* Post Info */}
-              <div>
-                <h4 className="text-sm font-semibold text-gray-700">{post.title}</h4>
-                <p className="text-xs text-gray-500">
-                  {post.date} • {post.readTime}
-                </p>
-              </div>
+          {/* Recent Posts */}
+          <div className="lg:w-1/4 h-max bg-white p-6 rounded-xl shadow-md">
+            <h3 className="text-xl font-bold mb-4">Recent Posts</h3>
+            <div className="space-y-8 flex flex-col gap-2 w-80">
+              {recentBlogs.map((post) => (
+                <Link key={post._id} href={`/blog/${post.slug}`}>
+                  <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex items-center gap-4 cursor-pointer"
+                  >
+                    <Image
+                      src={post?.thumbImage?.secure_url || cardimg}
+                      width={80}
+                      height={60}
+                      alt={post?.title || "Recent blog"}
+                      className="rounded-lg w-36 h-28 object-cover"
+                    />
+                    <div>
+                      <h4 className="font-medium text-sm">{post.title}</h4>
+                      <p className="text-xs text-gray-500">
+                        {new Date(post?.publishedAt || "").toDateString()}
+                      </p>
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-        {/* Pagination */}
-       
       </div>
- </div>
- <div className="flex justify-center mt-6">
-          <Pagination count={Math.ceil(blogPosts.length / postsPerPage)} page={page} onChange={handleChange} color="primary" />
-        </div>
-
-    </div></div></div>
+    </div>
   );
 };
 

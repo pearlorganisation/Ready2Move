@@ -13,15 +13,16 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { createLeads } from "@/lib/redux/actions/leadsAction";
+import ImageGallery from "./ImageGallery";
 
 const MySlugComp = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
-  
+
   useEffect(() => {
     dispatch(getSingleProject({ slug: slug }));
   }, [slug]);
 
-  console.log("the slug is", slug)
+  console.log("the slug is", slug);
   const { singleProjectData } = useAppSelector((state) => state.projects);
 
   const [loading, setIsLoading] = useState(false);
@@ -76,9 +77,40 @@ const MySlugComp = ({ slug }: { slug: string }) => {
       setIsLoading(false);
     }
   };
+
+  function convertToYouTubeEmbedLink(url:string) {
+    try {
+      const parsedUrl = new URL(url);
+      let videoId = "";
+
+      if (parsedUrl.hostname === "youtu.be") {
+        // Short URL format: https://youtu.be/VIDEO_ID
+        videoId = parsedUrl.pathname.slice(1);
+      } else if (
+        parsedUrl.hostname === "www.youtube.com" ||
+        parsedUrl.hostname === "youtube.com"
+      ) {
+        // Long URL format: https://www.youtube.com/watch?v=VIDEO_ID
+        if (parsedUrl.pathname === "/watch") {
+          videoId = parsedUrl.searchParams.get("v")||"";
+        } else if (parsedUrl.pathname.startsWith("/embed/")) {
+          return url; // Already an embed link
+        }
+      }
+
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+      } else {
+        throw new Error("Invalid YouTube link");
+      }
+    } catch (error) {
+      return "Invalid YouTube URL";
+    }
+  }
+
   return (
     <div className="container mx-auto py-12 px-4">
-       <Link href="/projects" className="group">
+      <Link href="/projects" className="group">
         <button className="mb-6 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4 transition-colors" />
           Back to Projects
@@ -395,6 +427,24 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       {bank?.name}
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
+                <h1 className="font-bold text-2xl mt-4 mb-4">Image Gallery </h1>
+                <div className="flex flex-row gap-2">
+                  {/* {singleProjectData?.imageGallery
+                    ?.slice(0, 5)
+                    .map((image, index) => (
+                      <div className="">
+                        <img
+                          src={image?.secure_url}
+                          alt="Image "
+                          className="w-40 h-40"
+                        />
+                      </div>
+                    ))} */}
+                    <ImageGallery images={singleProjectData?.imageGallery} />
                 </div>
               </div>
 

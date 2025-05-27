@@ -9,83 +9,82 @@ import slugify from "slugify";
 import { CalendarIcon, Check } from "lucide-react";
 import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
-import { createPropertyByAdmin } from "@/lib/redux/actions/propertyAction";
+import { createPropertyByAdmin, getAllProperties } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
-import { Sidebar } from "@/components/sidebar";
-
+import { useRouter } from "next/navigation"; // ✅ App Router
 import Propertylisting from "../propertylist/page"
-type FormData = {
-  title: string;
-  slug: string;
-  subTitle: string;
-  description: string;
-  service: "SELL" | "RENT";
-  property: "RESIDENTIAL" | "COMMERCIAL";
-  propertyType: string;
+  type FormData = {
+    title: string;
+    slug: string;
+    subTitle: string;
+    description: string;
+    service: "BUY" | "RENT";
+    property: "RESIDENTIAL" | "COMMERCIAL";
+    propertyType: string;
 
-  // Location Details
-  apartmentName: string;
-  apartmentNo: string;
-  locality: string;
-  city: string;
-  state: string;
+    // Location Details
+    apartmentName: string;
+    apartmentNo: string;
+    locality: string;
+    city: string;
+    state: string;
 
-  // Property Size & Configuration
-  area: {
-    name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
-    area: number;
-    areaMeasurement: "SQ_FT" | "SQ_M";
-  }[];
-  landArea: { area: number; measurement: string };
-  propertyFloor: number;
-  totalFloors: number;
-  roadWidth: number;
+    // Property Size & Configuration
+    area: {
+      name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
+      area: number;
+      areaMeasurement: "SQ_FT" | "SQ_M";
+    }[];
+    landArea: { area: number; measurement: string };
+    propertyFloor: number;
+    totalFloors: number;
+    roadWidth: number;
 
-  // Legal & Registration
-  reraNumber: string;
-  reraPossessionDate: Date | null;
+    // Legal & Registration
+    reraNumber: string;
+    reraPossessionDate: Date | null;
 
-  // Property Features
-  noOfBedrooms: number;
-  noOfBathrooms: number;
-  noOfBalconies: number;
-  parking: string;
-  furnishing: string;
-  entranceFacing: string;
-  availability: string;
-  propertyAge: string;
-  isOCAvailable: boolean;
-  isCCAvailable: boolean;
-  ownership: string;
+    // Property Features
+    noOfBedrooms: number;
+    noOfBathrooms: number;
+    noOfBalconies: number;
+    parking: string;
+    furnishing: string;
+    entranceFacing: string;
+    availability: string;
+    propertyAge: string;
+    isOCAvailable: boolean;
+    isCCAvailable: boolean;
+    ownership: string;
 
-  // Pricing & Charges
-  expectedPrice: number;
-  isPriceNegotiable: boolean;
-  isBrokerageCharge: boolean;
-  brokerage: number;
-  maintenanceCharge: number;
-  maintenanceFrequency: string;
+    // Pricing & Charges
+    expectedPrice: number;
+    isPriceNegotiable: boolean;
+    isBrokerageCharge: boolean;
+    brokerage: number;
+    maintenanceCharge: number;
+    maintenanceFrequency: string;
 
-  // Financial & Legal
-  bankOfApproval: string[];
+    // Financial & Legal
+    bankOfApproval: string[];
 
-  // Amenities & Features
-  amenities: string[];
-  waterSource: string;
-  otherFeatures: string[];
-  propertyFlooring: string;
-  powerBackup: string;
-  nearbyLandmarks: string[];
+    // Amenities & Features
+    amenities: string[];
+    waterSource: string;
+    otherFeatures: string[];
+    propertyFlooring: string;
+    powerBackup: string;
+    nearbyLandmarks: string[];
 
-  // Media
-  imageGallery: File[];
-  youtubeEmbedLink: string;
-  isFeatured: boolean;
-};
-type PropertyFormValues = Pick<
-  FormData,
-  "noOfBedrooms" | "noOfBalconies" | "noOfBathrooms"
->;
+    // Media
+    imageGallery: File[];
+    youtubeEmbedLink: string;
+    isFeatured: boolean;
+  };
+  type PropertyFormValues = Pick<
+    FormData,
+    "noOfBedrooms" | "noOfBalconies" | "noOfBathrooms"
+  >;
 
 
 // Custom Input component
@@ -348,7 +347,8 @@ const CustomCalendar = ({
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 p-2">
+        <div className="absolute w-max z-10 mt-1  bg-white shadow-lg rounded-md border border-gray-200 p-2" 
+>
           <div className="flex justify-between items-center mb-2">
             <button
               type="button"
@@ -458,16 +458,19 @@ const CustomPopover = ({
 };
 
 export default function PropertyForm() {
+  const dispatch = useAppDispatch()
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const { featureData } = useAppSelector((state) => state.features)
   const { userData } = useAppSelector((state) => state.user)
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  const dispatch = useAppDispatch()
+    
+
   const[OpenPropertyModal,setPropertyModal]=useState<boolean>(false)
   const handleModalOpen=()=>{
-    setPropertyModal(!OpenPropertyModal)
+    setPropertyModal(true)
   }
 
   const {
@@ -476,6 +479,7 @@ export default function PropertyForm() {
     control,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -483,7 +487,7 @@ export default function PropertyForm() {
       slug: "",
       subTitle: "",
       description: "",
-      service: "SELL",
+      service: "BUY",
       property: "RESIDENTIAL",
       propertyType: "",
 
@@ -590,6 +594,8 @@ export default function PropertyForm() {
     setValue("slug", slugify(value, { lower: true, strict: true, trim: true }));
   };
 
+  console.log("the steps are", steps.length)
+  console.log("the current steps are", currentStep)
   // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -608,8 +614,14 @@ export default function PropertyForm() {
 
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
-    dispatch(createPropertyByAdmin({ userdata: formData }));
-    alert("Property form submitted successfully!");
+    dispatch(createPropertyByAdmin({ userdata: formData })).then(res=>{
+      console.log("the res is", res);
+      if(res?.payload?.success == true){
+       dispatch(getAllProperties({page:1, limit:50,priceRange:0 ,bedRooms:0, bathRooms:0}))
+       setPropertyModal(false)
+       }
+    })
+   
   }
 
   useEffect(()=>{
@@ -623,22 +635,18 @@ export default function PropertyForm() {
       <div></div>
       <div className="flex  justify-end"><button  onClick={handleModalOpen} className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
       >Create Property</button></div>
-
-      
-
-<div>
-  <Propertylisting />
-</div>
-        <div className="flex max-w-full">
+      <div>
+        <Propertylisting />
+      </div>
+  <div className="flex max-w-full">
           {OpenPropertyModal && <div className="flex flex-row w-full px-20 inset-0 fixed  bg-black bg-opacity-50  z-50 "> 
             <div className="w-64 bg-white border-r p-4 hidden md:block mt-6 rounded-md mb-4">
             <div className="flex justify-between items-center mb-4">
-    <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
-    <button
-      onClick={() =>setPropertyModal(false)}
-      className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
-    >
-      Cancel
+              <h2 className="text-lg font-semibold text-slate-700">Add Property</h2>
+              <button
+                onClick={() =>setPropertyModal(false)}
+                className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
+              >Close
     </button>
   </div>
                 <div className="space-y-2 rounded-md  px-6 py-6">
@@ -679,277 +687,134 @@ export default function PropertyForm() {
               </div>
 
    {/* Main Content */}
-   <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6 w-full">
+              <div className="flex-1 p-6 md:p-8 pt-20 md:pt-6 w-full overflow-y-auto">
+
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full mx-auto">
                   <div className="bg-white rounded-lg shadow w-full">
                     {/* Step Content */}
                     <div className="p-6">
-                      {/* {currentStep === 0 && (
-                        <div className="space-y-6">
-                          <div>
-                            <h2 className="text-2xl font-semibold text-slate-800">
-                              Basic Details
-                            </h2>
-                            <p className="text-slate-500 text-sm">Add basic details</p>
-                          </div>
-
-                          <div className="space-y-4">
-                            <CustomInput
-                              id="title"
-                              label="Property Title"
-                              placeholder="e.g. 2 BHK Apartment for Sale in Rustomjee Global City"
-                              error={errors.title?.message}
-                              {...register("title", { required: "Title is required" })}
-                              onChange={(e) => handleTitleChange(e.target.value)}
-                            />
-
-                            <CustomInput
-                              id="slug"
-                              label="Slug"
-                              placeholder="slug"
-                              className="bg-slate-50"
-                              {...register("slug")}
-                              readOnly
-                            />
-
-                            <CustomInput
-                              id="subTitle"
-                              label="Property Subtitle (optional)"
-                              placeholder="e.g. Kandivali West, Mumbai, Mahavir Nagar"
-                              {...register("subTitle")}
-                            />
-
-                            <CustomTextarea
-                              id="description"
-                              label="Property Description"
-                              placeholder="Describe your property in detail"
-                              className="min-h-[100px]"
-                              error={errors.description?.message}
-                              {...register("description", {
-                                required: "Description is required",
-                              })}
-                            />
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                You're looking to
-                              </label>
-                              <Controller
-                                name="service"
-                                control={control}
-                                render={({ field }) => (
-                                  <div className="flex space-x-3">
-                                    <CustomButton
-                                      type="button"
-                                      variant={
-                                        field.value === "SELL" ? "default" : "outline"
-                                      }
-                                      onClick={() => field.onChange("SELL")}
-                                    >
-                                      SELL
-                                    </CustomButton>
-                                    <CustomButton
-                                      type="button"
-                                      variant={
-                                        field.value === "RENT" ? "default" : "outline"
-                                      }
-                                      onClick={() => field.onChange("RENT")}
-                                    >
-                                      RENT
-                                    </CustomButton>
-                                  </div>
-                                )}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Property
-                              </label>
-                              <Controller
-                                name="property"
-                                control={control}
-                                render={({ field }) => (
-                                  <div className="flex space-x-3">
-                                    <CustomButton
-                                      type="button"
-                                      variant={
-                                        field.value === "RESIDENTIAL"
-                                          ? "default"
-                                          : "outline"
-                                      }
-                                      onClick={() => field.onChange("RESIDENTIAL")}
-                                    >
-                                      RESIDENTIAL
-                                    </CustomButton>
-                                    <CustomButton
-                                      type="button"
-                                      variant={
-                                        field.value === "COMMERCIAL"
-                                          ? "default"
-                                          : "outline"
-                                      }
-                                      onClick={() => field.onChange("COMMERCIAL")}
-                                    >
-                                      COMMERCIAL
-                                    </CustomButton>
-                                  </div>
-                                )}
-                              />
-                            </div>
-
-                            <div className="space-y-2">
-                              <label className="block text-sm font-medium text-gray-700">
-                                Property Type
-                              </label>
-                              <Controller
-                                name="propertyType"
-                                control={control}
-                                render={({ field }) => (
-                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                    {featureData.filter((item)=>item.type==="PROPERTY_TYPE").flatMap((category)=>category.features).map((type) => (
-                                      <CustomButton
-                                        key={type._id}
-                                        type="button"
-                                        variant={
-                                          field.value === type._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() => field.onChange(type._id)}
-                                      >
-                                        {type.name}
-                                      </CustomButton>
-                                    ))}
-                                  </div>
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )} */}
                       {currentStep === 0 && (
-  <div className="space-y-8">
-    {/* Section Heading */}
-    <div className="border-b pb-4">
-      <h2 className="text-2xl font-bold text-slate-800">Basic Details</h2>
-      <p className="text-sm text-slate-500">Add basic information about your property</p>
-    </div>
+                  <div className="space-y-8">
+                    {/* Section Heading */}
+                    <div className="border-b pb-4">
+                      <h2 className="text-2xl font-bold text-slate-800">Basic Details</h2>
+                      <p className="text-sm text-slate-500">Add basic information about your property</p>
+                    </div>
 
-    {/* Title & Slug */}
-    <div className="grid gap-4 md:grid-cols-2">
-      <CustomInput
-        id="title"
-        label="Property Title"
-        placeholder="e.g. 2 BHK Apartment for Sale in Rustomjee Global City"
-        error={errors.title?.message}
-        {...register("title", { required: "Title is required" })}
-        onChange={(e) => handleTitleChange(e.target.value)}
-      />
+                    {/* Title & Slug */}
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <CustomInput
+                        id="title"
+                        label="Property Title"
+                        placeholder="e.g. 2 BHK Apartment for Sale in Rustomjee Global City"
+                        error={errors.title?.message}
+                        {...register("title", { required: "Title is required" })}
+                        onChange={(e) => handleTitleChange(e.target.value)}
+                      />
 
-      <CustomInput
-        id="slug"
-        label="Slug"
-        placeholder="slug"
-        className="bg-slate-50"
-        {...register("slug")}
-        readOnly
-      />
-    </div>
-    <div className="grid gap-4 md:grid-cols-2">
-    {/* Subtitle */}
-    <CustomInput
-      id="subTitle"
-      label="Property Subtitle (optional)"
-      placeholder="e.g. Kandivali West, Mumbai, Mahavir Nagar"
-      {...register("subTitle")}
-    />
+                      <CustomInput
+                        id="slug"
+                        label="Slug"
+                        placeholder="slug"
+                        className="bg-slate-50"
+                        {...register("slug")}
+                        readOnly
+                      />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                    {/* Subtitle */}
+                    <CustomInput
+                      id="subTitle"
+                      label="Property Subtitle (optional)"
+                      placeholder="e.g. Kandivali West, Mumbai, Mahavir Nagar"
+                      {...register("subTitle")}
+                    />
 
-    {/* Description */}
-    <CustomTextarea
-      id="description"
-      label="Property Description"
-      placeholder="Describe your property in detail"
-      className="min-h-[100px]"
-      error={errors.description?.message}
-      {...register("description", { required: "Description is required" })}
-    />
-    </div>
+                    {/* Description */}
+                    <CustomTextarea
+                      id="description"
+                      label="Property Description"
+                      placeholder="Describe your property in detail"
+                      className="min-h-[100px]"
+                      error={errors.description?.message}
+                      {...register("description", { required: "Description is required" })}
+                    />
+                    </div>
 
-    {/* You’re looking to: SELL / RENT */}
-    <div className="grid gap-4 md:grid-cols-2">
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">You're looking to</label>
-      <Controller
-        name="service"
-        control={control}
-        render={({ field }) => (
-          <div className="flex gap-3">
-            {["SELL", "RENT"].map((option) => (
-              <CustomButton
-                key={option}
-                type="button"
-                variant={field.value === option ? "default" : "outline"}
-                onClick={() => field.onChange(option)}
-              >
-                {option}
-              </CustomButton>
-            ))}
-          </div>
-        )}
-      />
-    </div>
+                    {/* You’re looking to: SELL / RENT */}
+                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">You're looking to</label>
+                      <Controller
+                        name="service"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex gap-3">
+                            {["BUY", "RENT"].map((option) => (
+                              <CustomButton
+                                key={option}
+                                type="button"
+                                variant={field.value === option ? "default" : "outline"}
+                                onClick={() => field.onChange(option)}
+                              >
+                                {option}
+                              </CustomButton>
+                            ))}
+                          </div>
+                        )}
+                      />
+                    </div>
 
-    {/* Property Type: RESIDENTIAL / COMMERCIAL */}
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">Property</label>
-      <Controller
-        name="property"
-        control={control}
-        render={({ field }) => (
-          <div className="flex gap-3">
-            {["RESIDENTIAL", "COMMERCIAL"].map((option) => (
-              <CustomButton
-                key={option}
-                type="button"
-                variant={field.value === option ? "default" : "outline"}
-                onClick={() => field.onChange(option)}
-              >
-                {option}
-              </CustomButton>
-            ))}
-          </div>
-        )}
-      />
-    </div></div>
+                    {/* Property Type: RESIDENTIAL / COMMERCIAL */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Property</label>
+                      <Controller
+                        name="property"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex gap-3">
+                            {["RESIDENTIAL", "COMMERCIAL"].map((option) => (
+                              <CustomButton
+                                key={option}
+                                type="button"
+                                variant={field.value === option ? "default" : "outline"}
+                                onClick={() => field.onChange(option)}
+                              >
+                                {option}
+                              </CustomButton>
+                            ))}
+                          </div>
+                        )}
+                      />
+                    </div></div>
 
-    {/* Property Sub-Type (from featureData) */}
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">Property Type</label>
-      <Controller
-        name="propertyType"
-        control={control}
-        render={({ field }) => (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {featureData
-              .filter((item) => item.type === "PROPERTY_TYPE")
-              .flatMap((category) => category.features)
-              .map((type) => (
-                <CustomButton
-                  key={type._id}
-                  type="button"
-                  variant={field.value === type._id ? "default" : "outline"}
-                  onClick={() => field.onChange(type._id)}
-                >
-                  {type.name}
-                </CustomButton>
-              ))}
-          </div>
-        )}
-      />
-    </div>
-  </div>
-)}
+                    {/* Property Sub-Type (from featureData) */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Property Type</label>
+                      <Controller
+                        name="propertyType"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                            {featureData
+                              .filter((item) => item.type === "PROPERTY_TYPE")
+                              .flatMap((category) => category.features)
+                              .map((type) => (
+                                <CustomButton
+                                  key={type._id}
+                                  type="button"
+                                  variant={field.value === type._id ? "default" : "outline"}
+                                  onClick={() => field.onChange(type._id)}
+                                >
+                                  {type.name}
+                                </CustomButton>
+                              ))}
+                          </div>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  )}
 
 
                       {currentStep === 1 && (
@@ -1006,8 +871,8 @@ export default function PropertyForm() {
                           </div>
                         </div>
                       )}
-                      {/* Property Details */}
-{currentStep === 2 && (
+                    {/* Property Details */}
+                    {currentStep === 2 && (
   <div className="space-y-8">
     {/* Heading */}
     <div>
@@ -1215,7 +1080,7 @@ export default function PropertyForm() {
       </div>
     </div>
   </div>
-)}
+                     )}
 
                       {currentStep === 3 && (
                         <div className="space-y-6">
@@ -1537,7 +1402,7 @@ export default function PropertyForm() {
                 } else {
                   newValue.splice(index, 1);
                 }
-                field.onChange(newValue);
+                   field.onChange(newValue);
               }}
             >
               {field.value.includes(amenity._id) && (
@@ -1682,13 +1547,22 @@ export default function PropertyForm() {
                           </div>
 
                           <div className="space-y-4">
-                            <CustomInput
-                              id="youtubeEmbedLink"
-                              label="Youtube Embed Link"
-                              placeholder="Youtube Link"
-                              {...register("youtubeEmbedLink")}
-                            />
+                          <CustomInput
+                            id="youtubeEmbedLink"
+                            label="YouTube Embed Link"
+                            placeholder="YouTube Link"
+                            {...register("youtubeEmbedLink",{ required: "This field is required" })}
+                          />
+                            <p className="mt-1 text-sm text-gray-500">
+                              👉 Please paste the <strong>embed link</strong> (e.g., <code>https://www.youtube.com/embed/VIDEO_ID</code>).<br />
+                              To get it: Click "Share" → "Embed" on the YouTube video and copy the <strong>src</strong> from the iframe tag.<br />
+                              Example:
+                              <code className="block mt-1 bg-gray-100 p-1 rounded">
+                                &lt;iframe src="<span className='text-red-600'>https://www.youtube.com/embed/VIDEO_ID</span>" /&gt;
+                              </code>
+                            </p>
 
+               </div>
                             <div className="space-y-2">
                               <label className="block text-sm font-medium text-gray-700">
                                 Featured Property
@@ -1803,7 +1677,7 @@ export default function PropertyForm() {
                                 </div>
                               )}
                             </div>
-                          </div>
+                        
                         </div>
                       )}
                     </div>
@@ -1819,24 +1693,40 @@ export default function PropertyForm() {
                         Back
                       </CustomButton>
 
-                      {currentStep === steps.length - 1 ? (
-                        <CustomButton type="submit">Publish</CustomButton>
-                      ) : (
-                        <CustomButton type="button" onClick={handleNext}>
-                          Next
-                        </CustomButton>
-                      )}
+                       {currentStep === steps.length - 1 ? (
+                                  <button
+                                    type="submit"
+                                    onClick={async (e) => {
+                                      const valid = await trigger(); // validate all fields before submitting
+                                      if (!valid) {
+                                        e.preventDefault(); // prevent submission if validation fails
+                                      }
+                                    }}
+                                  >
+                                    Publish
+                                  </button>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      const valid = await trigger(); // validate current step
+                                      if (valid) {
+                                        handleNext();
+                                      }
+                                    }}
+                                  >
+                                    Next
+                                  </button>
+                                )}
+
+                     
                     </div>
                   </div>
                 </form>
               </div>
-              </div>
-}
-    
-           
-           
-        </div>
-        </div>
+           </div>}           
+  </div>
+</div>
     
    
   );

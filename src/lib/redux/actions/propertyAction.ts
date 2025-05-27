@@ -1,5 +1,6 @@
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 // Interface for the structure within the 'area' array
 interface AreaDetail {
   name: string;
@@ -72,10 +73,7 @@ export const createPropertyByAdmin = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       };
-
-      console.log("The form data before is", userdata);
       const formData = new FormData();
-
       // ✅ Append Basic Details
       formData.append("user", userdata?.id || "");
       formData.append("title", userdata?.title || "");
@@ -185,7 +183,7 @@ export const createPropertyByAdmin = createAsyncThunk(
       // ✅ Append Amenities & Features
       if (Array.isArray(userdata?.amenities)) {
         userdata.amenities.forEach((amenity) => {
-          formData.append("amenities", amenity);
+          formData.append("aminities", amenity);
         });
       }
 
@@ -235,8 +233,43 @@ export const createPropertyByAdmin = createAsyncThunk(
   }
 );
 
+// export const getAllProperties = createAsyncThunk(
+//   "get/allproperty",
+//   async (
+//     {
+//       page,
+//       limit,
+//       priceRange,
+//       bedRooms,
+//       bathRooms,
+//     }: {
+//       page: number;
+//       limit: number;
+//       priceRange: number;
+//       bedRooms: number;
+//       bathRooms: number;
+//     },
+//     { rejectWithValue }
+//   ) => {
+//     try {
+//       const config = {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       };
+//       const { data } = await axiosInstance.get(
+//         `/api/v1/properties?page=${page}&limit=${limit}&priceRange=${priceRange}&bedRooms=${bedRooms}&bathRooms=${bathRooms}`,
+//         config
+//       );
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
+
 export const getAllProperties = createAsyncThunk(
-  "get/allproperty",
+  "get/allproperties",
   async (
     {
       page,
@@ -244,12 +277,20 @@ export const getAllProperties = createAsyncThunk(
       priceRange,
       bedRooms,
       bathRooms,
+      areaRange,
+      q,
+      service,
+      propertyType,
     }: {
       page: number;
       limit: number;
-      priceRange: number;
+      priceRange?: number;
+      areaRange?: string;
       bedRooms: number;
       bathRooms: number;
+      q?: string;
+      service?: "RENT" | "SELL";
+      propertyType?: "RESIDENTIAL" | "COMMERCIAL";
     },
     { rejectWithValue }
   ) => {
@@ -259,11 +300,82 @@ export const getAllProperties = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axiosInstance.get(
-        `/api/v1/properties?page=${page}&limit=${limit}&priceRange=${priceRange}&bedRooms=${bedRooms}&bathRooms=${bathRooms}`,
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange.toString());
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (bedRooms) queryParams.append("bedrooms", bedRooms.toString());
+      if (bathRooms) queryParams.append("areaRange", bathRooms.toString());
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (propertyType) queryParams.append("propertyType", propertyType);
+
+      const response = await axiosInstance.get(
+        `/api/v1/properties?${queryParams.toString()}`,
         config
       );
-      return data;
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllSearchedProperties = createAsyncThunk(
+  "get/allsearchproperties",
+  async (
+    {
+      page,
+      limit,
+      priceRange,
+      bedRooms,
+      bathRooms,
+      areaRange,
+      q,
+      service,
+      propertyType,
+    }: {
+      page: number;
+      limit: number;
+      priceRange?: string;
+      areaRange?: string;
+      bedRooms: number;
+      bathRooms: number;
+      q?: string;
+      service?: "RENT" | "SELL";
+      propertyType?: "RESIDENTIAL" | "COMMERCIAL";
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange);
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (bedRooms) queryParams.append("bedrooms", bedRooms.toString());
+      if (bathRooms) queryParams.append("areaRange", bathRooms.toString());
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (propertyType) queryParams.append("propertyType", propertyType);
+
+      const response = await axiosInstance.get(
+        `/api/v1/properties/search?${queryParams.toString()}`,
+        config
+      );
+
+      return response.data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -286,6 +398,23 @@ export const getSingleProperty = createAsyncThunk(
 
       return data.data;
     } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
+export const deleteProperty = createAsyncThunk(
+  "delete/Project",
+  async (id: string, { rejectWithValue }) => {
+    console.log("Deleting project with id:", id);
+
+    try {
+      const data = await axiosInstance.delete(`/api/v1/properties/${id}`);
+      toast.success("Project deleted successfully");
+      return data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete project");
       return rejectWithValue(error);
     }
   }

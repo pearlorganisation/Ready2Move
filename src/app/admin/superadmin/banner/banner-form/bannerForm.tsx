@@ -73,14 +73,13 @@ export default function AddBannerImage({ onclose }: { onclose: () => void }) {
       <div className="flex-1 p-6 overflow-y-auto">
         <div className="container mx-auto p-6 max-w-5xl">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Add Banner</h1>{" "}
-            <button
-              type="button"
-              onClick={onclose}
-              className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
-            >
-              Close
-            </button>
+            <h1 className="text-2xl font-bold">Add Banner</h1> <button
+  type="button"
+  onClick={onclose}
+  className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
+>
+Close
+</button>
           </div>
 
           <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 p-6">

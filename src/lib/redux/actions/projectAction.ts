@@ -1,6 +1,8 @@
-import { ProjectFormInputs } from "@/app/admin/builder/addproject/page";
+import { ProjectFormInputs } from "@/components/CreateProjectByBuilder";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
+import { toast } from "react-toastify";
 
 export const createProjectsByBuilder = createAsyncThunk(
   "create/project",
@@ -69,8 +71,8 @@ export const createProjectsByBuilder = createAsyncThunk(
       formData.append("isFeatured", userdata?.isFeatured ? "true" : "false");
 
       // ✅ Append YouTube Link if Exists
-      if (userdata?.youtubeLink) {
-        formData.append("youtubeLink", userdata.youtubeLink);
+      if (userdata?.youtubeEmbedLink) {
+        formData.append("youtubeEmbedLink", userdata.youtubeEmbedLink);
       }
 
       // ✅ Append Amenities (Array or Single Value)
@@ -108,7 +110,23 @@ export const createProjectsByBuilder = createAsyncThunk(
 export const getAllProjects = createAsyncThunk(
   "get/allprojects",
   async (
-    { page, limit }: { page: number; limit: number },
+    {
+      page,
+      limit,
+      priceRange,
+      areaRange,
+      q,
+      service,
+      projectType,
+    }: {
+      page?: number;
+      limit?: number;
+      priceRange?: string;
+      areaRange?: string;
+      q?: string;
+      service?: "RENT" | "SELL";
+      projectType?: "RESIDENTIAL" | "COMMERCIAL";
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -117,12 +135,74 @@ export const getAllProjects = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      const data = await axiosInstance.get(
-        `/api/v1/projects?page=${page}&limit=${limit}`,
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange);
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (projectType) queryParams.append("projectType", projectType);
+
+      const response = await axiosInstance.get(
+        `/api/v1/projects?${queryParams.toString()}`,
         config
       );
-      // console.log("the data returned in the main projects page is", data)
-      return data.data;
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAllSearchProjects = createAsyncThunk(
+  "get/allsearchprojects",
+  async (
+    {
+      page,
+      limit,
+      priceRange,
+      areaRange,
+      q,
+      service,
+      projectType,
+    }: {
+      page: number;
+      limit: number;
+      priceRange?: string;
+      areaRange?: string;
+      q?: string;
+      service?: "RENT" | "SELL";
+      projectType?: "RESIDENTIAL" | "COMMERCIAL";
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const queryParams = new URLSearchParams();
+
+      if (page) queryParams.append("page", page.toString());
+      if (limit) queryParams.append("limit", limit.toString());
+      if (priceRange) queryParams.append("priceRange", priceRange);
+      if (areaRange) queryParams.append("areaRange", areaRange);
+      if (q) queryParams.append("q", q);
+      if (service) queryParams.append("service", service);
+      if (projectType) queryParams.append("projectType", projectType);
+
+      const response = await axiosInstance.get(
+        `/api/v1/projects/search?${queryParams.toString()}`,
+        config
+      );
+
+      return response.data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -139,6 +219,7 @@ export const getSingleProject = createAsyncThunk(
         },
       };
       const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
+      toast.success("fetched succcessfully ")
 
       return data;
     } catch (error) {
@@ -146,3 +227,65 @@ export const getSingleProject = createAsyncThunk(
     }
   }
 );
+
+
+export const updateProject = createAsyncThunk(
+  "patch/updateProject",
+  async ({ slug }: { slug: string }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
+      if (data && data.status === 200) {
+        toast.success("Project updated successfully!");
+      }
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
+export const deleteImagesProject = createAsyncThunk(
+  "delete/Images",
+  async ({ slug, deleteImages }: { slug: string; deleteImages: string[] }, { rejectWithValue }) => {
+    console.log(slug,"i",deleteImages)
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      };
+      // Sending the array of image IDs (deleteImages) in the request body
+      const data = await axiosInstance.patch(`/api/v1/projects/${slug}`, { deleteImages }, config);
+      toast.success("Images deleted succcessfully ")
+      return data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete Project");
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteProject = createAsyncThunk(
+  "delete/Project",
+  async (id: string, { rejectWithValue }) => {
+    console.log("Deleting project with id:", id);
+
+    try {
+      const data = await axiosInstance.delete(`/api/v1/projects/${id}`);
+      toast.success("Project deleted successfully");
+      return data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete project");
+      return rejectWithValue(error);
+    }
+  }
+);
+
+
+

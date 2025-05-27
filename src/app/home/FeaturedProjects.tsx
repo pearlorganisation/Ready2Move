@@ -1,191 +1,173 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 
 import { ArrowRight, Image as MyImage } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 import Image from "next/image";
-import { FaCity } from "react-icons/fa";
-
-const daata = [
-  {
-    areaRange: {
-      min: 700,
-      max: 850,
-    },
-    priceRange: {
-      min: 75,
-      max: 90,
-    },
-    _id: "67de8b02c4fc88bcf618b420",
-    user: "67d182f68452b45f45443c91",
-    title: "Luxurious 3 BHK Apartment in Bandra West",
-    slug: "luxurious-3bhk-apartment-bandra-west",
-    subTitle: "By DreamHomes",
-    description:
-      "Luxurious 2 BHK apartment with sea-facing views and modern amenities in a prime location.",
-    locality: "Bandra West, Mumbai, Maharashtra 400050, India",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pricePerSqFt: 79,
-    reraNumber: "RERA-67890-ABC",
-    availability: {
-      _id: "67dd2953886eaf35ad7d5c94",
-      name: "Under Construction",
-      type: "AVAILABILITY",
-    },
-    reraPossessionDate: "2026-06-20T10:30:00.000Z",
-    aminities: [
-      {
-        _id: "67dd2a8a075436266c1f85fb",
-        name: "Swimming Pool",
-        type: "AMENITIES",
-      },
-      {
-        _id: "67dd2a7e075436266c1f85f9",
-        name: "Club House",
-        type: "AMENITIES",
-      },
-    ],
-    bankOfApproval: [
-      {
-        _id: "67dd2b47075436266c1f860d",
-        name: "HDFC",
-        type: "BANKS",
-      },
-    ],
-    imageGallary: [
-      {
-        secure_url:
-          "https://res.cloudinary.com/dapjyizvj/image/upload/v1742623587/R2M/Project/rifl5fasce8o1rfiogdr.jpg",
-        public_id: "DreamHomes/Project/bandra_apartment",
-        _id: "67de8b02c4fc88bcf618b421",
-      },
-    ],
-    isFeatured: true,
-    youtubeLink: "https://youtu.be/sample_video_1",
-    createdAt: "2025-03-22T10:00:00.000Z",
-    updatedAt: "2025-03-22T10:00:00.000Z",
-    __v: 0,
-  },
-  {
-    areaRange: {
-      min: 80,
-      max: 100,
-    },
-    priceRange: {
-      min: 0.9,
-      max: 1.1,
-    },
-    _id: "67de9c03c4fc88bcf618b430",
-    user: "67d182f68452b45f45443c92",
-    title: "Luxury Apartments in Mumbai",
-    slug: "luxury-apartments-mumbai",
-    subTitle: "By EliteResidences",
-    description:
-      "A stunning penthouse with a rooftop terrace, private elevator, and breathtaking ocean views.",
-    locality: "Juhu, Mumbai, Maharashtra 400049, India",
-    city: "Mumbai",
-    state: "Maharashtra",
-    pricePerSqFt: 105,
-    reraNumber: "RERA-54321-XYZ",
-    availability: {
-      _id: "67dd2953886eaf35ad7d5c95",
-      name: "Ready to Move",
-      type: "AVAILABILITY",
-    },
-    reraPossessionDate: "2024-12-15T15:00:00.000Z",
-    aminities: [
-      {
-        _id: "67dd2a8a075436266c1f85fc",
-        name: "Private Elevator",
-        type: "AMENITIES",
-      },
-      {
-        _id: "67dd2a7e075436266c1f85fd",
-        name: "Sky Lounge",
-        type: "AMENITIES",
-      },
-    ],
-    bankOfApproval: [
-      {
-        _id: "67dd2b47075436266c1f860e",
-        name: "ICICI",
-        type: "BANKS",
-      },
-    ],
-    imageGallary: [
-      {
-        secure_url:
-          "https://res.cloudinary.com/dapjyizvj/image/upload/v1742623587/R2M/Project/rifl5fasce8o1rfiogdr.jpg",
-        public_id: "EliteResidences/Project/juhu_penthouse",
-        _id: "67de9c03c4fc88bcf618b431",
-      },
-    ],
-    isFeatured: true,
-    youtubeLink: "https://youtu.be/sample_video_2",
-    createdAt: "2025-03-22T11:30:00.000Z",
-    updatedAt: "2025-03-22T11:30:00.000Z",
-    __v: 0,
-  },
-];
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
+import { getFeaturedListings } from "@/lib/redux/actions/featuredListingsAction";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import Link from "next/link";
 
 const FeaturedProjects = () => {
+  const dispatch = useAppDispatch();
+  const { featuredProjects } = useAppSelector((state) => state.featured);
+
+  useEffect(() => {
+    dispatch(getFeaturedListings());
+  }, []);
+
   return (
-    <div className="mt-4">
-      <div className="flex flex-row justify-between px-12">
-        <div className="">
-          <div className="h-1.5 w-12 bg-yellow-500 mt-1 rounded-e-md rounded-s-md"></div>
-        </div>
-
-        <h1 className="text-red-500 flex flex-row gap-2">
-          <span className="">See All Projects</span>
-          <ArrowRight size={24} />
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 px-20 mt-12">
-        {daata.map((data, index) => (
-          <div className="" key={index}>
-            <div className="w-80 overflow-hidden  min-h-72 border-2  rounded-2xl relative">
-              <Image
-                width={200}
-                height={200}
-                src={data?.imageGallary[0]?.secure_url}
-                alt="sfsadf"
-                className="w-full max-h-56 min-h-56 rounded-t-2xl transition-transform duration-500 ease-in-out transform scale-105 hover:scale-100"
-              />
-
-              <div className="absolute top-[172px] left-3 flex flex-row gap-1 items-center justify-center bg-black px-1 py-1 rounded-md">
-                <MyImage size={16} color="white" />
-                <h1 className="text-white text-base">
-                  {data?.imageGallary.length}
-                </h1>
-              </div>
-
-              <div className="px-4">
-                <h1 className="text-base font-semibold mt-2 mb-2 min-h-12">
-                  {data?.title}
-                </h1>
-
-                <h1 className="mt-2 mb-2 text-sm text-gray-700">
-                  {data?.city} , {data.state}
-                </h1>
-
-                <h1 className="mt-2 mb-2 text-sm">
-                  {" "}
-                  {data?.areaRange?.min} - {data?.areaRange?.max} Sq.ft
-                </h1>
-
-                <h1 className="mt-2 font-bold">
-                  {" "}
-                  ₹ {data?.priceRange?.min} - {data?.priceRange?.max} Cr
-                </h1>
-
-                <div className="bg-blue-500 rounded-full w-fit text-white mt-2 px-1 py-1 mb-1">
-                  <h1 className=" px-1 py-1">{data?.availability?.name}</h1>
-                </div>
-              </div>
-            </div>
+    <div className="mt-12 lg:mt-24 ">
+      <div className="flex flex-row justify-between">
+        <div className="ml-6">
+        
+           <h2 className="text-2xl font-bold text-gray-800">
+               Featured Projects{" "}
+          </h2>
+          <div className="h-1.5 w-12 bg-yellow-500 mt-1 rounded-e-md rounded-s-md">
+            {" "}
           </div>
-        ))}
+        </div>
+      </div>
+      <div className="mt-12 relative group px-8">
+        <div
+          className="swiper-button-prev-custom group-hover:opacity-100 opacity-0 sm:opacity-100 transition-opacity duration-300
+                   absolute top-1/2 -translate-y-1/2
+                   left-2 md:left-[-10px] lg:left-[-6px] z-10
+                   cursor-pointer
+                   bg-blue-200 rounded-full shadow-md
+                   w-10 h-10 md:w-12 md:h-12 flex items-center justify-center
+                   text-gray-700 hover:text-blue-600 // Color for Swiper's default icon
+                   after:!text-xl md:after:!text-2xl // Control size of Swiper's default icon
+                   swiper-button-disabled:opacity-30 swiper-button-disabled:cursor-not-allowed"  
+      >
+        <span>Prev</span>
+       </div>
+          <div className="p-4">
+                <Swiper
+                modules={[Navigation]}
+                slidesPerView={1}
+                spaceBetween={15}  
+                navigation={{
+                  nextEl: '.swiper-button-next-custom',
+                  prevEl: '.swiper-button-prev-custom',
+                }}
+                className="rounded-lg overflow-hidden mb-8 w-full"
+                 
+                breakpoints={{
+                   0: {
+                    slidesPerView: 1,
+                    spaceBetween: 15,
+                  },
+                   
+                  640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                  },
+                  
+                  768: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                  },
+                   
+                  1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 40,
+                  },
+                }}
+                style={{
+                  paddingLeft: window.innerWidth < 640 ? '40px' : '0px',
+                  paddingRight: window.innerWidth < 640 ? '40px' : '0px',
+                }}
+              >
+                 {Array.isArray(featuredProjects) && featuredProjects.length > 0 ? (
+                  featuredProjects.map((data, index) => (
+                    <SwiperSlide key={data?._id || index}>
+                     <Link href={`/projects/${data?.slug}`}
+>
+                     <div className="w-full h-full overflow-hidden border-2 rounded-2xl relative mx-auto flex flex-col">  
+                        <div className="relative">  
+                          {data?.imageGallery?.[0]?.secure_url ? (
+                            <Image
+                              width={320}
+                              height={224}
+                              src={data.imageGallery[0].secure_url}
+                              alt={data?.title || 'Project Image'}
+                              className="w-full h-56 object-cover rounded-t-2xl"  
+                            />
+                          ) : (
+                            <div className="w-full h-56 bg-gray-200 flex items-center justify-center rounded-t-2xl">
+                              <span className="text-gray-500">No Image</span>
+                            </div>
+                          )}
+
+                      {data?.imageGallery && data.imageGallery.length > 0 && (
+                        <div className="absolute bottom-2 left-3 flex flex-row gap-1 items-center justify-center bg-black bg-opacity-70 px-2 py-1 rounded-md">
+                          <MyImage size={16} color="white" />
+                          <h1 className="text-white text-sm font-medium">
+                            {data.imageGallery.length}
+                          </h1>
+                        </div>
+                      )}
+                    </div>
+
+                         <div className="p-4 flex flex-col flex-grow">  
+                          <h1 className="text-base font-semibold mt-1 mb-2 min-h-[48px] line-clamp-2">
+                            {data?.title || 'Untitled Project'}
+                          </h1>
+                          <h1 className="mt-1 mb-2 text-sm text-gray-700 truncate">
+                            {data?.city && data?.state ? `${data.city}, ${data.state}` : 'Location N/A'}
+                          </h1>
+                          <h1 className="mt-1 mb-2 text-sm">
+                            {data?.areaRange?.min && data?.areaRange?.max
+                              ? `${data.areaRange.min} - ${data.areaRange.max} Sq.ft`
+                              : 'Area N/A'}
+                          </h1>
+                          <h1 className="mt-1 font-bold mb-2">
+                            {data?.priceRange?.min && data?.priceRange?.max
+                              ? `₹ ${data.priceRange.min} - ${data.priceRange.max} Cr`
+                              : 'Price N/A'}
+                          </h1>
+                           
+                          <div className="mt-auto pt-2">
+                            {data?.availability?.name && (
+                              <div className="bg-blue-500 rounded-full w-fit text-white px-2 py-0.5 text-xs font-medium">
+                                {data.availability.name}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                     </Link>
+                       
+                    </SwiperSlide>
+                  ))
+                ) : (
+                   <SwiperSlide>
+                    <div className="flex justify-center items-center h-72 text-gray-500">
+                      No featured projects available.
+                    </div>
+                  </SwiperSlide>
+                )}
+              </Swiper>
+          </div>
+       
+      <div
+        className="swiper-button-next-custom group-hover:opacity-100 opacity-0 sm:opacity-100 transition-opacity duration-300
+                   absolute top-1/2 -translate-y-1/2
+                   right-1 md:right-[-10px] lg:right-[1px] z-10
+                   cursor-pointer
+                   bg-blue-200 rounded-full shadow-md
+                   w-10 h-10 md:w-12 md:h-12 flex items-center justify-center
+                   text-gray-700 hover:text-blue-600 // Color for Swiper's default icon
+                   after:!text-xl md:after:!text-2xl // Control size of Swiper's default icon
+                   swiper-button-disabled:opacity-30 swiper-button-disabled:cursor-not-allowed"
+        >
+          <span>Next</span>
+        </div>
       </div>
     </div>
   );
