@@ -17,7 +17,9 @@ const DeleteModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-        <h2 className="text-center text-xl font-semibold">Delete Confirmation</h2>
+        <h2 className="text-center text-xl font-semibold">
+          Delete Confirmation
+        </h2>
         <p className="text-center">Are you sure you want to delete this?</p>
         <div className="flex justify-center gap-4 mt-4">
           <button

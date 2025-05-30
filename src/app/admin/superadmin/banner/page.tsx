@@ -140,7 +140,11 @@ const Page: React.FC = () => {
       quote: data.quote,
       bgImage: selectedImageFile ?? null,
     };
-    dispatch(updateBanner(payload));
+    dispatch(updateBanner(payload)).then((res) => {
+      if (res.payload.success == true) {
+        setIsUpdateModalOpen(false);
+      }
+    });
   };
 
   return (
@@ -230,122 +234,144 @@ const Page: React.FC = () => {
 
           {/* Update Modal */}
           {isUpdateModalOpen && (
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="mt-8 bg-white p-6 rounded-md shadow-md max-w-lg mx-auto"
-            >
-              {/* Image Upload */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Background Image
-                </label>
-                <div className="border border-gray-200 rounded-md overflow-hidden">
-                  <Image
-                    src={previewImage || "/placeholder.svg"}
-                    alt="Slide Preview"
-                    width={400}
-                    height={200}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-2 bg-gray-50 border-t flex flex-col items-center gap-2">
-                    <input
-                      type="file"
-                      {...register("bgImage")}
-                      className="hidden"
-                      id="upload-image"
-                      onChange={handleImageChange}
-                      accept="image/*"
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg relative animate-fadeIn">
+                {/* Close Button */}
+                <button
+                  onClick={() => setIsUpdateModalOpen(false)}
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
                     />
-                    <label
-                      htmlFor="upload-image"
-                      className="cursor-pointer flex items-center gap-1 text-blue-500 hover:text-blue-700 text-sm select-none"
-                    >
-                      <Upload className="h-4 w-4" />
-                      Upload Image
+                  </svg>
+                </button>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  {/* Image Upload */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Background Image
                     </label>
+                    <div className="border border-gray-200 rounded-md overflow-hidden">
+                      <Image
+                        src={previewImage || "/placeholder.svg"}
+                        alt="Slide Preview"
+                        width={400}
+                        height={200}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="p-2 bg-gray-50 border-t flex flex-col items-center gap-2">
+                        <input
+                          type="file"
+                          {...register("bgImage")}
+                          className="hidden"
+                          id="upload-image"
+                          onChange={handleImageChange}
+                          accept="image/*"
+                        />
+                        <label
+                          htmlFor="upload-image"
+                          className="cursor-pointer flex items-center gap-1 text-blue-500 hover:text-blue-700 text-sm select-none"
+                        >
+                          <Upload className="h-4 w-4" />
+                          Upload Image
+                        </label>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Headline */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Headline
-                </label>
-                <input
-                  type="text"
-                  {...register("headline", {
-                    required: "Headline is required",
-                  })}
-                  className={`w-full border rounded-md px-3 py-2 text-sm ${
-                    errors.headline ? "border-red-500" : "border-gray-300"
-                  }`}
-                  placeholder="Enter headline"
-                />
-                {errors.headline && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.headline.message}
-                  </p>
-                )}
-              </div>
+                  {/* Headline */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Headline
+                    </label>
+                    <input
+                      type="text"
+                      {...register("headline", {
+                        required: "Headline is required",
+                      })}
+                      className={`w-full border rounded-md px-3 py-2 text-sm ${
+                        errors.headline ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter headline"
+                    />
+                    {errors.headline && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.headline.message}
+                      </p>
+                    )}
+                  </div>
 
-              {/* Quote */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quote
-                </label>
-                <textarea
-                  {...register("quote", { required: "Quote is required" })}
-                  className={`w-full border rounded-md px-3 py-2 text-sm ${
-                    errors.quote ? "border-red-500" : "border-gray-300"
-                  }`}
-                  placeholder="Enter quote"
-                  rows={3}
-                />
-                {errors.quote && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.quote.message}
-                  </p>
-                )}
-              </div>
+                  {/* Quote */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Quote
+                    </label>
+                    <textarea
+                      {...register("quote", { required: "Quote is required" })}
+                      className={`w-full border rounded-md px-3 py-2 text-sm ${
+                        errors.quote ? "border-red-500" : "border-gray-300"
+                      }`}
+                      placeholder="Enter quote"
+                      rows={3}
+                    />
+                    {errors.quote && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.quote.message}
+                      </p>
+                    )}
+                  </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm ${
-                  isLoading ? "opacity-60 cursor-not-allowed" : ""
-                }`}
-              >
-                {isLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin h-4 w-4 mr-2 inline"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                      />
-                    </svg>
-                    Updating...
-                  </>
-                ) : (
-                  "Update Banner"
-                )}
-              </button>
-            </form>
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm ${
+                      isLoading ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    {isLoading ? (
+                      <>
+                        <svg
+                          className="animate-spin h-4 w-4 mr-2 inline"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Banner"
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
           )}
         </div>
       ) : (
