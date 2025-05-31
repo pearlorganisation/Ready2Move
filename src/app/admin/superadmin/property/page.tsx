@@ -15,15 +15,15 @@ import {
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
-import Propertylisting from "../propertylist/page";
-type FormData = {
-  title: string;
-  slug: string;
-  subTitle: string;
-  description: string;
-  service: "SELL" | "RENT";
-  property: "RESIDENTIAL" | "COMMERCIAL";
-  propertyType: string;
+import Propertylisting from "../propertylist/page"
+  type FormData = {
+    title: string;
+    slug: string;
+    subTitle: string;
+    description: string;
+    service: "SELL" | "RENT";
+    property: "RESIDENTIAL" | "COMMERCIAL";
+    propertyType: string;
 
   // Location Details
   apartmentName: string;
@@ -773,35 +773,29 @@ export default function PropertyForm() {
                           />
                         </div>
 
-                        {/* You’re looking to: SELL / RENT */}
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
-                              You're looking to
-                            </label>
-                            <Controller
-                              name="service"
-                              control={control}
-                              render={({ field }) => (
-                                <div className="flex gap-3">
-                                  {["SELL", "RENT"].map((option) => (
-                                    <CustomButton
-                                      key={option}
-                                      type="button"
-                                      variant={
-                                        field.value === option
-                                          ? "default"
-                                          : "outline"
-                                      }
-                                      onClick={() => field.onChange(option)}
-                                    >
-                                      {option}
-                                    </CustomButton>
-                                  ))}
-                                </div>
-                              )}
-                            />
+                    {/* You’re looking to: SELL / RENT */}
+                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">You're looking to</label>
+                      <Controller
+                        name="service"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex gap-3">
+                            {["SELL", "RENT"].map((option) => (
+                              <CustomButton
+                                key={option}
+                                type="button"
+                                variant={field.value === option ? "default" : "outline"}
+                                onClick={() => field.onChange(option)}
+                              >
+                                {option}
+                              </CustomButton>
+                            ))}
                           </div>
+                        )}
+                      />
+                    </div>
 
                           {/* Property Type: RESIDENTIAL / COMMERCIAL */}
                           <div className="space-y-2">
