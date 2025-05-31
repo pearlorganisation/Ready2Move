@@ -186,8 +186,11 @@ export const createPropertyByAdmin = createAsyncThunk(
           formData.append("aminities", amenity);
         });
       }
-
-      formData.append("waterSource", userdata?.waterSource || "");
+      if (Array.isArray(userdata?.waterSource)) {
+        userdata?.waterSource.forEach((watersource) => {
+          formData.append("waterSource", watersource);
+        });
+      }
 
       if (Array.isArray(userdata?.otherFeatures)) {
         userdata.otherFeatures.forEach((feature) => {
@@ -402,7 +405,6 @@ export const getSingleProperty = createAsyncThunk(
     }
   }
 );
-
 
 export const deleteProperty = createAsyncThunk(
   "delete/Project",
