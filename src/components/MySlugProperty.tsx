@@ -316,7 +316,9 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{singlePropertyData?.property}</p>
+                    <p className="font-medium">
+                      {singlePropertyData?.property}
+                    </p>
                     <p className="text-sm text-gray-500">Property Type</p>
                   </div>
                   <div className="text-center">
@@ -357,7 +359,9 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">{singlePropertyData?.locality}</p>
+                    <p className="font-medium">
+                      {singlePropertyData?.locality}
+                    </p>
                     <p className="text-sm text-gray-500">Locality</p>
                   </div>
                 </div>
@@ -717,7 +721,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 </div>
               </div>
 
-    <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
+              <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
                 <h1 className="font-bold text-2xl mt-4 mb-4">Image Gallery </h1>
                 <div className="flex flex-row gap-2">
                   {/* {singleProjectData?.imageGallery
@@ -731,7 +735,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </div>
                     ))} */}
-                    <ImageGallery images={singlePropertyData?.imageGallery} />
+                  <ImageGallery images={singlePropertyData?.imageGallery} />
                 </div>
               </div>
 

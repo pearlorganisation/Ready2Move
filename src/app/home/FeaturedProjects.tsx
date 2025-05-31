@@ -265,8 +265,8 @@ const FeaturedProjects = () => {
                     className="block"
                   >
                     <div className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-                      {/* Image Section */}
-                      <div className="relative">
+                      {/* Image Section  imageGallery section*/}
+                      <div className="relative bg-red-500">
                         {project?.imageGallery?.[0]?.secure_url ? (
                           <Image
                             src={project.imageGallery[0].secure_url}
