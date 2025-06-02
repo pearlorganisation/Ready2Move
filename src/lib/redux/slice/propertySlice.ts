@@ -178,7 +178,7 @@ export interface SingleProperty {
   brokerage: number;
   bankOfApproval: SimpleField[];
   aminities: SimpleField[];
-  waterSource: SimpleField;
+  waterSource: SimpleField[];
   otherFeatures: SimpleField[];
   propertyFlooring: SimpleField;
   imageGallery: ImageGallery[];
@@ -339,7 +339,7 @@ export const initialPropertyState: PropertyState = {
     brokerage: 0,
     bankOfApproval: [],
     aminities: [],
-    waterSource: { _id: "", name: "", type: "" },
+    waterSource: [{ _id: "", name: "", type: "" }],
     otherFeatures: [],
     propertyFlooring: { _id: "", name: "", type: "" },
     imageGallery: [],

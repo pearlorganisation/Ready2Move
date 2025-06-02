@@ -193,10 +193,12 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </svg>
                     </div>
-                    <p className="font-medium">
-                      {singlePropertyData?.waterSource?.name}
-                    </p>
-                    <p className="text-sm text-gray-500">Water Source</p>
+                       {singlePropertyData?.waterSource?.map((item,index)=>(
+                        <p className="font-medium">
+                          {item?.name}
+                        </p>
+                      ))}
+                     <p className="text-sm text-gray-500">Water Source</p>
                   </div>
 
                   <div className="text-center">

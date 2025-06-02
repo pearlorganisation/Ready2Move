@@ -28,7 +28,7 @@ export interface Property {
   reraNumber: string;//
   reraPossessionDate: string;//
   youtubeEmbedLink: string;//
-  service: 'BUY' | 'RENT';//
+  service:  string;//
   property: 'RESIDENTIAL' | 'COMMERCIAL';//
   isFeatured: boolean;//
   propertyType:string;//
@@ -50,7 +50,7 @@ export interface Property {
   isBrokerageCharge:boolean;
   brokerage:number;
   bankOfApproval:string;
-  waterSource: string;
+  waterSource: string[];
   otherFeatures: string[];
   propertyFlooring: string;
   imageGallery: File[]    // will add late
@@ -58,8 +58,7 @@ export interface Property {
 }
  
 const EditProPertyComp = ({slug}:{slug:string}) => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-  
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter()
   const dispatch=useAppDispatch();
   const { singlePropertyData, paginate } = useAppSelector((state) => state.property);
@@ -71,7 +70,7 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
 
   const { register, handleSubmit, reset, control, setValue, formState: { errors }, watch } = useForm<Property>({
     defaultValues: {
-      service: 'RENT',
+      service: '',
       property: 'RESIDENTIAL',
       title: '',
       subTitle: '',
@@ -105,7 +104,7 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
       isBrokerageCharge:false,
       brokerage:0,
       bankOfApproval:"",
-      waterSource: "",
+      waterSource: [],
       otherFeatures:[],
       propertyFlooring:""
     },
@@ -121,7 +120,7 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
    useEffect(() => {
     
     if (singlePropertyData) {
-     
+      setValue('service', singlePropertyData?.service || '')
       setValue('title', singlePropertyData.title || '');
       setValue('subTitle', singlePropertyData.subTitle || '');
       setValue('description', singlePropertyData.description || '');
@@ -156,7 +155,8 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
       setValue('isPriceNegotiable', singlePropertyData?.isPriceNegotiable)
       setValue('isBrokerageCharge', singlePropertyData?.isBrokerageCharge)
       setValue('brokerage', singlePropertyData?.brokerage)
-      setValue('waterSource', singlePropertyData?.waterSource?._id)
+      const waterSourceId = singlePropertyData?.waterSource?.map((item)=> item?._id) || []
+      setValue('waterSource', waterSourceId)
       setValue('propertyFlooring', singlePropertyData?.propertyFlooring?._id)
       const mappedOtherFeatures = singlePropertyData?.otherFeatures?.map((item)=> item._id) || [];
       setValue('otherFeatures', mappedOtherFeatures);
@@ -181,7 +181,7 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
   });
 
 const servicename= watch('service')
-   console.log("the service name", servicename)
+  //  console.log("the service name", servicename)
   const onSubmit = async (data: Property) => {
        const formData = new FormData();
 
@@ -297,8 +297,13 @@ const servicename= watch('service')
           formData.append("aminities", amenity);
         });
       }
+if (Array.isArray(data?.waterSource)) {
+        data.waterSource.forEach((source) => {
+          formData.append("waterSource", source);
+        });
+      }
 
-      formData.append("waterSource", data?.waterSource || "");
+      // formData.append("waterSource", data?.waterSource || "");
 
       if (Array.isArray(data?.otherFeatures)) {
         data.otherFeatures.forEach((feature) => {
@@ -685,7 +690,7 @@ const servicename= watch('service')
                         {category?.features?.map((feature) => (
                           <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
                             <input
-                              type="radio"
+                              type="checkbox"
                               id={`waterSource-${feature._id}`}
                               {...register("waterSource")}
                               value={feature._id}
@@ -791,7 +796,7 @@ const servicename= watch('service')
                     <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
                     <select {...register('service')} className="w-full p-3 border rounded-md">
                       <option value="RENT">RENT</option>
-                      <option value="BUY">BUY</option>
+                      <option value="SELL">SELL</option>
                     </select>
                   </div>
 
