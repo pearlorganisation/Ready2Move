@@ -78,7 +78,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
     }
   };
 
-  function convertToYouTubeEmbedLink(url:string) {
+  function convertToYouTubeEmbedLink(url: string) {
     try {
       const parsedUrl = new URL(url);
       let videoId = "";
@@ -92,7 +92,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
       ) {
         // Long URL format: https://www.youtube.com/watch?v=VIDEO_ID
         if (parsedUrl.pathname === "/watch") {
-          videoId = parsedUrl.searchParams.get("v")||"";
+          videoId = parsedUrl.searchParams.get("v") || "";
         } else if (parsedUrl.pathname.startsWith("/embed/")) {
           return url; // Already an embed link
         }
@@ -444,7 +444,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                         />
                       </div>
                     ))} */}
-                    <ImageGallery images={singleProjectData?.imageGallery} />
+                  <ImageGallery images={singleProjectData?.imageGallery} />
                 </div>
               </div>
 

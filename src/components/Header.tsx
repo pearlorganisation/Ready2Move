@@ -1,20 +1,20 @@
-"use client"
+"use client";
 import Image from "next/image";
 import logo from "../assets/mainlogo.jpg";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { logoutUser } from "@/lib/redux/slice/userSlice";
 import { logout } from "@/lib/redux/actions/userAction";
- 
+
 const Header = () => {
-  const dispatch = useAppDispatch()
-  const { userData, isLoggedIn } = useAppSelector((state)=> state?.user)
-   const HandleLogout = ()=>{
-       dispatch(logoutUser());   
-       dispatch(logout());
-  }
-  
-console.log("is logged in", isLoggedIn)
+  const dispatch = useAppDispatch();
+  const { userData, isLoggedIn } = useAppSelector((state) => state?.user);
+  const HandleLogout = () => {
+    dispatch(logoutUser());
+    dispatch(logout());
+  };
+
+  console.log("is logged in", isLoggedIn);
   return (
     <header className="sticky top-0 left-0 w-full bg-white shadow-md z-50">
       <nav className="max-w-screen-xl mx-auto px-4 py-1 flex justify-between items-center">
@@ -61,7 +61,7 @@ console.log("is logged in", isLoggedIn)
             href="blog"
             className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
           >
-           Blog
+            Blog
           </Link>
           <Link
             href="/about"
@@ -69,34 +69,51 @@ console.log("is logged in", isLoggedIn)
           >
             About Us
           </Link>
-         { isLoggedIn ? 
-         userData.role === "ADMIN" ? (
-          <div className="flex flex-col md:flex-row">
-              <Link href={`/admin/superadmin/dashboard`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700">
-                Go to Dashboard
+          {isLoggedIn ? (
+            userData.role === "ADMIN" ? (
+              <div className="flex flex-col md:flex-row">
+                <Link
+                  href={`/admin/superadmin/dashboard`}
+                  className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+                >
+                  Go to Dashboard
+                </Link>
+                <button
+                  className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+                  onClick={() => HandleLogout()}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div>
+                <Link
+                  href={`/admin/${userData?.role.toLowerCase()}`}
+                  className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+                >
+                  Go to Dashboard
+                </Link>
+                <button
+                  className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+                  onClick={() => HandleLogout()}
+                >
+                  {" "}
+                  Logout{" "}
+                </button>
+              </div>
+            )
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
+              >
+                Login
               </Link>
-              <button className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" onClick={() => HandleLogout()}>
-                Logout
-              </button>
-          </div>
-           ) :
-         (
-          <div>
-            <Link href={`/admin/${userData?.role.toLowerCase()}`} className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" >Go to Dashboard</Link>
-            <button  className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700" onClick={()=> HandleLogout()}> Logout </button>
-          </div>
-           )
-           :<>          
-         <Link
-            href="/login"
-            className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
-          >
-            Login
-          </Link>
-         </>}
-    
+            </>
+          )}
 
-           {/* <button className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition w-full md:w-auto">
+          {/* <button className="bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-800 transition w-full md:w-auto">
             Create Listing
           </button> */}
         </div>
