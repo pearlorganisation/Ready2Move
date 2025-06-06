@@ -152,16 +152,16 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-blue-100 rounded-sm ">
+    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-bg-[#1E3C 94] rounded-sm ">
       <div className="w-full max-w-6xl">
         {/* Tabs */}
-        <div className="flex border border-gray-200 bg-white rounded-t-lg overflow-hidden">
+        <div className="flex border border-gray-200 bg-white rounded-t-lg overflow-hidden #2345">
           {["projects", "properties"].map((tab) => (
             <motion.button
               key={tab}
               className={`flex-1 py-3 px-6 flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                 activeTab === tab
-                  ? "bg-teal-100 text-teal-700"
+                  ? "bg-[#3298ec] text-white"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
               onClick={() => {

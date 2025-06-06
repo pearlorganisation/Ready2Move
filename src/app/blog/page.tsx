@@ -31,11 +31,16 @@ const BlogPage: React.FC = () => {
   const postsPerPage = 6;
   const bannerRef = useRef<HTMLDivElement>(null);
 
-  const getAllBlogs = async () => {
+  const getAllBlogs = async (search = "") => {
     try {
-      const res = await axiosInstance.get(`/api/v1/blogs`);
+      const res = await axiosInstance.get(`/api/v1/blogs`, {
+        params: { search },
+      });
       console.log("res", res);
-      if (res?.data?.data) setData(res.data.data);
+      if (res?.data?.data) {
+        // update blog list here
+        setData(res.data.data);
+      }
     } catch (err) {
       console.error("Failed to fetch blogs:", err);
     }
@@ -103,7 +108,7 @@ const BlogPage: React.FC = () => {
               <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
               <input
                 type="text"
-                placeholder="Search  location..."
+                placeholder="Search  blogs..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -140,11 +145,7 @@ const BlogPage: React.FC = () => {
                           alt={post.title}
                           className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
                         />
-                        <div className="absolute top-4 left-4">
-                          <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                            Featured
-                          </span>
-                        </div>
+                        <div className="absolute top-4 left-4"></div>
                         {post.category && (
                           <div className="absolute top-4 right-4">
                             <span className="bg-white/90 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold">

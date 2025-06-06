@@ -292,7 +292,7 @@ export const getAllProperties = createAsyncThunk(
       bedRooms: number;
       bathRooms: number;
       q?: string;
-      service?: "RENT" | "SELL";
+      service?: "RENT" | "BUY";
       propertyType?: "RESIDENTIAL" | "COMMERCIAL";
     },
     { rejectWithValue }
