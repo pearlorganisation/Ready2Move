@@ -31,7 +31,7 @@ export interface Project {
   aminities: string[];
   isFeatured: boolean;
   availability: string;
-  bankOfApproval: string;
+  bankOfApproval: string[];
   imageGallery: Image[];
 }
 interface Image {
@@ -39,20 +39,7 @@ interface Image {
   public_id: string;
   _id: string;
 }
-
-interface Amenity {
-  _id: string;
-  // name: string;
-  // type: string;
-}
-interface Availability {
-  _id: string;
-}
-interface BankApproval {
-  _id: string;
-  name: string;
-  type: string;
-}
+ 
 const EditProjectComp = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
   const { singleProjectData } = useAppSelector((state) => state.projects);
@@ -60,8 +47,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   const { featureData } = useAppSelector((state) => state.features);
 
   const [generatedSlug, setGeneratedSlug] = useState(slug);
-  const [allAmenities, setAllAmenities] = useState<Amenity[]>([]);
-
+ 
   const [newImages, setNewImages] = useState<File[]>([]);
   console.log("new Images", newImages);
   const router = useRouter();
@@ -88,7 +74,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       const { areaRange, priceRange, availability, ...rest } =
         singleProjectData;
       console.log("rest", rest);
-      reset({
+       reset({
         subTitle: singleProjectData?.subTitle,
         description: singleProjectData?.description,
         locality: singleProjectData?.locality,
@@ -100,7 +86,8 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         reraPossessionDate: singleProjectData.reraPossessionDate?.split("T")[0],
         pricePerSqFt: singleProjectData.pricePerSqFt,
         aminities: singleProjectData?.aminities?.map((item) => item._id),
-        bankOfApproval: singleProjectData?.bankOfApproval?.[0]?._id,
+
+        bankOfApproval: singleProjectData?.bankOfApproval?.map(item=> item?._id),
         imageGallery: singleProjectData?.imageGallery,
         youtubeEmbedLink: singleProjectData?.youtubeEmbedLink,
         reraNumber: singleProjectData?.reraNumber,
@@ -201,11 +188,12 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       }
 
       // Bank Approvals
-      // if (Array.isArray(data.bankOfApproval)) {
-      //   data.bankOfApproval.forEach((bank) => {
-      formData.append("bankOfApproval", data.bankOfApproval);
-      //   });
-      // }
+      if (Array.isArray(data.bankOfApproval)) {
+        data.bankOfApproval.forEach((bank) => {
+        formData.append("bankOfApproval", bank || '');
+        });
+      }formData.append("bankOfApproval", data?.bankOfApproval.toString());
+
 
       // New images
       newImages.forEach((file) => {
@@ -213,6 +201,9 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       });
 
       formData.append('isFeatured', data?.isFeatured.toString())
+
+
+      console.log("the formdata before sending is", formData)
       // Send request
       await axiosInstance.patch(`/api/v1/projects/${slug}`, formData, {
         headers: {
@@ -221,7 +212,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       });
 
       alert("Project updated successfully!");
-      router.push("/admin/superadmin/project");
+      // router.push("/admin/superadmin/project");
     } catch (err) {
       console.error(err);
       alert("Failed to update project.");
