@@ -68,17 +68,23 @@ const RegisterPage = () => {
   } = useForm({ resolver: yupResolver(schema) });
 
 
-  useEffect(()=>{
-   if(isSuccess){
-    router.push('/otpverification', {scroll:true})
-   }
-  },[isSuccess])
+  // useEffect(()=>{
+  //  if(isSuccess){
+  //   router.push('/otpverification', {scroll:true})
+  //  }
+  // },[isSuccess])
   
   const [showPassword, setShowPassword] = useState(false);
   const passwordValue = watch("password", ""); // Watch password field
 
   const onSubmit = (data: any) => {
-    dispatch(registerUser(data))
+    dispatch(registerUser(data)).then(res=>{
+      const payload = res?.payload as { data?: { success?: boolean } };
+      console.log("the returned data is", payload);
+      if (payload?.data?.success === true) {
+        router.push('/otpverification', {scroll:true})
+      }
+    })
   };
 
   return (

@@ -9,7 +9,7 @@ import {
 } from "@/lib/redux/actions/projectAction";
 import slugify from "slugify";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export interface Project {
   _id?: string;

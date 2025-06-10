@@ -2,6 +2,7 @@
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook';
 import { verifyOtp } from '@/lib/redux/actions/otpAction';
 import { resetRegister } from '@/lib/redux/slice/authSlice';
+import { resetOtpState } from '@/lib/redux/slice/otpVerificationSlice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -20,12 +21,16 @@ const VerificationPage = () => {
 
   const onSubmit = (data:FormData) => {
      dispatch(verifyOtp({ ...data, type: "REGISTER" }))
+    //  .then(res=>{
+    //   console.log("the res is", res)
+    //  })
      console.log(data);  
   };
 
    useEffect(()=>{
      if(isSuccess){
       dispatch(resetRegister())
+      dispatch(resetOtpState())
       router.push("/",{scroll:true})
      }
  },[isSuccess])
