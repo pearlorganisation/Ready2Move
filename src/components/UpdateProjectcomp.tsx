@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import {
@@ -104,6 +104,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         imageGallery: singleProjectData?.imageGallery,
         youtubeEmbedLink: singleProjectData?.youtubeEmbedLink,
         reraNumber: singleProjectData?.reraNumber,
+        isFeatured:singleProjectData?.isFeatured
       });
     }
   }, [singleProjectData, reset]);
@@ -153,7 +154,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   //   }
   // };
 
-  const onSubmit = async (data: Project) => {
+  const onSubmit= async (data:Project) => {
     try {
       const formData = new FormData();
 
@@ -170,6 +171,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       formData.append("reraNumber", data.reraNumber);
       formData.append("youtubeEmbedLink", data.youtubeEmbedLink);
       formData.append("pricePerSqFt", data.pricePerSqFt.toString());
+      // formData.append("isFeatured", data?.isFeatured);
 
       // Nested fields (priceRange, areaRange, etc.)
       formData.append("priceRange[min]", data.priceRange.min.toString());
@@ -210,6 +212,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         formData.append("imageGallery", file);
       });
 
+      formData.append('isFeatured', data?.isFeatured.toString())
       // Send request
       await axiosInstance.patch(`/api/v1/projects/${slug}`, formData, {
         headers: {
