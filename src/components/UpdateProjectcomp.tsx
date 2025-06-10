@@ -192,7 +192,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         data.bankOfApproval.forEach((bank) => {
         formData.append("bankOfApproval", bank || '');
         });
-      }formData.append("bankOfApproval", data?.bankOfApproval.toString());
+      }
 
 
       // New images
