@@ -96,7 +96,8 @@ export default function AboutHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-black to-gray-900 bg-[50%_0%] p-6 text-center"
+      className="relative flex min-h-screen flex-col items-center justify-center
+       bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white bg-[50%_0%] p-6 text-center"
     >
       <motion.div
         initial={{ opacity: 0 }}

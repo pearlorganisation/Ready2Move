@@ -109,14 +109,14 @@ const MySlugComp = ({ slug }: { slug: string }) => {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4">
+    <div className="container mx-auto  px-4">
       <Link href="/projects" className="group">
         <button className="mb-6 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4 transition-colors" />
           Back to Projects
         </button>
       </Link>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen  bg-gray-50">
         <Swiper
           modules={[Navigation]}
           slidesPerView={1}

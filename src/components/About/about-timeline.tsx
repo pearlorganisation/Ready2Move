@@ -113,7 +113,10 @@ export default function AboutTimeline() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative min-h-screen bg-black py-24">
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-24"
+    >
       <div className="container mx-auto px-6">
         <div className="mb-16 text-center">
           <motion.h2

@@ -152,7 +152,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 to-bg-[#1E3C 94] rounded-sm ">
+    <div className="flex items-center justify-center p-6 bg-gradient-to-r from-teal-50 via-[#1E3C 94] to-teal-50 rounded-sm ">
       <div className="w-full max-w-6xl">
         {/* Tabs */}
         <div className="flex border border-gray-200 bg-white rounded-t-lg overflow-hidden #2345">
@@ -161,7 +161,7 @@ export default function SearchBar() {
               key={tab}
               className={`flex-1 py-3 px-6 flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                 activeTab === tab
-                  ? "bg-[#3298ec] text-white"
+                  ? "bg-[#3298EC]  text-white"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
               onClick={() => {
@@ -270,7 +270,7 @@ export default function SearchBar() {
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500"
                     />
                     {activeTab === "projects" && (
-                      <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
+                      <ul className="absolute left-0 right-0 mt-1 bg-white shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
                         {Array.isArray(searchedProjectData) &&
                         searchedProjectData.length > 0 ? (
                           searchedProjectData.map((item, idx) => (
@@ -306,7 +306,7 @@ export default function SearchBar() {
                     )}
 
                     {activeTab === "properties" && (
-                      <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 shadow-lg max-h-60 overflow-y-auto z-20 rounded-md">
+                      <ul className="absolute left-0 right-0 mt-1 bg-white  max-h-60 overflow-y-auto z-20 rounded-md">
                         {Array.isArray(searchedPropertyData) &&
                         searchedPropertyData.length > 0 ? (
                           searchedPropertyData.map((item, idx) => (

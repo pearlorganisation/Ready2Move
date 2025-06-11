@@ -854,17 +854,6 @@ const PropertiesPage = () => {
                     </button>
                   </div>
                 </div>
-
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="newest">Newest First</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="popular">Most Popular</option>
-                </select>
               </div>
             </div>
 
@@ -1037,26 +1026,6 @@ const PropertiesPage = () => {
                       viewMode === "list" ? "h-full" : "h-64"
                     }`}
                   />
-
-                  {/* Overlay Actions */}
-                  <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleFavorite(property._id);
-                      }}
-                      className={`p-2 rounded-full backdrop-blur-sm transition-colors ${
-                        favorites.includes(property._id)
-                          ? "bg-red-500 text-white"
-                          : "bg-white/90 text-gray-700 hover:bg-red-500 hover:text-white"
-                      }`}
-                    >
-                      <FaHeart size={16} />
-                    </button>
-                    <button className="p-2 bg-white/90 backdrop-blur-sm rounded-full text-gray-700 hover:bg-emerald-500 hover:text-white transition-colors">
-                      <FaShare size={16} />
-                    </button>
-                  </div>
 
                   {/* Price Badge */}
                   <div className="absolute bottom-4 left-4">
