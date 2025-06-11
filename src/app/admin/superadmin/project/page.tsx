@@ -99,7 +99,7 @@ const CreateProject = () => {
 
   const { featureData } = useAppSelector((state) => state.features)
   const { userData } = useAppSelector((state) => state.user)
-
+  console.log("the userdata is", userData)
   // Handle image preview
   const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
@@ -130,7 +130,7 @@ const CreateProject = () => {
    const submitForm = (data: ProjectFormInputs) => {
     const formData = {
       ...data,
-      user: userData?._id,
+      user: userData._id,
       areaRange: { min: data.areaRangeMin, max: data.areaRangeMax },
       priceRange: {
         min: data.priceRangeMin,

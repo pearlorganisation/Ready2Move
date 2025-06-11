@@ -27,7 +27,7 @@ export const createProjectsByBuilder = createAsyncThunk(
       }
 
       // ✅ Append Basic Data with Optional Chaining
-      formData.append("user", userdata?.id || "");
+      formData.append("user", userdata?.user || "");
       formData.append("title", userdata?.title || "");
       formData.append("slug", userdata?.slug || "");
       formData.append("subTitle", userdata?.subTitle || "");
