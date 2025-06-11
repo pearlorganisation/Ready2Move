@@ -12,6 +12,8 @@ import { FaSearch } from "react-icons/fa";
 import FilterRangeSliders from "@/components/FilterProperty";
 import { useState, useRef, useEffect } from "react";
 import PropertyCard from "@/components/PropertyCard";
+import { ChevronDown, X } from "lucide-react";
+import Pagination from "@/components/Pagination";
 
 const Page = () => {
   const dispatch = useAppDispatch();
@@ -400,271 +402,515 @@ const Page = () => {
 
   console.log(projectData, "projectData");
 
+  //   return (
+  //     <>
+  //       <div className="px-4 sm:px-6 lg:px-8 bg-white mt-24">
+  //         <div className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row gap-6 mb-8 items-center">
+  //           <select
+  //             {...register("service")}
+  //             className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
+  //           >
+  //             <option value="">All Services</option>
+  //             <option value="SELL">SELL</option>
+  //             <option value="RENT">RENT</option>
+  //           </select>
+
+  //           <select
+  //             {...register("projectType")}
+  //             className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
+  //           >
+  //             <option value="">All Project Types</option>
+  //             <option value="COMMERCIAL">COMMERCIAL</option>
+  //             <option value="RESIDENTIAL">RESIDENTIAL</option>
+  //           </select>
+
+  //           <div className="relative w-full md:w-1/3 flex justify-center items-center">
+  //             <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
+  //             <input
+  //               {...register("q")}
+  //               type="text"
+  //               placeholder="Search by title or location"
+  //               className="border p-3 rounded-lg w-full pl-12 shadow-sm focus:ring focus:ring-blue-300"
+  //             />
+  //           </div>
+  //         </div>
+
+  //         <div className="grid md:grid-cols-[35%_auto] gap-6">
+  //           {/* Sidebar Filters */}
+  //           <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm p-6">
+  //             {/* Breadcrumb */}
+  //             <div className="mb-2">
+  //               <a href="#" className="text-gray-500 text-sm">
+  //                 Home
+  //               </a>
+  //             </div>
+
+  //             {/* Applied Filters */}
+  //             <div className="mb-6">
+  //               <div className="flex justify-between items-center mb-4">
+  //                 <h2 className="text-lg font-semibold text-gray-800">
+  //                   Applied Filters
+  //                 </h2>
+  //                 <button
+  //                   onClick={clearAllFilters}
+  //                   className="text-blue-500 text-sm font-medium"
+  //                 >
+  //                   Clear All
+  //                 </button>
+  //               </div>
+
+  //               <div className="flex flex-wrap gap-2">
+  //                 {appliedFilters.map((filter, index) => (
+  //                   <div
+  //                     key={index}
+  //                     className="flex items-center bg-blue-50 text-blue-800 rounded-full px-3 py-1"
+  //                   >
+  //                     <span className="mr-1">{filter}</span>
+  //                     <button
+  //                       onClick={() => removeFilter(filter)}
+  //                       className="text-blue-500 hover:text-blue-700"
+  //                     >
+  //                       <svg
+  //                         xmlns="http://www.w3.org/2000/svg"
+  //                         className="h-4 w-4"
+  //                         fill="none"
+  //                         viewBox="0 0 24 24"
+  //                         stroke="currentColor"
+  //                       >
+  //                         <path
+  //                           strokeLinecap="round"
+  //                           strokeLinejoin="round"
+  //                           strokeWidth={2}
+  //                           d="M6 18L18 6M6 6l12 12"
+  //                         />
+  //                       </svg>
+  //                     </button>
+  //                   </div>
+  //                 ))}
+  //               </div>
+  //             </div>
+
+  //             {/* Budget Filter */}
+  //             <div className="py-4 border-t border-gray-200">
+  //               <div className="flex justify-between items-center mb-6">
+  //                 <h3 className="text-gray-800 font-medium">Budget</h3>
+  //                 <button
+  //                   onClick={clearBudget}
+  //                   className="text-blue-500 text-sm font-medium flex items-center"
+  //                 >
+  //                   Clear
+  //                   <svg
+  //                     xmlns="http://www.w3.org/2000/svg"
+  //                     className="h-4 w-4 ml-1"
+  //                     fill="none"
+  //                     viewBox="0 0 24 24"
+  //                     stroke="currentColor"
+  //                   >
+  //                     <path
+  //                       strokeLinecap="round"
+  //                       strokeLinejoin="round"
+  //                       strokeWidth={2}
+  //                       d="M19 9l-7 7-7-7"
+  //                     />
+  //                   </svg>
+  //                 </button>
+  //               </div>
+
+  //               <div className="mb-8">
+  //                 <div className="flex justify-between mb-2">
+  //                   <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
+  //                     {minPriceInput}
+  //                   </div>
+  //                   <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
+  //                     {maxPriceInput}
+  //                   </div>
+  //                 </div>
+
+  //                 {/* Price Slider */}
+  //                 <div
+  //                   ref={priceSliderRef}
+  //                   className="relative h-1 bg-gray-200 rounded-full my-6"
+  //                   style={
+  //                     {
+  //                       "--min-pos": "0%",
+  //                       "--max-pos": "100%",
+  //                       background:
+  //                         "linear-gradient(to right, #e5e7eb 0%, #3b82f6 var(--min-pos), #3b82f6 var(--max-pos), #e5e7eb var(--max-pos))",
+  //                     } as React.CSSProperties
+  //                   }
+  //                 >
+  //                   <div
+  //                     ref={priceMinThumbRef}
+  //                     className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
+  //                   />
+  //                   <div
+  //                     ref={priceMaxThumbRef}
+  //                     className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
+  //                   />
+  //                 </div>
+
+  //                 {/* Price Inputs */}
+  //                 <div className="flex justify-between gap-4 mt-4">
+  //                   <input
+  //                     type="text"
+  //                     value={minPriceInput}
+  //                     onChange={(e) => handleMinPriceInputChange(e.target.value)}
+  //                     className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
+  //                   />
+  //                   <input
+  //                     type="text"
+  //                     value={maxPriceInput}
+  //                     onChange={(e) => handleMaxPriceInputChange(e.target.value)}
+  //                     className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
+  //                   />
+  //                 </div>
+  //               </div>
+  //             </div>
+
+  //             {/* Area Filter */}
+  //             <div className="py-4 border-t border-gray-200">
+  //               {/* <div className="flex justify-between items-center mb-6">
+  //                 <h3 className="text-gray-800 font-medium">Area</h3>
+  //                 <button className="text-blue-500 text-sm font-medium flex items-center">
+  //                   Clear
+  //                   <svg
+  //                     xmlns="http://www.w3.org/2000/svg"
+  //                     className="h-4 w-4 ml-1"
+  //                     fill="none"
+  //                     viewBox="0 0 24 24"
+  //                     stroke="currentColor"
+  //                   >
+  //                     <path
+  //                       strokeLinecap="round"
+  //                       strokeLinejoin="round"
+  //                       strokeWidth={2}
+  //                       d="M19 9l-7 7-7-7"
+  //                     />
+  //                   </svg>
+  //                 </button>
+  //               </div> */}
+
+  //               {/* <div className="mb-8">
+  //                 <div className="flex justify-between mb-2">
+  //                   <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
+  //                     {minAreaInput} sq.ft
+  //                   </div>
+  //                   <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
+  //                     {maxAreaInput} sq.ft
+  //                   </div>
+  //                 </div> */}
+
+  //                 {/* Area Slider */}
+  //                 {/* <div
+  //                   ref={areaSliderRef}
+  //                   className="relative h-1 bg-gray-200 rounded-full my-6" // style={
+  //                     {
+  //                       "--min-pos": "0%",
+  //                       "--max-pos": "100%",
+  //                       background:
+  //                         "linear-gradient(to right, #e5e7eb 0%, #3b82f6 var(--min-pos), #3b82f6 var(--max-pos), #e5e7eb var(--max-pos))",
+  //                     } as React.CSSProperties
+  //                   }
+  //                 > */}
+  //                 {/* <div
+  //                     ref={areaMinThumbRef}
+  //                     className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
+  //                   />
+  //                   <div
+  //                     ref={areaMaxThumbRef}
+  //                     className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
+  //                   />
+  //                 </div> */}
+
+  //                 {/* Area Inputs */}
+  //                 {/* <div className="flex justify-between gap-4 mt-4">
+  //                   <input
+  //                     type="text"
+  //                     value={minAreaInput}
+  //                     onChange={(e) => handleMinAreaInputChange(e.target.value)}
+  //                     className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
+  //                   />
+  //                   <input
+  //                     type="text"
+  //                     value={maxAreaInput}
+  //                     onChange={(e) => handleMaxAreaInputChange(e.target.value)}
+  //                     className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
+  //                   />
+  //                 </div> */}
+  //               </div>
+  //             </div>
+  //           </div>
+
+  //           {/* Project Listings */}
+  //           <div className="grid grid-cols-1 gap-10">
+  //             {Array.isArray(projectData) && projectData?.length > 0 ? (
+  //               projectData.map((project: any) => {
+  //                 console.log(project, "my project single");
+  //                 return (
+  //                   // <Link href={`/projects/${project?.slug}`} key={project._id}>
+  //                   //   <PropertyCard />
+  //                   // </Link>
+
+  //                   <div key={project._id}>
+  //                     <PropertyCard project={project} />
+  //                   </div>
+  //                 );
+  //               })
+  //             ) : (
+  //               <div className="col-span-full text-center text-gray-500">
+  //                 No projects found.
+  //               </div>
+  //             )}
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // };
+
   return (
     <>
-      <div className="px-4 sm:px-6 lg:px-8 bg-white mt-24">
-        <div className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row gap-6 mb-8 items-center">
-          <select
-            {...register("service")}
-            className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
-          >
-            <option value="">All Services</option>
-            <option value="BUY">BUY</option>
-            <option value="RENT">RENT</option>
-          </select>
+      <div className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row gap-6 mb-8 items-center">
+        <select
+          {...register("service")}
+          className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
+        >
+          <option value="">All Services</option>
+          <option value="SELL">SELL</option>
+          <option value="RENT">RENT</option>
+        </select>
 
-          <select
-            {...register("projectType")}
-            className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
-          >
-            <option value="">All Project Types</option>
-            <option value="COMMERCIAL">COMMERCIAL</option>
-            <option value="RESIDENTIAL">RESIDENTIAL</option>
-          </select>
+        <select
+          {...register("projectType")}
+          className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
+        >
+          <option value="">All Project Types</option>
+          <option value="COMMERCIAL">COMMERCIAL</option>
+          <option value="RESIDENTIAL">RESIDENTIAL</option>
+        </select>
 
-          <div className="relative w-full md:w-1/3 flex justify-center items-center">
-            <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            <input
-              {...register("q")}
-              type="text"
-              placeholder="Search by title or location"
-              className="border p-3 rounded-lg w-full pl-12 shadow-sm focus:ring focus:ring-blue-300"
-            />
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-[35%_auto] gap-6">
-          {/* Sidebar Filters */}
-          <div className="max-w-md mx-auto bg-white rounded-lg shadow-sm p-6">
-            {/* Breadcrumb */}
-            <div className="mb-2">
-              <a href="#" className="text-gray-500 text-sm">
-                Home
-              </a>
-            </div>
-
-            {/* Applied Filters */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Applied Filters
-                </h2>
-                <button
-                  onClick={clearAllFilters}
-                  className="text-blue-500 text-sm font-medium"
-                >
-                  Clear All
-                </button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {appliedFilters?.map((filter, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center bg-blue-50 text-blue-800 rounded-full px-3 py-1"
-                  >
-                    <span className="mr-1">{filter}</span>
-                    <button
-                      onClick={() => removeFilter(filter)}
-                      className="text-blue-500 hover:text-blue-700"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Budget Filter */}
-            <div className="py-4 border-t border-gray-200">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-gray-800 font-medium">Budget</h3>
-                <button
-                  onClick={clearBudget}
-                  className="text-blue-500 text-sm font-medium flex items-center"
-                >
-                  Clear
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 ml-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="mb-8">
-                <div className="flex justify-between mb-2">
-                  <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
-                    {minPriceInput}
-                  </div>
-                  <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
-                    {maxPriceInput}
-                  </div>
-                </div>
-
-                {/* Price Slider */}
-                <div
-                  ref={priceSliderRef}
-                  className="relative h-1 bg-gray-200 rounded-full my-6"
-                  style={
-                    {
-                      "--min-pos": "0%",
-                      "--max-pos": "100%",
-                      background:
-                        "linear-gradient(to right, #e5e7eb 0%, #3b82f6 var(--min-pos), #3b82f6 var(--max-pos), #e5e7eb var(--max-pos))",
-                    } as React.CSSProperties
-                  }
-                >
-                  <div
-                    ref={priceMinThumbRef}
-                    className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
-                  />
-                  <div
-                    ref={priceMaxThumbRef}
-                    className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
-                  />
-                </div>
-
-                {/* Price Inputs */}
-                <div className="flex justify-between gap-4 mt-4">
-                  <input
-                    type="text"
-                    value={minPriceInput}
-                    onChange={(e) => handleMinPriceInputChange(e.target.value)}
-                    className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="text"
-                    value={maxPriceInput}
-                    onChange={(e) => handleMaxPriceInputChange(e.target.value)}
-                    className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Area Filter */}
-            <div className="py-4 border-t border-gray-200">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-gray-800 font-medium">Area</h3>
-                <button className="text-blue-500 text-sm font-medium flex items-center">
-                  Clear
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 ml-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="mb-8">
-                <div className="flex justify-between mb-2">
-                  <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
-                    {minAreaInput} sq.ft
-                  </div>
-                  <div className="bg-gray-900 text-white px-3 py-1 rounded text-sm">
-                    {maxAreaInput} sq.ft
-                  </div>
-                </div>
-
-                {/* Area Slider */}
-                <div
-                  ref={areaSliderRef}
-                  className="relative h-1 bg-gray-200 rounded-full my-6"
-                  style={
-                    {
-                      "--min-pos": "0%",
-                      "--max-pos": "100%",
-                      background:
-                        "linear-gradient(to right, #e5e7eb 0%, #3b82f6 var(--min-pos), #3b82f6 var(--max-pos), #e5e7eb var(--max-pos))",
-                    } as React.CSSProperties
-                  }
-                >
-                  <div
-                    ref={areaMinThumbRef}
-                    className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
-                  />
-                  <div
-                    ref={areaMaxThumbRef}
-                    className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-md"
-                  />
-                </div>
-
-                {/* Area Inputs */}
-                <div className="flex justify-between gap-4 mt-4">
-                  <input
-                    type="text"
-                    value={minAreaInput}
-                    onChange={(e) => handleMinAreaInputChange(e.target.value)}
-                    className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="text"
-                    value={maxAreaInput}
-                    onChange={(e) => handleMaxAreaInputChange(e.target.value)}
-                    className="w-1/2 border border-gray-300 rounded px-3 py-2 text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Project Listings */}
-          <div className="grid grid-cols-1 gap-10">
-            {Array.isArray(projectData) && projectData?.length > 0 ? (
-              projectData.map((project: any) => {
-                console.log(project, "my project single");
-                return (
-                  // <Link href={`/projects/${project?.slug}`} key={project._id}>
-                  //   <PropertyCard />
-                  // </Link>
-
-                  <div key={project._id}>
-                    <PropertyCard project={project} />
-                  </div>
-                );
-              })
-            ) : (
-              <div className="col-span-full text-center text-gray-500">
-                No projects found.
-              </div>
-            )}
-          </div>
+        <div className="relative w-full md:w-1/3 flex justify-center items-center">
+          <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <input
+            {...register("q")}
+            type="text"
+            placeholder="Search by title or location"
+            className="border p-3 rounded-lg w-full pl-12 shadow-sm focus:ring focus:ring-blue-300"
+          />
         </div>
       </div>
+
+      <div className="grid md:grid-cols-[35%_auto] gap-6 shadow-xl ">
+        {/* Sidebar Filters */}
+        <div
+          className="max-w-md mx-auto bg-white rounded-2xl p-6"
+          style={{
+            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          {/* Breadcrumb */}
+
+          <div className="bg-white h-screen w-full max-w-sm mx-auto shadow-xl ">
+            {/* Header */}
+
+            <div className="overflow-y-auto h-full pb-20 sticky">
+              {/* Applied Filters Section */}
+              <div className="p-4 border-b border-gray-50">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
+                    Applied Filters
+                  </h2>
+                  <button
+                    onClick={clearBudget}
+                    className="text-xs text-blue-500 font-medium hover:text-blue-600"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+
+              {/* Budget Filter */}
+              <div className="p-4 border-b border-gray-50">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
+                    Budget
+                  </h3>
+                  <button
+                    onClick={clearBudget}
+                    className="text-xs text-blue-500 font-medium hover:text-blue-600 flex items-center gap-1"
+                  >
+                    Clear
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex justify-between mb-4">
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-md text-xs font-medium">
+                      {minPriceInput}
+                    </div>
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-md text-xs font-medium">
+                      {maxPriceInput}
+                    </div>
+                  </div>
+
+                  {/* Price Slider */}
+                  <div
+                    ref={priceSliderRef}
+                    className="relative h-2 bg-gray-200 rounded-full my-8"
+                    style={
+                      {
+                        "--min-pos": "0%",
+                        "--max-pos": "100%",
+                        background:
+                          "linear-gradient(to right, #e5e7eb 0%, #3b82f6 var(--min-pos), #3b82f6 var(--max-pos), #e5e7eb var(--max-pos))",
+                      } as React.CSSProperties
+                    }
+                  >
+                    <div
+                      ref={priceMinThumbRef}
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                    />
+                    <div
+                      ref={priceMaxThumbRef}
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                    />
+                  </div>
+
+                  {/* Price Inputs */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-500 mb-1 font-medium">
+                        from
+                      </label>
+                      <input
+                        type="text"
+                        value={minPriceInput}
+                        onChange={(e) =>
+                          handleMinPriceInputChange(e.target.value)
+                        }
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="text-gray-400 text-sm mt-5">to</div>
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-500 mb-1 font-medium">
+                        to
+                      </label>
+                      <input
+                        type="text"
+                        value={maxPriceInput}
+                        onChange={(e) =>
+                          handleMaxPriceInputChange(e.target.value)
+                        }
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Area Filter */}
+              <div className="p-4 border-b border-gray-50">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
+                    Area
+                  </h3>
+                  <button className="text-xs text-blue-500 font-medium hover:text-blue-600 flex items-center gap-1">
+                    Clear
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                </div>
+
+                <div className="mb-6">
+                  <div className="flex justify-between mb-4">
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-md text-xs font-medium">
+                      {minAreaInput} sq.ft
+                    </div>
+                    <div className="bg-gray-900 text-white px-3 py-1.5 rounded-md text-xs font-medium">
+                      {maxAreaInput} sq.ft
+                    </div>
+                  </div>
+
+                  {/* Area Slider */}
+                  <div
+                    ref={areaSliderRef}
+                    className="relative h-2 bg-gray-200 rounded-full my-8"
+                  >
+                    <div
+                      ref={areaMinThumbRef}
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                    />
+                    <div
+                      ref={areaMaxThumbRef}
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                    />
+                  </div>
+
+                  {/* Area Inputs */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-500 mb-1 font-medium">
+                        from
+                      </label>
+                      <input
+                        type="text"
+                        value={minAreaInput}
+                        onChange={(e) =>
+                          handleMinAreaInputChange(e.target.value)
+                        }
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="text-gray-400 text-sm mt-5">to</div>
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-500 mb-1 font-medium">
+                        to
+                      </label>
+                      <input
+                        type="text"
+                        value={maxAreaInput}
+                        onChange={(e) =>
+                          handleMaxAreaInputChange(e.target.value)
+                        }
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-10">
+          {Array.isArray(projectData) && projectData?.length > 0 ? (
+            projectData.map((project: any) => {
+              console.log(project, "my project single");
+              return (
+                // <Link href={`/projects/${project?.slug}`} key={project._id}>
+                //   <PropertyCard />
+                // </Link>
+
+                <div key={project._id}>
+                  <PropertyCard project={project} />
+                </div>
+              );
+            })
+          ) : (
+            <div className="col-span-full text-center text-gray-500">
+              No projects found.
+            </div>
+          )}
+        </div>
+      </div>
+      <Pagination
+        total={paginate?.total}
+        currentPage={currentPage}
+        limit={paginate?.limit}
+        onPageChange={handlePageClick}
+      />
     </>
   );
 };
-
 export default Page;

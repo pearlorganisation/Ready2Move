@@ -18,6 +18,10 @@ interface Blog {
   thumbImage: {
     secure_url?: string | null;
   };
+  author: {
+    name: string;
+  };
+
   publishedAt?: string;
   category?: string;
   readTime?: string;
@@ -271,6 +275,11 @@ const BlogPage: React.FC = () => {
                     </h4>
                     <p className="text-sm text-gray-500">
                       {new Date(blog.publishedAt || "").toLocaleDateString()}
+                    </p>
+                    <p>
+                      {" "}
+                      <span className="text-md font-semibold">Created By:</span>
+                      <span className=" text-sm"> {blog.author.name}</span>
                     </p>
                   </div>
                 </div>
