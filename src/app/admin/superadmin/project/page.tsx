@@ -130,7 +130,7 @@ const CreateProject = () => {
    const submitForm = (data: ProjectFormInputs) => {
     const formData = {
       ...data,
-      id: userData?._id,
+      user: userData?._id,
       areaRange: { min: data.areaRangeMin, max: data.areaRangeMax },
       priceRange: {
         min: data.priceRangeMin,
