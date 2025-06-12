@@ -117,7 +117,7 @@ export const getAllProjects = createAsyncThunk(
       areaRange,
       q,
       service,
-      projectType,
+      projectType, 
     }: {
       page?: number;
       limit?: number;
@@ -219,7 +219,7 @@ export const getSingleProject = createAsyncThunk(
         },
       };
       const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
-      toast.success("fetched succcessfully ")
+      toast.success("fetched succcessfully ");
 
       return data;
     } catch (error) {
@@ -227,7 +227,6 @@ export const getSingleProject = createAsyncThunk(
     }
   }
 );
-
 
 export const updateProject = createAsyncThunk(
   "patch/updateProject",
@@ -249,20 +248,26 @@ export const updateProject = createAsyncThunk(
   }
 );
 
-
 export const deleteImagesProject = createAsyncThunk(
   "delete/Images",
-  async ({ slug, deleteImages }: { slug: string; deleteImages: string[] }, { rejectWithValue }) => {
-    console.log(slug,"i",deleteImages)
+  async (
+    { slug, deleteImages }: { slug: string; deleteImages: string[] },
+    { rejectWithValue }
+  ) => {
+    console.log(slug, "i", deleteImages);
     try {
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
-        }
+        },
       };
       // Sending the array of image IDs (deleteImages) in the request body
-      const data = await axiosInstance.patch(`/api/v1/projects/${slug}`, { deleteImages }, config);
-      toast.success("Images deleted succcessfully ")
+      const data = await axiosInstance.patch(
+        `/api/v1/projects/${slug}`,
+        { deleteImages },
+        config
+      );
+      toast.success("Images deleted succcessfully ");
       return data;
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to delete Project");
@@ -286,6 +291,3 @@ export const deleteProject = createAsyncThunk(
     }
   }
 );
-
-
-

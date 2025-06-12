@@ -25,8 +25,8 @@ export interface Project {
   reraNumber: string;
   reraPossessionDate?: string | Date;
   youtubeEmbedLink: string;
-  service: "RENT" | "SALE";
-  projectType: "RESIDENTIAL" | "COMMERCIAL";
+  service:  string;
+  projectType: string;
   pricePerSqFt: number;
   aminities: string[];
   isFeatured: boolean;
@@ -75,6 +75,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         singleProjectData;
       console.log("rest", rest);
        reset({
+        title:singleProjectData?.title,
         subTitle: singleProjectData?.subTitle,
         description: singleProjectData?.description,
         locality: singleProjectData?.locality,
@@ -86,12 +87,15 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         reraPossessionDate: singleProjectData.reraPossessionDate?.split("T")[0],
         pricePerSqFt: singleProjectData.pricePerSqFt,
         aminities: singleProjectData?.aminities?.map((item) => item._id),
-
+        
         bankOfApproval: singleProjectData?.bankOfApproval?.map(item=> item?._id),
         imageGallery: singleProjectData?.imageGallery,
         youtubeEmbedLink: singleProjectData?.youtubeEmbedLink,
         reraNumber: singleProjectData?.reraNumber,
-        isFeatured:singleProjectData?.isFeatured
+        isFeatured:singleProjectData?.isFeatured,
+        projectType: singleProjectData?.projectType,
+        service: singleProjectData?.service 
+
       });
     }
   }, [singleProjectData, reset]);
@@ -308,8 +312,8 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
             {...register("service")}
             className="w-full p-3 border rounded-md"
           >
-            <option value="RENT">Rent</option>
-            <option value="SALE">Sale</option>
+            <option value="RENT">RENT</option>
+            <option value="SALE">SALE</option>
           </select>
         </div>
         <div>
@@ -320,8 +324,8 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
             {...register("projectType")}
             className="w-full p-3 border rounded-md"
           >
-            <option value="RESIDENTIAL">Residential</option>
-            <option value="COMMERCIAL">Commercial</option>
+            <option value="RESIDENTIAL">RESIDENTIAL</option>
+            <option value="COMMERCIAL">COMMERCIAL</option>
           </select>
         </div>
         {/* Price Range */}
