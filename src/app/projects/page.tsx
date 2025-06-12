@@ -670,10 +670,10 @@ const Page = () => {
 
   return (
     <>
-      <div className="bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row gap-6 mb-8 items-center">
+      <div className="p-6 rounded-lg flex flex-col md:flex-row gap-6 mb-8 items-center">
         <select
           {...register("service")}
-          className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
+          className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-800"
         >
           <option value="">All Services</option>
           <option value="SELL">SELL</option>
@@ -682,7 +682,7 @@ const Page = () => {
 
         <select
           {...register("projectType")}
-          className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-300"
+          className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-800"
         >
           <option value="">All Project Types</option>
           <option value="COMMERCIAL">COMMERCIAL</option>
@@ -695,22 +695,17 @@ const Page = () => {
             {...register("q")}
             type="text"
             placeholder="Search by title or location"
-            className="border p-3 rounded-lg w-full pl-12 shadow-sm focus:ring focus:ring-blue-300"
+            className="border p-3 rounded-lg w-full pl-12 shadow-sm focus:ring focus:ring-blue-800"
           />
         </div>
       </div>
 
-      <div className="grid md:grid-cols-[35%_auto] gap-6 shadow-xl ">
+      <div className="grid md:grid-cols-[35%_auto] gap-6  ">
         {/* Sidebar Filters */}
-        <div
-          className="max-w-md mx-auto bg-white rounded-2xl p-6"
-          style={{
-            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-          }}
-        >
+        <div className="max-w-md mx-auto  rounded-2xl p-6">
           {/* Breadcrumb */}
 
-          <div className="bg-white h-screen w-full max-w-sm mx-auto shadow-xl ">
+          <div className=" h-screen w-full max-w-sm mx-auto  ">
             {/* Header */}
 
             <div className="overflow-y-auto h-full pb-20 sticky">
@@ -722,7 +717,7 @@ const Page = () => {
                   </h2>
                   <button
                     onClick={clearBudget}
-                    className="text-xs text-blue-500 font-medium hover:text-blue-600"
+                    className="text-xs text-blue-800 font-medium hover:text-blue-800"
                   >
                     Clear All
                   </button>
@@ -737,7 +732,7 @@ const Page = () => {
                   </h3>
                   <button
                     onClick={clearBudget}
-                    className="text-xs text-blue-500 font-medium hover:text-blue-600 flex items-center gap-1"
+                    className="text-xs text-blue-800 font-medium hover:text-blue-800 flex items-center gap-1"
                   >
                     Clear
                     <ChevronDown className="w-3 h-3" />
@@ -769,11 +764,11 @@ const Page = () => {
                   >
                     <div
                       ref={priceMinThumbRef}
-                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-800 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
                     />
                     <div
                       ref={priceMaxThumbRef}
-                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-800 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
                     />
                   </div>
 
@@ -789,7 +784,7 @@ const Page = () => {
                         onChange={(e) =>
                           handleMinPriceInputChange(e.target.value)
                         }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent"
                       />
                     </div>
                     <div className="text-gray-400 text-sm mt-5">to</div>
@@ -803,7 +798,7 @@ const Page = () => {
                         onChange={(e) =>
                           handleMaxPriceInputChange(e.target.value)
                         }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -816,7 +811,7 @@ const Page = () => {
                   <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
                     Area
                   </h3>
-                  <button className="text-xs text-blue-500 font-medium hover:text-blue-600 flex items-center gap-1">
+                  <button className="text-xs text-blue-800 font-medium hover:bg-[#182F7A] flex items-center gap-1">
                     Clear
                     <ChevronDown className="w-3 h-3" />
                   </button>
@@ -839,11 +834,11 @@ const Page = () => {
                   >
                     <div
                       ref={areaMinThumbRef}
-                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-800 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
                     />
                     <div
                       ref={areaMaxThumbRef}
-                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-500 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
+                      className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-800 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
                     />
                   </div>
 
@@ -859,7 +854,7 @@ const Page = () => {
                         onChange={(e) =>
                           handleMinAreaInputChange(e.target.value)
                         }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent"
                       />
                     </div>
                     <div className="text-gray-400 text-sm mt-5">to</div>
@@ -873,7 +868,7 @@ const Page = () => {
                         onChange={(e) =>
                           handleMaxAreaInputChange(e.target.value)
                         }
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -904,12 +899,14 @@ const Page = () => {
           )}
         </div>
       </div>
-      <Pagination
-        total={paginate?.total}
-        currentPage={currentPage}
-        limit={paginate?.limit}
-        onPageChange={handlePageClick}
-      />
+      <div className="flex  justify-center mb-6 ">
+        <Pagination
+          total={paginate?.total}
+          currentPage={currentPage}
+          limit={paginate?.limit}
+          onPageChange={handlePageClick}
+        />
+      </div>
     </>
   );
 };

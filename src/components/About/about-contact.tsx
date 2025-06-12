@@ -2,62 +2,53 @@
 
 const AboutUs = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">About Us</h1>
+    <div className="bg-white text-gray-800">
+      {/* Hero Section */}
+      <section
+        className="relative w-full h-[60vh] bg-cover bg-center flex items-center justify-center"
+        style={{ backgroundImage: "url('/about-hero.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white">
+            About Us
+          </h1>
+        </div>
+      </section>
 
-      <p className="text-gray-700 mb-4 text-lg leading-relaxed">
-        Welcome to{" "}
-        <span className="font-semibold text-blue-600">YourPropertyHub</span> —
-        your trusted partner in finding the perfect home, investment property,
-        or dream location. We specialize in connecting buyers and sellers
-        through a seamless and transparent real estate experience.
-      </p>
+      {/* Company Overview */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold mb-4">Who We Are</h2>
+        <p className="text-gray-600 text-lg leading-relaxed">
+          At ready2move , we’re passionate about creating lasting homes. For
+          over a decade, we’ve helped individuals and families discover
+          beautiful living spaces that match their dreams and lifestyle.
+          <br />
+          <br />
+          We take pride in our transparency, commitment, and client-first
+          approach—making real estate transactions simpler, smoother, and more
+          rewarding.
+        </p>
+      </section>
 
-      <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">
-        Who We Are
-      </h2>
-      <p className="text-gray-700 mb-4 leading-relaxed">
-        With a passion for property and a commitment to service, we are a team
-        of real estate professionals dedicated to simplifying the buying and
-        selling process. Whether you're searching for a cozy apartment, a
-        luxurious villa, or a commercial space, we’re here to help you every
-        step of the way.
-      </p>
-
-      <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">
-        What We Offer
-      </h2>
-      <ul className="list-disc list-inside text-gray-700 mb-4 leading-relaxed">
-        <li>Verified property listings with complete details and images</li>
-        <li>Smart search filters to help you find exactly what you need</li>
-        <li>
-          Professional support for site visits, legal advice, and documentation
-        </li>
-        <li>Affordable housing to premium real estate solutions</li>
-      </ul>
-
-      <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">
-        Why Choose Us?
-      </h2>
-      <p className="text-gray-700 mb-4 leading-relaxed">
-        At <span className="font-semibold text-blue-600">YourPropertyHub</span>,
-        we believe real estate is not just about buildings — it's about people,
-        dreams, and futures. We prioritize honesty, reliability, and customer
-        satisfaction above all else.
-      </p>
-
-      <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-2">
-        Get in Touch
-      </h2>
-      <p className="text-gray-700 leading-relaxed">
-        Have questions? Looking for something specific? Our team is just a call
-        or click away.
-        <br />
-        <span className="font-medium">📞 Phone:</span> +91-9876543210
-        <br />
-        <span className="font-medium">📧 Email:</span>{" "}
-        support@yourpropertyhub.com
-      </p>
+      {/* Vision and Mission */}
+      <section className="bg-gray-100 py-16">
+        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-10">
+          <div>
+            <h3 className="text-2xl font-semibold mb-2">Our Mission</h3>
+            <p className="text-gray-700 leading-relaxed">
+              To redefine real estate by providing world-class services and
+              simplifying property transactions for our clients.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-2xl font-semibold mb-2">Our Vision</h3>
+            <p className="text-gray-700 leading-relaxed">
+              To be the most trusted and sought-after real estate brand
+              globally, where dreams of owning property come true.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
