@@ -9,11 +9,11 @@ import React from "react";
 const page = () => {
   return (
     <main className="relative overflow-hidden bg-blue-400 text-white">
-      <AboutCursor />
-      <AboutHero />
-      <AboutMission />
-      <AboutTeam />
-      <AboutTimeline />
+      {/* <AboutCursor /> */}
+      {/* <AboutHero /> */}
+      {/* <AboutMission /> */}
+      {/* <AboutTeam /> */}
+      {/* <AboutTimeline /> */}
       <AboutContact />
     </main>
   );

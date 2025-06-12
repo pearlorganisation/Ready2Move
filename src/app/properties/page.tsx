@@ -812,9 +812,9 @@ const PropertiesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-hidden">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <header className="bg-white shadow-sm border-b  top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             {/* Top Section */}
@@ -836,7 +836,7 @@ const PropertiesPage = () => {
                       onClick={() => setViewMode("grid")}
                       className={`p-2 rounded-md transition-colors ${
                         viewMode === "grid"
-                          ? "bg-white text-emerald-600 shadow-sm"
+                          ? "bg-white text-blue-800 shadow-sm"
                           : "text-gray-600 hover:text-gray-900"
                       }`}
                     >
@@ -846,7 +846,7 @@ const PropertiesPage = () => {
                       onClick={() => setViewMode("list")}
                       className={`p-2 rounded-md transition-colors ${
                         viewMode === "list"
-                          ? "bg-white text-emerald-600 shadow-sm"
+                          ? "bg-white text-blue-800 shadow-sm"
                           : "text-gray-600 hover:text-gray-900"
                       }`}
                     >
@@ -865,7 +865,7 @@ const PropertiesPage = () => {
               <input
                 type="text"
                 placeholder="Search properties by location, title..."
-                className="block w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="block w-full pl-10 pr-4 py-4 border border-gray-300 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -891,8 +891,8 @@ const PropertiesPage = () => {
                   }}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeFilter === filter.id
-                      ? "bg-emerald-600 text-white"
-                      : "bg-white text-gray-700 border border-gray-300 hover:border-emerald-300 hover:text-emerald-600"
+                      ? "bg-[#1E3D9C] text-white"
+                      : "bg-white text-gray-700 border border-gray-300hover:bg-[#182F7A] hover:text-blue-800"
                   }`}
                 >
                   {filter.label}
@@ -928,7 +928,8 @@ const PropertiesPage = () => {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => setBedrooms(Math.max(0, bedrooms - 1))}
-                      className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 flex items-center justify-center"
+                      className="w-8 h-8 rounded-full
+                       bg-blue-100 text-blue-800 hover:bg-blue-300  flex items-center justify-center"
                     >
                       -
                     </button>
@@ -937,7 +938,8 @@ const PropertiesPage = () => {
                     </span>
                     <button
                       onClick={() => setBedrooms(bedrooms + 1)}
-                      className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 flex items-center justify-center"
+                      className="w-8 h-8 rounded-full
+                       bg-blue-100 text-blue-800 hover:bg-blue-300  flex items-center justify-center"
                     >
                       +
                     </button>
@@ -951,7 +953,7 @@ const PropertiesPage = () => {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => setBathrooms(Math.max(0, bathrooms - 1))}
-                      className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 flex items-center justify-center"
+                      className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-300 flex items-center justify-center"
                     >
                       -
                     </button>
@@ -960,7 +962,7 @@ const PropertiesPage = () => {
                     </span>
                     <button
                       onClick={() => setBathrooms(bathrooms + 1)}
-                      className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 hover:bg-emerald-200 flex items-center justify-center"
+                      className="w-8 h-8 rounded-full  bg-blue-100 text-blue-800 hover:bg-blue-300  flex items-center justify-center"
                     >
                       +
                     </button>
@@ -1029,7 +1031,7 @@ const PropertiesPage = () => {
 
                   {/* Price Badge */}
                   <div className="absolute bottom-4 left-4">
-                    <div className="bg-emerald-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    <div className="bg-[#1E3D9C] text-white px-3 py-1 rounded-full text-sm font-semibold">
                       {property?.expectedPrice?.toLocaleString()}
                     </div>
                   </div>
@@ -1040,7 +1042,7 @@ const PropertiesPage = () => {
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         property.service === "BUY"
                           ? "bg-blue-100 text-blue-800"
-                          : "bg-orange-100 text-orange-800"
+                          : "bg-orange-100 text-blue-800"
                       }`}
                     >
                       {property.service === "BUY" ? "For Sell " : "Rent"}
@@ -1054,17 +1056,14 @@ const PropertiesPage = () => {
                       {property?.title}
                     </h3>
                     <Link href={`/properties/${property?.slug}`}>
-                      <button className="p-2 text-gray-400 hover:text-emerald-600 transition-colors">
+                      <button className="p-2 text-gray-400  transition-colors">
                         <FaEye size={18} />
                       </button>
                     </Link>
                   </div>
 
                   <div className="flex items-center text-gray-600 mb-4">
-                    <FaMapMarkerAlt
-                      className="mr-2 text-emerald-600"
-                      size={14}
-                    />
+                    <FaMapMarkerAlt className="mr-2 text-blue-800" size={14} />
                     <span className="text-sm line-clamp-1">
                       {property?.locality}
                     </span>
@@ -1072,11 +1071,11 @@ const PropertiesPage = () => {
 
                   <div className="flex items-center space-x-4 mb-4 text-sm text-gray-600">
                     <div className="flex items-center">
-                      <FaBed className="mr-1 text-emerald-600" />
+                      <FaBed className="mr-1 text-blue-800" />
                       <span>{property?.noOfBedrooms} Beds</span>
                     </div>
                     <div className="flex items-center">
-                      <FaBath className="mr-1 text-emerald-600" />
+                      <FaBath className="mr-1 text-blue-800" />
                       <span>{property.noOfBathrooms} Baths</span>
                     </div>
                   </div>
@@ -1086,7 +1085,7 @@ const PropertiesPage = () => {
                       {property?.propertyType?.name}
                     </span>
                     <Link href={`/properties/${property?.slug}`}>
-                      <button className="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
+                      <button className="text-blue-800  text-sm font-medium">
                         View Details →
                       </button>
                     </Link>
@@ -1109,7 +1108,8 @@ const PropertiesPage = () => {
             </p>
             <button
               onClick={resetFilters}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+              className="px-6 py-3 bg-[#1E3D9C] text-white rounded-lg hover:bg-[#182F7A]
+               transition-colors"
             >
               Clear All Filters
             </button>
@@ -1151,7 +1151,7 @@ const PropertiesPage = () => {
                       onClick={() => handlePageClick(pageNumber)}
                       className={`w-10 h-10 rounded-lg text-sm font-medium ${
                         currentPage === pageNumber
-                          ? "bg-emerald-600 text-white"
+                          ? "bg-[#1E3D9C] text-white"
                           : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >

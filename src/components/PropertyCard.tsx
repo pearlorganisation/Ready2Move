@@ -233,7 +233,7 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
             key={project._id}
             className="flex gap-3"
           >
-            <button className="flex-1 py-2.5 flex items-center justify-center gap-2 bg-blue-500 text-white border-none rounded font-semibold text-sm hover:bg-blue-600 transition-colors">
+            <button className="flex-1 py-2.5 flex items-center justify-center gap-2 bg-[#1E3D9C] text-white border-none rounded font-semibold text-sm hover:bg-[#182F7A] transition-colors">
               View Details
             </button>
           </Link>

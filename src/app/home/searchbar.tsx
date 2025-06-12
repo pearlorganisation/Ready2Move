@@ -161,7 +161,7 @@ export default function SearchBar() {
               key={tab}
               className={`flex-1 py-3 px-6 flex items-center justify-center gap-2 text-sm font-medium transition-colors ${
                 activeTab === tab
-                  ? "bg-[#3298EC]  text-white"
+                  ? "bg-[#1E3D9C] text-white hover:bg-[#182F7A]"
                   : "text-gray-700 hover:bg-gray-100"
               }`}
               onClick={() => {

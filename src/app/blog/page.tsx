@@ -176,12 +176,12 @@ const BlogPage: React.FC = () => {
                         <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
                           {post.title}
                         </h2>
-                        <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                          {post.description}
+                        <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                          {post.description || parse(post.content || "")}
                         </p>
-                        <div className="flex items-center text-blue-600 font-semibold group-hover:gap-3 transition-all">
-                          <span>Read More</span>
-                          <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                        <div className="text-blue-600 font-semibold  flex flex-row items-center text-sm">
+                          <span>Read Article</span>
+                          <FaArrowRight className="ml-1" />
                         </div>
                       </div>
                     </motion.article>
@@ -225,12 +225,6 @@ const BlogPage: React.FC = () => {
                                 post.publishedAt || ""
                               ).toLocaleDateString()}
                             </span> */}
-                            {post.readTime && (
-                              <>
-                                <span>•</span>
-                                <span>{post.readTime}</span>
-                              </>
-                            )}
                           </div>
                           <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                             {post.title}
@@ -238,9 +232,9 @@ const BlogPage: React.FC = () => {
                           <p className="text-gray-600 text-sm line-clamp-3 mb-4">
                             {post.description || parse(post.content || "")}
                           </p>
-                          <div className="text-blue-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                          <div className="text-blue-600 font-semibold  flex flex-row items-center text-sm">
                             <span>Read Article</span>
-                            <FaArrowRight className="ml-1 group-hover:translate-x-1 transition-transform" />
+                            <FaArrowRight className="ml-1" />
                           </div>
                         </div>
                       </motion.article>
@@ -278,7 +272,7 @@ const BlogPage: React.FC = () => {
                     </p>
                     <p>
                       {" "}
-                      <span className="text-md font-semibold">Created By:</span>
+                      <span className="text-sm font-semibold">Author:</span>
                       <span className=" text-sm"> {blog.author.name}</span>
                     </p>
                   </div>

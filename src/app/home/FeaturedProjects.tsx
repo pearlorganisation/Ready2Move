@@ -458,10 +458,11 @@ const FeaturedProjects = () => {
 
                           {project?.service && (
                             <div className="absolute top-3 left-3">
-                              <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
+                              <span className="bg-[#1E3D9C] text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
                                 {project.service === "SELL"
                                   ? "For Sell"
                                   : "For Rent"}
+                                x`x x`
                               </span>
                             </div>
                           )}
@@ -484,7 +485,7 @@ const FeaturedProjects = () => {
 
                         {/* Content Section */}
                         <div className="p-4 py-2 flex flex-col justify-between flex-grow">
-                          <h3 className="text-lg font-bold text-gray-800 group-hover/card:text-blue-600 transition-colors line-clamp-2 min-h-[3rem]">
+                          <h3 className="text-lg font-bold text-gray-800 group-hover/card:text-blue-800 transition-colors line-clamp-2 min-h-[3rem]">
                             {project?.title || "Untitled Project"}
                           </h3>
 
@@ -499,7 +500,7 @@ const FeaturedProjects = () => {
 
                           <div className="grid grid-cols-2 gap-3 py-3 text-sm">
                             <div className="flex items-start gap-2 text-gray-700">
-                              <Ruler size={16} className="text-blue-500 mt-1" />
+                              <Ruler size={16} className="text-blue-800 mt-1" />
                               <div>
                                 <span className="text-xs text-gray-500 block">
                                   Area
