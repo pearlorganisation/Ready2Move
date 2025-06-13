@@ -658,8 +658,8 @@ const Page = () => {
     /> */}
 
 
-         {totalPages > 1 && (
-               <div className="mt-12 flex justify-center">
+         {totalPages >= 1 && (
+               <div className="mt-1 flex justify-center">
                  <nav className="flex items-center space-x-2">
                    <button
                      onClick={() => handlePageClick(currentPage - 1)}
