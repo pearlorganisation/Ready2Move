@@ -6,7 +6,7 @@ const AboutUs = () => {
       {/* Hero Section */}
       <section
         className="relative w-full h-[60vh] bg-cover bg-center flex items-center justify-center"
-        style={{ backgroundImage: "url('/about-hero.jpg')" }}
+        style={{ backgroundImage: "url('/heroimg.png')" }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white">
