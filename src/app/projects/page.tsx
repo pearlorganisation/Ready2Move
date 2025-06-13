@@ -632,18 +632,53 @@ const Page = () => {
           )}
         </div>
       </div>
-         <Pagination
+         {/* <Pagination
           total={paginate?.total}
           currentPage={currentPage}
           limit={paginate?.limit}
           onPageChange={handlePageClick}
-        />
+        /> */}
     {/* <PaginationMainComponent 
     totalPages={totalPages}
     currentPage={currentPage}
     paginate={paginate}
     handlePageClick={handlePageClick}
     /> */}
+
+
+      {
+        <div className="flex justify-center items-center space-x-2 mt-12  py-10 mx-auto">
+          <button
+            onClick={() =>handlePageClick(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded-md  border-gray-400   border-2 text-sm disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {[...Array(totalPages)].map((_, idx) => (
+            <button
+              key={idx + 1}
+              onClick={() => handlePageClick(idx + 1)}
+              className={`px-4 py-2 rounded-md text-sm ${
+                currentPage === idx + 1
+                  ? "bg-blue-600 text-white"
+                  : "border border-gray-300"
+              }`}
+            >
+              {idx + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => handlePageClick(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 rounded-md border-gray-400 border-2 text-sm disabled:opacity-50  "
+          >
+            Next
+          </button>
+        </div>
+      }
     </>
   );
 };
