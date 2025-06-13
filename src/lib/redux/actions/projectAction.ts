@@ -117,7 +117,7 @@ export const getAllProjects = createAsyncThunk(
       areaRange,
       q,
       service,
-      projectType, 
+      projectType,
     }: {
       page?: number;
       limit?: number;
@@ -219,7 +219,7 @@ export const getSingleProject = createAsyncThunk(
         },
       };
       const data = await axiosInstance.get(`/api/v1/projects/${slug}`, config);
-      toast.success("fetched succcessfully ");
+      // toast.success("fetched succcessfully ");
 
       return data;
     } catch (error) {
