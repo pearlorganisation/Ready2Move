@@ -656,7 +656,7 @@ const Page = () => {
             Previous
           </button>
 
-          {[...Array(totalPages)].map((_, idx) => (
+          {[...Array(totalPages)]?.map((_, idx) => (
             <button
               key={idx + 1}
               onClick={() => handlePageClick(idx + 1)}
