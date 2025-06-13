@@ -644,12 +644,12 @@ const Page = () => {
           )}
         </div>
       </div>
-         {/* <Pagination
+         <Pagination
           total={paginate?.total}
           currentPage={currentPage}
           limit={paginate?.limit}
           onPageChange={handlePageClick}
-        /> */}
+        />
     {/* <PaginationMainComponent 
     totalPages={totalPages}
     currentPage={currentPage}
@@ -657,7 +657,7 @@ const Page = () => {
     handlePageClick={handlePageClick}
     /> */}
 
-
+{/* 
          {totalPages >= 1 && (
                <div className="mt-1 flex justify-center">
                  <nav className="flex items-center space-x-2">
@@ -715,7 +715,7 @@ const Page = () => {
                    </button>
                  </nav>
                </div>
-             )}
+             )} */}
     </>
   );
 };
