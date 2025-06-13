@@ -644,12 +644,15 @@ const Page = () => {
           )}
         </div>
       </div>
-         <Pagination
+      <div className="w-full flex justify-center">    
+        <Pagination
           total={paginate?.total}
           currentPage={currentPage}
           limit={paginate?.limit}
           onPageChange={handlePageClick}
         />
+        </div>
+      
     {/* <PaginationMainComponent 
     totalPages={totalPages}
     currentPage={currentPage}
