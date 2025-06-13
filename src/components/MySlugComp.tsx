@@ -111,7 +111,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
   return (
     <div className="container mx-auto  px-4">
       <Link href="/projects" className="group">
-        <button className="mb-6 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
+        <button className="mb-2 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4 transition-colors" />
           Back to Projects
         </button>
@@ -567,7 +567,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                   </div>
                 </form>
 
-                <div className="fixed bottom-6 right-6 flex flex-col gap-4">
+                {/* <div className="fixed bottom-6 right-6 flex flex-col gap-4">
                   <button className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg relative">
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                       1
@@ -603,7 +603,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       />
                     </svg>
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

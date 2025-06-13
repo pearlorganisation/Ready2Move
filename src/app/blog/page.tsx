@@ -254,7 +254,7 @@ const BlogPage: React.FC = () => {
             </h3>
             {recentBlogs.map((blog) => (
               <Link href={`/blog/${blog?.slug}`} key={blog?._id}>
-                <div className="bg-white p-4 shadow-md rounded-lg hover:shadow-lg transition flex flex-row">
+                <div className="bg-white p-8 shadow-md rounded-lg hover:shadow-lg transition flex flex-row">
                   <div className=" w-40 h-20">
                     <img
                       src={blog?.thumbImage?.secure_url || ""}

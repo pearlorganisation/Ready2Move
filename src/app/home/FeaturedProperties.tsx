@@ -463,7 +463,7 @@ const FeaturedProperties = () => {
 
                             {/* Badges */}
                             <div className="absolute top-3 left-3">
-                              <span className="bg-blue-500 text-white px-2 py-1 rounded-md text-xs font-medium">
+                              <span className="bg-[#1E3D9C] text-white px-2 py-1 rounded-md text-xs font-medium">
                                 {property.service === "SELL"
                                   ? "For Sell"
                                   : "For Rent"}

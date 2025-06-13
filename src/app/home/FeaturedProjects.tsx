@@ -321,7 +321,7 @@ import {
   Car,
 } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
 import Image from "next/image";
 import Link from "next/link";
 import "swiper/css";
@@ -418,7 +418,12 @@ const FeaturedProjects = () => {
               </div>
             ) : featuredProjects?.length > 0 ? (
               <Swiper
-                modules={[Navigation]}
+                modules={[Navigation, Autoplay]}
+                autoplay={{
+                  delay: 5000,
+                  disableOnInteraction: false,
+                  pauseOnMouseEnter: true,
+                }}
                 slidesPerView={1}
                 spaceBetween={16}
                 navigation={{
@@ -462,7 +467,6 @@ const FeaturedProjects = () => {
                                 {project.service === "SELL"
                                   ? "For Sell"
                                   : "For Rent"}
-                                x`x x`
                               </span>
                             </div>
                           )}

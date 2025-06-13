@@ -2,12 +2,14 @@
 // app/projects/[slug]/page.tsx
 
 import MySlugComp from "@/components/MySlugComp";
- 
+
 export async function generateMetadata({ params }) {
-  const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${params.slug}`);
+  const res = await fetch(
+    `https://api.ready2move.co.in/api/v1/projects/${params.slug}`
+  );
   const projectData = await res.json(); // Renamed to avoid conflict with 'project' variable name if you declare one later
   // console.log("the res is", projectData);
-  const title = projectData?.data?.title ?? 'Project Preview';
+  const title = projectData?.data?.title ?? "Project Preview";
   const description = projectData?.data?.description ?? "Explore this project";
   const pageUrl = `https://ready2move.co.in/projects/${params.slug}`; // The canonical URL of THIS page
   const ogImageUrl = `${pageUrl}/opengraph-image`; // The URL for the OG image itself
@@ -17,8 +19,8 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title,
       description,
-      type: 'website', // or 'article' if more appropriate
-      locale: 'en_US',
+      type: "website", // or 'article' if more appropriate
+      locale: "en_US",
       url: pageUrl, // **** THIS IS THE KEY TAG FOR THE LINK BACK ****
       images: [
         {
@@ -53,13 +55,13 @@ export default async function ProjectDetails({ params }) {
   const { slug } = params;
 
   return (
-    <div className="mt-20">
+    <div className="mt-2">
       <MySlugComp slug={slug} />
     </div>
   );
 }
 
- // export async function generateMetadata(params: {
+// export async function generateMetadata(params: {
 //   params: Promise<{ slug: string }>
 // }): Promise<Metadata> {
 //   // Extract slug the same way as in your page component
@@ -77,7 +79,7 @@ export default async function ProjectDetails({ params }) {
 //       openGraph: {
 //         title: project?.title || 'Ready2Move Project',
 //         description: project?.description || '',
-//         images:'https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg' 
+//         images:'https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg'
 //         // `${project?.imageGallery?.[0]?.secure_url}`
 //         ,
 //         url: `https://ready2move.co.in/projects/${slug}`,
@@ -94,18 +96,17 @@ export default async function ProjectDetails({ params }) {
 //   }
 // }
 
-
 // export async function generateMetadata(params: {
 //   params: Promise<{ slug: string }>
 // }): Promise<Metadata> {
 //   const { slug } = await params.params;
-  
+
 //   try {
 //     const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
 //     const project = (await res.json())?.data;
 
 //     // Use first image from gallery or fallback
-//     const imageUrl = project?.imageGallery?.[0]?.secure_url || 
+//     const imageUrl = project?.imageGallery?.[0]?.secure_url ||
 //       'https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg';
 
 //     return {
