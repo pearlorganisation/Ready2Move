@@ -8,12 +8,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import PaginationMainComponent from "@/components/PaginationMain";
 import Link from "next/link";
-import { FaSearch } from "react-icons/fa";
 import FilterRangeSliders from "@/components/FilterProperty";
 import { useState, useRef, useEffect } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import { ChevronDown, X } from "lucide-react";
 import Pagination from "@/components/Pagination";
+import {
+  FaSearch,
+  FaBed,
+  FaBath,
+  FaMapMarkerAlt,
+  FaHeart,
+  FaShare,
+  FaEye,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTh,
+  FaList,
+} from "react-icons/fa";
  
 const Page = () => {
   const dispatch = useAppDispatch();
@@ -646,39 +658,64 @@ const Page = () => {
     /> */}
 
 
-      {
-        <div className="flex justify-center items-center space-x-2 mt-12  py-10 mx-auto">
-          <button
-            onClick={() =>handlePageClick(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 rounded-md  border-gray-400   border-2 text-sm disabled:opacity-50"
-          >
-            Previous
-          </button>
-
-          {[...Array(totalPages)]?.map((_, idx) => (
-            <button
-              key={idx + 1}
-              onClick={() => handlePageClick(idx + 1)}
-              className={`px-4 py-2 rounded-md text-sm ${
-                currentPage === idx + 1
-                  ? "bg-blue-600 text-white"
-                  : "border border-gray-300"
-              }`}
-            >
-              {idx + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => handlePageClick(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 rounded-md border-gray-400 border-2 text-sm disabled:opacity-50  "
-          >
-            Next
-          </button>
-        </div>
-      }
+         {totalPages > 1 && (
+               <div className="mt-12 flex justify-center">
+                 <nav className="flex items-center space-x-2">
+                   <button
+                     onClick={() => handlePageClick(currentPage - 1)}
+                     disabled={currentPage === 1}
+                     className={`p-2 rounded-lg ${
+                       currentPage === 1
+                         ? "text-gray-400 cursor-not-allowed"
+                         : "text-gray-700 hover:bg-gray-100"
+                     }`}
+                   >
+                     <FaChevronLeft />
+                   </button>
+     
+                   <div className="flex space-x-1">
+                     {[...Array(Math.min(totalPages, 7))].map((_, i) => {
+                       let pageNumber;
+                       if (totalPages <= 7) {
+                         pageNumber = i + 1;
+                       } else if (currentPage <= 4) {
+                         pageNumber = i + 1;
+                       } else if (currentPage >= totalPages - 3) {
+                         pageNumber = totalPages - 6 + i;
+                       } else {
+                         pageNumber = currentPage - 3 + i;
+                       }
+     
+                       return (
+                         <button
+                           key={i}
+                           onClick={() => handlePageClick(pageNumber)}
+                           className={`w-10 h-10 rounded-lg text-sm font-medium ${
+                             currentPage === pageNumber
+                               ? "bg-[#1E3D9C] text-white"
+                               : "text-gray-700 hover:bg-gray-100"
+                           }`}
+                         >
+                           {pageNumber}
+                         </button>
+                       );
+                     })}
+                   </div>
+     
+                   <button
+                     onClick={() => handlePageClick(currentPage + 1)}
+                     disabled={currentPage === totalPages}
+                     className={`p-2 rounded-lg ${
+                       currentPage === totalPages
+                         ? "text-gray-400 cursor-not-allowed"
+                         : "text-gray-700 hover:bg-gray-100"
+                     }`}
+                   >
+                     <FaChevronRight />
+                   </button>
+                 </nav>
+               </div>
+             )}
     </>
   );
 };
