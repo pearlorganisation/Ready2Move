@@ -632,18 +632,18 @@ const Page = () => {
           )}
         </div>
       </div>
-         {/* <Pagination
+         <Pagination
           total={paginate?.total}
           currentPage={currentPage}
           limit={paginate?.limit}
           onPageChange={handlePageClick}
-        /> */}
-    <PaginationMainComponent 
+        />
+    {/* <PaginationMainComponent 
     totalPages={totalPages}
     currentPage={currentPage}
     paginate={paginate}
     handlePageClick={handlePageClick}
-    />
+    /> */}
     </>
   );
 };
