@@ -130,7 +130,7 @@ const BlogPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Blog Content */}
           <div className="lg:w-2/3">
-            {currentPosts.length > 0 ? (
+            {currentPosts?.length > 0 ? (
               <>
                 {/* Featured */}
                 {currentPosts?.slice(0, 1).map((post) => (
@@ -146,38 +146,26 @@ const BlogPage: React.FC = () => {
                           src={post?.thumbImage?.secure_url || ""}
                           width={800}
                           height={400}
-                          alt={post.title}
+                          alt={post?.title}
                           className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                         <div className="absolute top-4 left-4"></div>
-                        {post.category && (
+                        {post?.category && (
                           <div className="absolute top-4 right-4">
                             <span className="bg-white/90 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold">
-                              {post.category}
+                              {post?.category}
                             </span>
                           </div>
                         )}
                       </div>
                       <div className="p-8">
                         <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-                          {/* <FaCalendarAlt /> */}
-                          {/* <span>
-                            {new Date(
-                              post.publishedAt || ""
-                            ).toLocaleDateString()}
-                          </span> */}
-                          {/* {post.readTime && (
-                            <>
-                              <span>•</span>
-                              <span>{post.readTime}</span>
-                            </>
-                          )} */}
                         </div>
                         <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
-                          {post.title}
+                          {post?.title}
                         </h2>
                         <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                          {post.description || parse(post.content || "")}
+                          {post?.description || parse(post?.content || "")}
                         </p>
                         <div className="text-blue-600 font-semibold  flex flex-row items-center text-sm">
                           <span>Read Article</span>
@@ -219,12 +207,7 @@ const BlogPage: React.FC = () => {
                         </div>
                         <div className="p-6">
                           <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-                            {/* <FaCalendarAlt /> */}
-                            {/* <span>
-                              {new Date(
-                                post.publishedAt || ""
-                              ).toLocaleDateString()}
-                            </span> */}
+
                           </div>
                           <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                             {post.title}
@@ -254,7 +237,7 @@ const BlogPage: React.FC = () => {
             </h3>
             {recentBlogs.map((blog) => (
               <Link href={`/blog/${blog?.slug}`} key={blog?._id}>
-                <div className="bg-white p-8 shadow-md rounded-lg hover:shadow-lg transition flex flex-row">
+                {/* <div className="bg-white p-8 shadow-md rounded-lg hover:shadow-lg transition flex flex-row">
                   <div className=" w-40 h-20">
                     <img
                       src={blog?.thumbImage?.secure_url || ""}
@@ -276,7 +259,30 @@ const BlogPage: React.FC = () => {
                       <span className=" text-sm"> {blog.author.name}</span>
                     </p>
                   </div>
+                </div> */}
+
+
+              <div className="bg-white p-6 shadow-md rounded-lg hover:shadow-lg transition flex flex-row gap-4 mb-2">
+                <div className="flex-shrink-0 w-24 h-20"> {/* Fixed width and height */}
+                  <img
+                    src={blog?.thumbImage?.secure_url || ""}
+                    alt="Blog Thumbnail"
+                    className="w-24 h-20 object-cover rounded" 
+                  />
                 </div>
+                <div className="min-w-0 flex-1 overflow-hidden"> {/* Added overflow-hidden */}
+                  <h4 className="text-md font-semibold text-gray-800 line-clamp-2"> {/* 2-line clamp */}
+                    {blog?.title}
+                  </h4>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {new Date(blog.publishedAt || "").toLocaleDateString()}
+                  </p>
+                  <p className="mt-1">
+                    <span className="text-sm font-semibold">Author:</span>
+                    <span className="text-sm ml-1">{blog.author.name}</span>
+                  </p>
+                </div>
+              </div>
               </Link>
             ))}
           </div>

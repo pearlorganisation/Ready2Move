@@ -1,4 +1,4 @@
-import React from "react";
+ 'use client'
 
 interface PaginationProps {
   total: number;
@@ -15,7 +15,7 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const totalPages = Math.ceil(total / limit);
 
-  if (totalPages <= 1) return null;
+  if (totalPages <= 0) return null;
 
   return (
     <div className="flex items-center space-x-2 mt-4">
