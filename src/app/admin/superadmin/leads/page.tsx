@@ -1,4 +1,18 @@
 "use client";
+import {
+  FaSearch,
+  FaBed,
+  FaBath,
+  FaMapMarkerAlt,
+  FaHeart,
+  FaShare,
+  FaEye,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTh,
+  FaList,
+} from "react-icons/fa";
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; // Import query handling
 import { Mail, MoreHorizontal, Edit, Trash, X } from "lucide-react";
@@ -36,7 +50,7 @@ export default function LeadsPage() {
   const dispatch = useAppDispatch();
   const { leads, pagination } = useAppSelector((state) => state.leads);
 
-  console.log("leads", leads);
+  console.log("pagination", pagination);
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentStatus = searchParams.get("status") || "";
@@ -44,12 +58,15 @@ export default function LeadsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const limit: number = 2;
+  const limit: number = 5;
+  console.log(currentPage, "currentpage is", currentPage);
 
   const totalPages = Math.ceil(pagination?.total / pagination?.limit);
   const handlePageClickFunction = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
+
+      
     }
   };
   // Handle Status Change and Update URL Query
@@ -172,18 +189,18 @@ export default function LeadsPage() {
         </table>
 
         {/* Pagination */}
-        {/* <Pagination 
+        <Pagination
           currentPage={currentPage}
-          limit={limit}  // Set the limit for items per page
-          total={pagination?.pages?.length || 1}  // Get the number of pages
-          onPageChange={(page:number) => setCurrentPage(page)}
-        /> */}
-        <PaginationMainComponent
+          limit={limit} // Set the limit for items per page
+          total={pagination?.pages?.length || 1} // Get the number of pages
+          onPageChange={(page: number) => setCurrentPage(page)}
+        />
+        {/* <PaginationMainComponent
           totalPages={totalPages}
           currentPage={currentPage}
           handlePageClick={handlePageClickFunction}
           paginate={pagination}
-        />
+        /> */}
       </div>
     </div>
   );
