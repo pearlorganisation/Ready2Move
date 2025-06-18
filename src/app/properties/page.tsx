@@ -334,12 +334,12 @@ const PropertiesPage = () => {
                   <div className="absolute top-4 left-4">
                     <div
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        property.service === "BUY"
+                        property?.service == "SELL"
                           ? "bg-blue-100 text-blue-800"
                           : "bg-orange-100 text-blue-800"
                       }`}
                     >
-                      {property.service === "BUY" ? "For Sell " : "Rent"}
+                      {property?.service == "SELL" ? "For Sell " : "Rent"}
                     </div>
                   </div>
                 </div>
