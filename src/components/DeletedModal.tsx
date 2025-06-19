@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useAppDispatch } from "@/lib/hooks/dispatchHook"; // assuming your hooks
-import { deleteProject } from "@/lib/redux/actions/projectAction";
 
 const DeleteModal = ({
   isOpen,

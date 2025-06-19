@@ -29,14 +29,14 @@ interface User {
   email: string;
   role: string;
 }
-//   interface Pagination {
-//     total: number;
-//     current_page: number;
-//     limit: number;
-//     next?: number ;
-//     prev?: number;
-//     pages: number[];
-//   }
+interface Pagination {
+  total: number;
+  current_page: number;
+  limit: number;
+  next?: number;
+  prev?: number;
+  pages: number[];
+}
 
 interface LeadsState {
   leads: Lead[];
@@ -94,19 +94,19 @@ const leadSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(GetUserByRoles.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(GetUserByRoles.fulfilled, (state, action) => {
-        state.users = action.payload.data;
-        state.pagination = action.payload.pagination;
-        state.loading = false;
-      })
-      .addCase(GetUserByRoles.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
+      // .addCase(GetUserByRoles.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(GetUserByRoles.fulfilled, (state, action) => {
+      //   state.users = action.payload.data;
+      //   state.pagination = action.payload.pagination;
+      //   state.loading = false;
+      // })
+      // .addCase(GetUserByRoles.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload as string;
+      // })
 
       .addCase(createLeads.pending, (state) => {
         state.loading = true;

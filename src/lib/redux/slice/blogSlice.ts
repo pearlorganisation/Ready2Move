@@ -34,7 +34,7 @@ export interface Blog {
 export interface Pagination {
   total: number;
   current_page: number;
-  limit: number;
+  limit: 0;
   next: number | null;
   prev: number | null;
   pages: number[];
@@ -55,7 +55,14 @@ const initialState: BlogState = {
   isSuccess: false,
   blogs: [],
   singleBlog: null,
-  pagination: null,
+  pagination: {
+    total: 0,
+    current_page: 0,
+    limit: 0,
+    next: null,
+    prev: null,
+    pages: [],
+  },
 };
 
 const BlogsSlice = createSlice({

@@ -2,22 +2,28 @@ import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getBlogs = createAsyncThunk(
-  "get/blogs",
-  async (_, { rejectWithValue }) => {
+  "blogs/getAll",
+  async (
+    { page, limit }: { page: number; limit: number },
+    { rejectWithValue }
+  ) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const { data } = await axiosInstance.get("/api/v1/blogs", config);
-      return data;
-    } catch (error) {
-      return rejectWithValue(error);
+      const { data } = await axiosInstance.get(
+        `/api/v1/blogs?page=${page}&limit=${limit}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return data; // should include blogs array + pagination info
+    } catch (error: any) {
+      const message = error.response?.data?.message || "Failed to fetch blogs.";
+      return rejectWithValue(message);
     }
   }
 );
-
 export const createBlog = createAsyncThunk(
   "create/blog",
   async (formdata: FormData, { rejectWithValue }) => {
@@ -81,7 +87,7 @@ export const updateBlog = createAsyncThunk(
 
 export const deleteBlog = createAsyncThunk(
   "delete/blog",
-  async (id:string, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue }) => {
     try {
       const config = {
         headers: {

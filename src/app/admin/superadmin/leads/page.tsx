@@ -1,4 +1,18 @@
 "use client";
+import {
+  FaSearch,
+  FaBed,
+  FaBath,
+  FaMapMarkerAlt,
+  FaHeart,
+  FaShare,
+  FaEye,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTh,
+  FaList,
+} from "react-icons/fa";
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; // Import query handling
 import { Mail, MoreHorizontal, Edit, Trash, X } from "lucide-react";
@@ -17,6 +31,7 @@ import { ToastContainer } from "react-toastify";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useForm } from "react-hook-form";
 import PaginationMainComponent from "@/components/PaginationMain";
+import DeleteModal from "@/components/DeletedModal";
 
 const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
 interface LeadRowProps {
@@ -36,7 +51,7 @@ export default function LeadsPage() {
   const dispatch = useAppDispatch();
   const { leads, pagination } = useAppSelector((state) => state.leads);
 
-  console.log("leads", leads);
+  console.log("pagination", pagination);
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentStatus = searchParams.get("status") || "";
@@ -44,7 +59,8 @@ export default function LeadsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const limit: number = 2;
+  const limit: number = 5;
+  console.log(currentPage, "currentpage is", currentPage);
 
   const totalPages = Math.ceil(pagination?.total / pagination?.limit);
   const handlePageClickFunction = (page: number) => {
@@ -172,18 +188,18 @@ export default function LeadsPage() {
         </table>
 
         {/* Pagination */}
-        {/* <Pagination 
+        <Pagination
           currentPage={currentPage}
-          limit={limit}  // Set the limit for items per page
-          total={pagination?.pages?.length || 1}  // Get the number of pages
-          onPageChange={(page:number) => setCurrentPage(page)}
-        /> */}
-        <PaginationMainComponent
+          limit={limit} // Set the limit for items per page
+          total={pagination?.pages?.length || 1} // Get the number of pages
+          onPageChange={(page: number) => setCurrentPage(page)}
+        />
+        {/* <PaginationMainComponent
           totalPages={totalPages}
           currentPage={currentPage}
           handlePageClick={handlePageClickFunction}
           paginate={pagination}
-        />
+        /> */}
       </div>
     </div>
   );
@@ -199,6 +215,7 @@ function LeadRow({
   phoneNumber,
   project,
   property,
+
   assignedTo,
   status,
   createdAt,
@@ -219,7 +236,8 @@ function LeadRow({
   };
   const users: User[] = useAppSelector((state) => state.leads.users);
   const { leads, pagination } = useAppSelector((state) => state.leads);
-
+  const [Id, setId] = useState<string>("");
+  const [deleteModal, setDeletemodal] = useState<boolean>(false);
   console.log("users", users);
   const dispatch = useAppDispatch();
 
@@ -227,6 +245,17 @@ function LeadRow({
     dispatch(GetUserByRoles({ limit: 5, page: 1, roles: "AGENT,BUILDER" }));
   }, []);
 
+  const openDeletemodal = (id: string) => {
+    setDeletemodal(true);
+    setId(id);
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteLeadById(Id));
+  };
+  const Close = () => {
+    setDeletemodal(false);
+  };
   // React Hook Form Setup
   const {
     register,
@@ -318,13 +347,20 @@ function LeadRow({
           </button>
           <button
             className="p-2 rounded bg-red-500 text-white"
-            onClick={() => dispatch(deleteLeadById(_id))}
+            // onClick={() => dispatch(deleteLeadById(_id))}
+            onClick={() => openDeletemodal(_id)}
           >
             <Trash className="h-4 w-4" />
           </button>
         </td>
       </tr>
-
+      {deleteModal && (
+        <DeleteModal
+          isOpen={deleteModal}
+          onClose={Close}
+          onDelete={handleDelete}
+        />
+      )}
       {isEditDialogOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">

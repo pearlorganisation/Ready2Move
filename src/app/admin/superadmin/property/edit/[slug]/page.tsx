@@ -1,9 +1,9 @@
 import EditProPertyComp from "@/components/EditPropertyComp";
 
-export default async function EditProperty( 
-  params: {params: Promise<{ slug: string }>;
+export default async function EditProperty(params: {
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } =await params.params;
+  const { slug } = await params.params;
 
   return (
     <div>
@@ -11,6 +11,3 @@ export default async function EditProperty(
     </div>
   );
 }
-
-
-

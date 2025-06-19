@@ -25,7 +25,7 @@ export interface Project {
   reraNumber: string;
   reraPossessionDate?: string | Date;
   youtubeEmbedLink: string;
-  service:  string;
+  service: string;
   projectType: string;
   pricePerSqFt: number;
   aminities: string[];
@@ -39,7 +39,7 @@ interface Image {
   public_id: string;
   _id: string;
 }
- 
+
 const EditProjectComp = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
   const { singleProjectData } = useAppSelector((state) => state.projects);
@@ -47,7 +47,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   const { featureData } = useAppSelector((state) => state.features);
 
   const [generatedSlug, setGeneratedSlug] = useState(slug);
- 
+
   const [newImages, setNewImages] = useState<File[]>([]);
   console.log("new Images", newImages);
   const router = useRouter();
@@ -64,7 +64,13 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   }, [dispatch, slug]);
   const handleDelete = (id: string | string[]) => {
     const ids = Array.isArray(id) ? id : [id]; // Convert single ID to an array if needed
-    dispatch(deleteImagesProject({ slug, deleteImages: ids }));
+    dispatch(deleteImagesProject({ slug, deleteImages: ids })).then(
+      (res: any) => {
+        if (res?.payload?.data?.success === true) {
+          dispatch(getSingleProject({ slug }));
+        }
+      }
+    );
   };
 
   useEffect(() => {
@@ -74,8 +80,8 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       const { areaRange, priceRange, availability, ...rest } =
         singleProjectData;
       console.log("rest", rest);
-       reset({
-        title:singleProjectData?.title,
+      reset({
+        title: singleProjectData?.title,
         subTitle: singleProjectData?.subTitle,
         description: singleProjectData?.description,
         locality: singleProjectData?.locality,
@@ -87,15 +93,16 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         reraPossessionDate: singleProjectData.reraPossessionDate?.split("T")[0],
         pricePerSqFt: singleProjectData.pricePerSqFt,
         aminities: singleProjectData?.aminities?.map((item) => item._id),
-        
-        bankOfApproval: singleProjectData?.bankOfApproval?.map(item=> item?._id),
+
+        bankOfApproval: singleProjectData?.bankOfApproval?.map(
+          (item) => item?._id
+        ),
         imageGallery: singleProjectData?.imageGallery,
         youtubeEmbedLink: singleProjectData?.youtubeEmbedLink,
         reraNumber: singleProjectData?.reraNumber,
-        isFeatured:singleProjectData?.isFeatured,
+        isFeatured: singleProjectData?.isFeatured,
         projectType: singleProjectData?.projectType,
-        service: singleProjectData?.service 
-
+        service: singleProjectData?.service,
       });
     }
   }, [singleProjectData, reset]);
@@ -145,7 +152,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
   //   }
   // };
 
-  const onSubmit= async (data:Project) => {
+  const onSubmit = async (data: Project) => {
     try {
       const formData = new FormData();
 
@@ -194,20 +201,18 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       // Bank Approvals
       if (Array.isArray(data.bankOfApproval)) {
         data.bankOfApproval.forEach((bank) => {
-        formData.append("bankOfApproval", bank || '');
+          formData.append("bankOfApproval", bank || "");
         });
       }
-
 
       // New images
       newImages.forEach((file) => {
         formData.append("imageGallery", file);
       });
 
-      formData.append('isFeatured', data?.isFeatured.toString())
+      formData.append("isFeatured", data?.isFeatured.toString());
 
-
-      console.log("the formdata before sending is", formData)
+      console.log("the formdata before sending is", formData);
       // Send request
       await axiosInstance.patch(`/api/v1/projects/${slug}`, formData, {
         headers: {
@@ -535,7 +540,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         </div>
 
         {/* Image Gallery Section */}
-        <div className="col-span-2  bg-red-500">
+        <div className="col-span-2 ">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Image Gallery
           </label>
