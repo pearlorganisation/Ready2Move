@@ -435,7 +435,7 @@ const Page = () => {
           {...register("projectType")}
           className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-800"
         >
-          <option value="">All Project Types</option>
+          <option value="">All Projectwre Types</option>
           <option value="COMMERCIAL">COMMERCIAL</option>
           <option value="RESIDENTIAL">RESIDENTIAL</option>
         </select>
