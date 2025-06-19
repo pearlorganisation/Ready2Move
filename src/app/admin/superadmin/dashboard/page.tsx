@@ -97,7 +97,7 @@ export default function DashboardPage() {
   };
 
   const onSubmit = (data: any) => {
-    console.log("Submitting edited lead:", { id: selectedLeadId, ...data });
+    // console.log("Submitting edited lead:", { id: selectedLeadId, ...data });
     dispatch(updateLeadById({ id: selectedLeadId, updatedData: { ...data } }));
     setIsEditDialogOpen(false);
   };

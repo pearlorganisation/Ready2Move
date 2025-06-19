@@ -31,6 +31,7 @@ import { ToastContainer } from "react-toastify";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useForm } from "react-hook-form";
 import PaginationMainComponent from "@/components/PaginationMain";
+import DeleteModal from "@/components/DeletedModal";
 
 const STATUS_OPTIONS = ["PENDING", "CALLING", "QUALIFIED", "UNQUALIFIED"];
 interface LeadRowProps {
@@ -65,8 +66,6 @@ export default function LeadsPage() {
   const handlePageClickFunction = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
-
-      
     }
   };
   // Handle Status Change and Update URL Query
@@ -216,6 +215,7 @@ function LeadRow({
   phoneNumber,
   project,
   property,
+
   assignedTo,
   status,
   createdAt,
@@ -236,7 +236,8 @@ function LeadRow({
   };
   const users: User[] = useAppSelector((state) => state.leads.users);
   const { leads, pagination } = useAppSelector((state) => state.leads);
-
+  const [Id, setId] = useState<string>("");
+  const [deleteModal, setDeletemodal] = useState<boolean>(false);
   console.log("users", users);
   const dispatch = useAppDispatch();
 
@@ -244,6 +245,17 @@ function LeadRow({
     dispatch(GetUserByRoles({ limit: 5, page: 1, roles: "AGENT,BUILDER" }));
   }, []);
 
+  const openDeletemodal = (id: string) => {
+    setDeletemodal(true);
+    setId(id);
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteLeadById(Id));
+  };
+  const Close = () => {
+    setDeletemodal(false);
+  };
   // React Hook Form Setup
   const {
     register,
@@ -335,13 +347,20 @@ function LeadRow({
           </button>
           <button
             className="p-2 rounded bg-red-500 text-white"
-            onClick={() => dispatch(deleteLeadById(_id))}
+            // onClick={() => dispatch(deleteLeadById(_id))}
+            onClick={() => openDeletemodal(_id)}
           >
             <Trash className="h-4 w-4" />
           </button>
         </td>
       </tr>
-
+      {deleteModal && (
+        <DeleteModal
+          isOpen={deleteModal}
+          onClose={Close}
+          onDelete={handleDelete}
+        />
+      )}
       {isEditDialogOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4">
