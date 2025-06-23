@@ -29,7 +29,7 @@ const Footer = () => {
   );
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getAllCityData());
+    dispatch(getAllCityData({limit:10}));
   }, []);
 
   const toggleLanguage = () => {

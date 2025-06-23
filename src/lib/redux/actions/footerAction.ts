@@ -11,9 +11,9 @@ interface CityLocalityResponse {
   propertiesCityWithLocality: CityWithLocalities[];
 }
 
-export const getAllCityData = createAsyncThunk<CityLocalityResponse>(
+export const getAllCityData = createAsyncThunk(
   "/get/cityData",
-  async (_, { rejectWithValue }) => {
+  async ({limit}:{limit:number}, { rejectWithValue }) => {
     try {
       const config = {
         headers: {
@@ -21,7 +21,7 @@ export const getAllCityData = createAsyncThunk<CityLocalityResponse>(
         },
       };
 
-      const response = await axiosInstance.get("/api/v1/footer/cityWithLocality", config);
+      const response = await axiosInstance.get(`/api/v1/footer/cityWithLocality?limit=${limit}`, config);
       console.log("API Response:", response.data);
 
       // Extract the required data from the response
