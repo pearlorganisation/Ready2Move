@@ -1,4 +1,5 @@
 "use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
@@ -6,6 +7,10 @@ import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
 import { Delete } from "lucide-react";
+import {
+  deleteProperty,
+  getAllProperties,
+} from "@/lib/redux/actions/propertyAction";
 import {
   deleteProperty,
   getAllProperties,
@@ -18,7 +23,19 @@ const ProjectListing = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState(true);
+  const { propertyData, paginate } = useAppSelector((state) => state.property);
+  const [isOpenModal, setOpenModal] = useState(false);
+  const [selectedData, setseletedData] = useState<string | null>(null);
+  console.log("propertyData", propertyData);
+  const totalPages = Math.ceil(paginate?.total / paginate?.limit);
+  const limit = paginate?.limit;
+  const handlePageClick = (page: number) => {
+    if (page > 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
   const { propertyData, paginate } = useAppSelector((state) => state.property);
   const [isOpenModal, setOpenModal] = useState(false);
   const [selectedData, setseletedData] = useState<string | null>(null);
@@ -39,7 +56,7 @@ const ProjectListing = () => {
     dispatch(
       getAllProperties({
         page: currentPage,
-        limit: 10,
+        limit: 50,
         priceRange: 0,
         bedRooms: 0,
         bathRooms: 0,
@@ -59,7 +76,7 @@ const ProjectListing = () => {
           dispatch(
             getAllProperties({
               page: currentPage,
-              limit: 5,
+              limit: 50,
               priceRange: 0,
               bedRooms: 0,
               bathRooms: 0,
@@ -122,20 +139,39 @@ const ProjectListing = () => {
                     <span className="px-2 py-1 text-xs rounded bg-green-500 text-white">
                       YES
                     </span>
+                    <span className="px-2 py-1 text-xs rounded bg-green-500 text-white">
+                      YES
+                    </span>
                   ) : (
+                    <span className="px-2 py-1 text-xs rounded bg-gray-400 text-white">
+                      NO
+                    </span>
                     <span className="px-2 py-1 text-xs rounded bg-gray-400 text-white">
                       NO
                     </span>
                   )}
                 </td>
 
+                {/* fdsmnhfdngm,dfn,ngm,dnm,ndsm,nm,dsn,sdn */}
+
+
                 <td className="p-3 flex justify-center items-center mt-6 gap-4">
+                  <button
+                    className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500"
+                    onClick={() => handleModalOpen(project.slug)}
+                  >
                   <button
                     className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500"
                     onClick={() => handleModalOpen(project.slug)}
                   >
                     <FaEdit />
                   </button>
+                  <button
+                    className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
+                    onClick={() => {
+                      handleDelete(project._id);
+                    }}
+                  >
                   <button
                     className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
                     onClick={() => {
@@ -149,7 +185,7 @@ const ProjectListing = () => {
             ))}
         </tbody>
       </table>
-      {/* 
+
       <div className="mt-12 flex justify-center">
         <PaginationMainComponent
           totalPages={totalPages}
@@ -157,67 +193,6 @@ const ProjectListing = () => {
           paginate={paginate}
           handlePageClick={handlePageClick}
         />
-      </div> */}
-      <div className="mt-12 flex justify-center">
-        {" "}
-        {totalPages >= 1 && (
-          <div className="mt-12 flex justify-center">
-            <nav className="flex items-center space-x-2">
-              <button
-                onClick={() => handlePageClick(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`p-2 rounded-lg ${
-                  currentPage === 1
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <FaChevronLeft />
-              </button>
-
-              <div className="flex space-x-1">
-                {[...Array(Math.min(totalPages, 7))].map((_, i) => {
-                  let pageNumber;
-                  if (totalPages <= 7) {
-                    pageNumber = i + 1;
-                  } else if (currentPage <= 4) {
-                    pageNumber = i + 1;
-                  } else if (currentPage >= totalPages - 3) {
-                    pageNumber = totalPages - 6 + i;
-                  } else {
-                    pageNumber = currentPage - 3 + i;
-                  }
-
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => handlePageClick(pageNumber)}
-                      className={`w-10 h-10 rounded-lg text-sm font-medium ${
-                        currentPage === pageNumber
-                          ? "bg-[#1E3D9C] text-white"
-                          : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
-                      {pageNumber}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={() => handlePageClick(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`p-2 rounded-lg ${
-                  currentPage === totalPages
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <FaChevronRight />
-              </button>
-            </nav>
-          </div>
-        )}
       </div>
 
       <div></div>
