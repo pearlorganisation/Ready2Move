@@ -1,16 +1,11 @@
 "use client";
-"use client";
 
 import React, { useEffect, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
 import { Delete } from "lucide-react";
-import {
-  deleteProperty,
-  getAllProperties,
-} from "@/lib/redux/actions/propertyAction";
 import {
   deleteProperty,
   getAllProperties,
@@ -23,7 +18,6 @@ const ProjectListing = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState(true);
   const { propertyData, paginate } = useAppSelector((state) => state.property);
   const [isOpenModal, setOpenModal] = useState(false);
@@ -33,17 +27,6 @@ const ProjectListing = () => {
   const limit = paginate?.limit;
   const handlePageClick = (page: number) => {
     if (page > 0 && page < totalPages) {
-      setCurrentPage(page);
-    }
-  };
-  const { propertyData, paginate } = useAppSelector((state) => state.property);
-  const [isOpenModal, setOpenModal] = useState(false);
-  const [selectedData, setseletedData] = useState<string | null>(null);
-  console.log("propertyData", propertyData);
-  const totalPages = Math.ceil(paginate?.total / paginate?.limit);
-  const limit = paginate?.limit;
-  const handlePageClick = (page: number) => {
-    if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
@@ -91,8 +74,7 @@ const ProjectListing = () => {
     setOpenModal(false);
   };
   return (
-    //   <div className="p-4 overflow-x-auto">
-    <div>
+    <div className="p-4 overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">All Property</h2>
       <table className="w-full table-auto border border-gray-200 text-sm">
         <thead className="bg-gray-100">
@@ -139,13 +121,7 @@ const ProjectListing = () => {
                     <span className="px-2 py-1 text-xs rounded bg-green-500 text-white">
                       YES
                     </span>
-                    <span className="px-2 py-1 text-xs rounded bg-green-500 text-white">
-                      YES
-                    </span>
                   ) : (
-                    <span className="px-2 py-1 text-xs rounded bg-gray-400 text-white">
-                      NO
-                    </span>
                     <span className="px-2 py-1 text-xs rounded bg-gray-400 text-white">
                       NO
                     </span>
@@ -154,24 +130,13 @@ const ProjectListing = () => {
 
                 {/* fdsmnhfdngm,dfn,ngm,dnm,ndsm,nm,dsn,sdn */}
 
-
                 <td className="p-3 flex justify-center items-center mt-6 gap-4">
-                  <button
-                    className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500"
-                    onClick={() => handleModalOpen(project.slug)}
-                  >
                   <button
                     className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500"
                     onClick={() => handleModalOpen(project.slug)}
                   >
                     <FaEdit />
                   </button>
-                  <button
-                    className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
-                    onClick={() => {
-                      handleDelete(project._id);
-                    }}
-                  >
                   <button
                     className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
                     onClick={() => {
