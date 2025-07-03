@@ -13,7 +13,6 @@ import Link from "next/link";
 import { SingleProject } from "@/lib/Interfaces/project";
 
 export default function PropertyCard({ project }: { project: SingleProject }) {
-  console.log("Received Project", project);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -37,16 +36,13 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
     reraNumber: project?.reraNumber,
     reraPossessionDate: project?.reraPossessionDate,
     availability: project?.availability?.name,
-
     isFeatured: project?.isFeatured,
-
-    aminities: project?.aminities?.map((bank) => bank.name),
-    bankOfApproval: project?.bankOfApproval?.map((bank) => bank.name),
+    aminities: project?.aminities?.map((a) => a.name) || [],
+    bankOfApproval: project?.bankOfApproval?.map((b) => b.name) || [],
     youtubeEmbedLink: project?.youtubeEmbedLink,
-    imageGallery: project?.imageGallery.map((img) => img.secure_url),
+    imageGallery: project?.imageGallery?.map((img) => img.secure_url) || [],
   };
 
-  //   const propertyData = project;
   const formatPrice = (price: number) => {
     if (price >= 10000000) {
       return `₹${(price / 10000000).toFixed(2)} Cr`;
@@ -58,15 +54,19 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === propertyData.imageGallery.length - 1 ? 0 : prevIndex + 1
-    );
+    if (propertyData.imageGallery.length > 0) {
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === propertyData.imageGallery.length - 1 ? 0 : prevIndex + 1
+      );
+    }
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? propertyData.imageGallery.length - 1 : prevIndex - 1
-    );
+    if (propertyData.imageGallery.length > 0) {
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? propertyData.imageGallery.length - 1 : prevIndex - 1
+      );
+    }
   };
 
   const toggleFavorite = () => {
@@ -79,43 +79,51 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
         {/* Image Section */}
         <div className="relative md:w-2/5">
           <div className="relative h-full">
-            <img
-              src={
-                propertyData?.imageGallery[currentImageIndex] ||
-                "/placeholder.svg"
-              }
-              //   alt={${propertyData.title} - Image ${currentImageIndex + 1}}
-              alt={`${propertyData?.title} - Image ${currentImageIndex + 1}`}
-              className="w-full h-full object-cover"
-            />
+            {propertyData?.imageGallery?.length > 0 ? (
+              <>
+                <img
+                  src={propertyData.imageGallery[currentImageIndex]}
+                  alt={`${propertyData?.title} - Image ${
+                    currentImageIndex + 1
+                  }`}
+                  className="w-full h-full object-cover"
+                />
 
-            {/* RERA Badge */}
-            {propertyData?.isFeatured && (
-              <div className="absolute top-3 left-3 bg-blue-700 text-white px-2 py-0.5 rounded text-xs font-bold">
-                Featured
-              </div>
+                {/* RERA Badge */}
+                {propertyData?.isFeatured && (
+                  <div className="absolute top-3 left-3 bg-blue-700 text-white px-2 py-0.5 rounded text-xs font-bold">
+                    Featured
+                  </div>
+                )}
+
+                {/* Image Counter */}
+                <div className="absolute bottom-3 right-3 bg-black/60 text-white px-2 py-0.5 rounded-full text-xs">
+                  {currentImageIndex + 1}/{propertyData.imageGallery.length}
+                </div>
+
+                {/* Carousel Buttons */}
+                <button
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer z-10"
+                  onClick={prevImage}
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer z-10"
+                  onClick={nextImage}
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            ) : (
+              <img
+                src="/placeholder.svg"
+                alt="No image available"
+                className="w-full h-full object-cover"
+              />
             )}
-
-            {/* Image Counter */}
-            <div className="absolute bottom-3 right-3 bg-black/60 text-white px-2 py-0.5 rounded-full text-xs">
-              {currentImageIndex + 1}/{propertyData?.imageGallery?.length}
-            </div>
-
-            {/* Carousel Buttons */}
-            <button
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer z-10"
-              onClick={prevImage}
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer z-10"
-              onClick={nextImage}
-              aria-label="Next image"
-            >
-              <ChevronRight size={20} />
-            </button>
           </div>
         </div>
 
@@ -136,7 +144,6 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
 
           {/* Property Specs */}
           <div className="flex flex-wrap gap-4 mb-4 pb-4 border-b border-gray-100">
-            {/* Price Section */}
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">Price Range</span>
               <span className="text-base font-semibold text-gray-800">
@@ -148,7 +155,6 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
               </span>
             </div>
 
-            {/* Area Section */}
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">Area Range</span>
               <span className="text-base font-semibold text-gray-800">
@@ -157,7 +163,6 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
               </span>
             </div>
 
-            {/* Type Section */}
             <div className="flex flex-col">
               <span className="text-xs text-gray-500">Type</span>
               <span className="text-base font-semibold text-gray-800">
@@ -202,19 +207,18 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
           </div>
 
           <div className="mb-4">
-            {propertyData?.bankOfApproval?.length && (
+            {propertyData?.bankOfApproval?.length > 0 && (
               <>
                 <h3 className="text-sm font-semibold text-gray-800 mb-2">
                   Banks:
                 </h3>
                 <ul className="flex flex-wrap gap-2">
-                  {propertyData?.bankOfApproval?.map((amenity, index) => (
+                  {propertyData?.bankOfApproval?.map((bank, index) => (
                     <li
                       key={index}
                       className="flex items-center text-xs text-gray-700 bg-gray-100 px-2 py-1 rounded"
                     >
-                      <Check size={14} className="mr-1 text-teal-500" />{" "}
-                      {amenity}
+                      <Check size={14} className="mr-1 text-teal-500" /> {bank}
                     </li>
                   ))}
                 </ul>
@@ -242,5 +246,3 @@ export default function PropertyCard({ project }: { project: SingleProject }) {
     </div>
   );
 }
-
- 

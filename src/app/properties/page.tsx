@@ -99,7 +99,7 @@ const PropertiesPage = () => {
 
   const filterOptions = [
     { id: "all", label: "All Properties", count: paginate?.total || 0 },
-    { id: "buy", label: "BUY", count: 0 },
+    { id: "buy", label: "Buy", count: 0 },
     { id: "rent", label: "Rent", count: 0 },
     { id: "commercial", label: "Commercial", count: 0 },
     { id: "residential", label: "Residential", count: 0 },
@@ -202,7 +202,7 @@ const PropertiesPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Max Price: ${priceRange.toLocaleString()}
+                    Max Price: ₹{priceRange.toLocaleString()}
                   </label>
                   <input
                     type="range"

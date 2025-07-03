@@ -26,7 +26,7 @@ import {
   FaTh,
   FaList,
 } from "react-icons/fa";
- 
+
 const Page = () => {
   const dispatch = useAppDispatch();
   const { projectData, paginate } = useAppSelector((state) => state.projects);
@@ -400,10 +400,10 @@ const Page = () => {
     }
 
     dispatch(getAllProjects(filters));
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }, [
     dispatch,
     currentPage,
@@ -417,8 +417,7 @@ const Page = () => {
   ]);
 
   console.log(projectData, "projectData");
- 
- 
+
   return (
     <>
       <div className="p-6 rounded-lg flex flex-col md:flex-row gap-6 mb-8 items-center">
@@ -634,8 +633,6 @@ const Page = () => {
             projectData.map((project: any) => {
               console.log(project, "my project single");
               return (
-              
-
                 <div key={project._id}>
                   <PropertyCard project={project} />
                 </div>
@@ -648,14 +645,73 @@ const Page = () => {
           )}
         </div>
       </div>
-      <div className="w-full flex justify-center">    
-        <Pagination
+      <div className="w-full flex justify-center">
+        {/* <Pagination
           total={paginate?.total}
           currentPage={currentPage}
           limit={paginate?.limit}
           onPageChange={handlePageClick}
-        />
-        </div>
+        /> */}
+
+        {totalPages > 1 && (
+          <div className="mt-12 flex justify-center">
+            <nav className="flex items-center space-x-2">
+              <button
+                onClick={() => handlePageClick(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-lg ${
+                  currentPage === 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <FaChevronLeft />
+              </button>
+
+              <div className="flex space-x-1">
+                {[...Array(Math.min(totalPages, 7))].map((_, i) => {
+                  let pageNumber;
+                  if (totalPages <= 7) {
+                    pageNumber = i + 1;
+                  } else if (currentPage <= 4) {
+                    pageNumber = i + 1;
+                  } else if (currentPage >= totalPages - 3) {
+                    pageNumber = totalPages - 6 + i;
+                  } else {
+                    pageNumber = currentPage - 3 + i;
+                  }
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handlePageClick(pageNumber)}
+                      className={`w-10 h-10 rounded-lg text-sm font-medium ${
+                        currentPage === pageNumber
+                          ? "bg-[#1E3D9C] text-white"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => handlePageClick(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-lg ${
+                  currentPage === totalPages
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <FaChevronRight />
+              </button>
+            </nav>
+          </div>
+        )}
+      </div>
     </>
   );
 };
