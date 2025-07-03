@@ -26,7 +26,7 @@ const ProjectListing = () => {
   const totalPages = Math.ceil(paginate?.total / paginate?.limit);
   const limit = paginate?.limit;
   const handlePageClick = (page: number) => {
-    if (page > 0 && page < totalPages) {
+    if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
@@ -39,7 +39,7 @@ const ProjectListing = () => {
     dispatch(
       getAllProperties({
         page: currentPage,
-        limit: 50,
+        limit: 10,
         priceRange: 0,
         bedRooms: 0,
         bathRooms: 0,
@@ -59,7 +59,7 @@ const ProjectListing = () => {
           dispatch(
             getAllProperties({
               page: currentPage,
-              limit: 50,
+              limit: 10,
               priceRange: 0,
               bedRooms: 0,
               bathRooms: 0,
@@ -95,7 +95,11 @@ const ProjectListing = () => {
           {Array.isArray(propertyData) &&
             propertyData?.map((project: any, index: any) => (
               <tr key={project?._id} className="border-t">
-                <td className="p-3 border">{index + 1}</td>
+                {/* <td className="p-3 border">{index + 1}</td> */}
+
+                <td className="p-3 border">
+                  {(currentPage - 1) * limit + index + 1}
+                </td>
                 <td className="p-3 border">{project?.title}</td>
                 <td className="p-3 border">
                   {project.imageGallery.slice(0, 1).map((img: any) => {
