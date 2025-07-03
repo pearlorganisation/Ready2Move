@@ -28,26 +28,16 @@ export async function generateMetadata({ params }) {
           width: 1200,
           height: 630,
           alt: title,
-          // type: 'image/png' // You can optionally add this
-        },
-        // You can add more images if desired, Facebook will pick one or let user choose
-        // { url: projectData?.data?.imageGallery?.[0]?.secure_url } // For example, if you wanted to offer the raw image too
+         },
+    
       ],
-      // siteName: 'Ready2Move' // Optional but good for branding
-    },
+     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      // site: "@yourTwitterHandle", // Optional
-      // creator: "@authorTwitterHandle", // Optional
-      images: [ogImageUrl], // Correct: points to the image generation route
+      images: [ogImageUrl],  
     },
-    // Optional: Add a canonical link tag directly as well for SEO best practices
-    // It's often redundant if og:url is set, but doesn't hurt.
-    // alternates: {
-    //   canonical: pageUrl,
-    // },
   };
 }
 
