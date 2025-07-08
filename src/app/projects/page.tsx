@@ -434,7 +434,7 @@ const Page = () => {
           {...register("projectType")}
           className="border p-3 rounded-lg w-full md:w-1/4 bg-gray-50 shadow-sm focus:ring focus:ring-blue-800"
         >
-          <option value="">All Projectwre Types</option>
+          <option value="">All Project Types</option>
           <option value="COMMERCIAL">COMMERCIAL</option>
           <option value="RESIDENTIAL">RESIDENTIAL</option>
         </select>
@@ -654,7 +654,7 @@ const Page = () => {
         /> */}
 
         {totalPages > 1 && (
-          <div className="mt-12 flex justify-center">
+          <div className="mt-12 flex mb-6 justify-center">
             <nav className="flex items-center space-x-2">
               <button
                 onClick={() => handlePageClick(currentPage - 1)}

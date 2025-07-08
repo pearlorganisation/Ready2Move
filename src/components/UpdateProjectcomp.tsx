@@ -530,7 +530,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         {/* YouTube */}
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            YouTube Embed Link
+            YouTube Link
           </label>
           <input
             {...register("youtubeEmbedLink")}

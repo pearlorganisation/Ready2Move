@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/lib/redux/actions/authAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 enum AccountType {
   AGENT = "AGENT",
   BUILDER = "BUILDER",
@@ -56,10 +57,12 @@ const schema = yup.object().shape({
 });
 
 const RegisterPage = () => {
-  const dispatch =  useAppDispatch()
-  const router = useRouter()
- const { isSuccess, isError, isLoading } = useAppSelector((state) => state.auth);
- console.log("the states are", isSuccess, isError, isLoading)
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { isSuccess, isError, isLoading } = useAppSelector(
+    (state) => state.auth
+  );
+  console.log("the states are", isSuccess, isError, isLoading);
   const {
     register,
     handleSubmit,
@@ -67,24 +70,27 @@ const RegisterPage = () => {
     watch,
   } = useForm({ resolver: yupResolver(schema) });
 
-
   // useEffect(()=>{
   //  if(isSuccess){
   //   router.push('/otpverification', {scroll:true})
   //  }
   // },[isSuccess])
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const passwordValue = watch("password", ""); // Watch password field
 
   const onSubmit = (data: any) => {
-    dispatch(registerUser(data)).then(res=>{
-      const payload = res?.payload as { data?: { success?: boolean } };
-      console.log("the returned data is", payload);
-      if (payload?.data?.success === true) {
-        router.push('/otpverification', {scroll:true})
+    dispatch(registerUser(data)).then((res) => {
+      const { response }: any = res?.payload as {
+        data?: { success?: boolean };
+      };
+      console.log("the returned data is", response);
+      if (response?.data?.success === true) {
+        router.push("/otpverification", { scroll: true });
+      } else {
+        toast.error(response?.data?.message || "Register failed");
       }
-    })
+    });
   };
 
   return (
@@ -119,9 +125,7 @@ const RegisterPage = () => {
                 ))}
               </select>
               {errors.role && (
-                <p className="text-red-500 text-sm">
-                  {errors.role.message}
-                </p>
+                <p className="text-red-500 text-sm">{errors.role.message}</p>
               )}
             </div>
 
@@ -209,9 +213,14 @@ const RegisterPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold p-2 rounded-lg transition-all duration-300"
+              disabled={isLoading}
+              className={`w-full ${
+                isLoading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              } text-white font-semibold p-2 rounded-lg transition-all duration-300`}
             >
-              Create Account
+              {isLoading ? "Logging in..." : "Create Account"}
             </button>
           </form>
 

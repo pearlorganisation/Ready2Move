@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getAllCityData } from "@/lib/redux/actions/footerAction";
+import QuickLinks from "./QuickLinks";
 
 const Footer = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
@@ -29,7 +30,7 @@ const Footer = () => {
   );
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getAllCityData({limit:10}));
+    dispatch(getAllCityData({ limit: 10 }));
   }, []);
 
   const toggleLanguage = () => {
@@ -125,6 +126,9 @@ const Footer = () => {
                 </>
               ))}
             </div>
+            <div>
+              <QuickLinks />
+            </div>
           </div>
 
           {/* Bottom Section */}
@@ -183,12 +187,6 @@ const Footer = () => {
                     </div>
                   )}
                 </div>
-                <Link href="#" className="hover:text-gray-300">
-                  Terms and Conditions
-                </Link>
-                <Link href="#" className="hover:text-gray-300">
-                  Privacy Policy
-                </Link>
               </div>
             </div>
           </div>
@@ -215,6 +213,7 @@ const Footer = () => {
               <Link href="#" className="text-gray-600 hover:text-gray-900">
                 <Facebook size={18} />
               </Link>
+
               <Link href="#" className="text-gray-600 hover:text-gray-900">
                 <Twitter size={18} />
               </Link>

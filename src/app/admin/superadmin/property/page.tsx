@@ -15,15 +15,15 @@ import {
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
-import Propertylisting from "../propertylist/page"
-  type FormData = {
-    title: string;
-    slug: string;
-    subTitle: string;
-    description: string;
-    service: "SELL" | "RENT";
-    property: "RESIDENTIAL" | "COMMERCIAL";
-    propertyType: string;
+import Propertylisting from "../propertylist/page";
+type FormData = {
+  title: string;
+  slug: string;
+  subTitle: string;
+  description: string;
+  service: "SELL" | "RENT";
+  property: "RESIDENTIAL" | "COMMERCIAL";
+  propertyType: string;
 
   // Location Details
   apartmentName: string;
@@ -467,6 +467,7 @@ export default function PropertyForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [customInputs, setCustomInputs] = useState<Record<string, boolean>>({});
 
   const [OpenPropertyModal, setPropertyModal] = useState<boolean>(false);
   const handleModalOpen = () => {
@@ -599,7 +600,7 @@ export default function PropertyForm() {
   // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files) as File[];
     setValue("imageGallery", files);
     setPreviewImages(files.map((file) => URL.createObjectURL(file)));
   };
@@ -738,8 +739,11 @@ export default function PropertyForm() {
                             error={errors.title?.message}
                             {...register("title", {
                               required: "Title is required",
+                              onChange: (e) => {
+                                // ✅ clear error immediately
+                                handleTitleChange(e.target.value); // your custom slug generation logic
+                              },
                             })}
-                            onChange={(e) => handleTitleChange(e.target.value)}
                           />
 
                           <CustomInput
@@ -757,7 +761,20 @@ export default function PropertyForm() {
                             id="subTitle"
                             label="Property Subtitle (optional)"
                             placeholder="e.g. Kandivali West, Mumbai, Mahavir Nagar"
-                            {...register("subTitle")}
+                            {...register("subTitle", {
+                              required: "Subtitle is required", // ✅ required validation
+                              minLength: {
+                                value: 5,
+                                message:
+                                  "Subtitle must be at least 5 characters",
+                              },
+                              maxLength: {
+                                value: 100,
+                                message:
+                                  "Subtitle must be less than 100 characters",
+                              },
+                            })}
+                            error={errors.subTitle?.message} // ✅ display error message
                           />
 
                           {/* Description */}
@@ -773,42 +790,22 @@ export default function PropertyForm() {
                           />
                         </div>
 
-                    {/* You’re looking to: SELL / RENT */}
-                    <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">You're looking to</label>
-                      <Controller
-                        name="service"
-                        control={control}
-                        render={({ field }) => (
-                          <div className="flex gap-3">
-                            {["SELL", "RENT"].map((option) => (
-                              <CustomButton
-                                key={option}
-                                type="button"
-                                variant={field.value === option ? "default" : "outline"}
-                                onClick={() => field.onChange(option)}
-                              >
-                                {option}
-                              </CustomButton>
-                            ))}
-                          </div>
-                        )}
-                      />
-                    </div>
-
-                          {/* Property Type: RESIDENTIAL / COMMERCIAL */}
+                        {/* You’re looking to: SELL / RENT */}
+                        <div className="grid gap-4 md:grid-cols-2">
                           <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">
-                              Property
+                              You're looking to
                             </label>
                             <Controller
-                              name="property"
+                              name="service"
                               control={control}
+                              rules={{
+                                required: "Please select a service type", // ✅ required validation
+                              }}
                               render={({ field }) => (
-                                <div className="flex gap-3">
-                                  {["RESIDENTIAL", "COMMERCIAL"].map(
-                                    (option) => (
+                                <div className="space-y-1">
+                                  <div className="flex gap-3">
+                                    {["SELL", "RENT"].map((option) => (
                                       <CustomButton
                                         key={option}
                                         type="button"
@@ -821,7 +818,58 @@ export default function PropertyForm() {
                                       >
                                         {option}
                                       </CustomButton>
-                                    )
+                                    ))}
+                                  </div>
+
+                                  {/* ✅ Show error below buttons */}
+                                  {errors?.service && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {errors.service.message}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            />
+                          </div>
+
+                          {/* Property Type: RESIDENTIAL / COMMERCIAL */}
+                          <div className="space-y-2">
+                            <Controller
+                              name="property"
+                              control={control}
+                              rules={{
+                                required: "Please select a property type", // ✅ Required validation
+                              }}
+                              render={({ field }) => (
+                                <div className="space-y-1">
+                                  <label className="block text-sm font-medium text-gray-700">
+                                    Property Type
+                                  </label>
+
+                                  <div className="flex gap-3">
+                                    {["RESIDENTIAL", "COMMERCIAL"].map(
+                                      (option) => (
+                                        <CustomButton
+                                          key={option}
+                                          type="button"
+                                          variant={
+                                            field.value === option
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() => field.onChange(option)}
+                                        >
+                                          {option}
+                                        </CustomButton>
+                                      )
+                                    )}
+                                  </div>
+
+                                  {/* ✅ Show error if validation fails */}
+                                  {errors.property && (
+                                    <p className="text-sm text-red-600">
+                                      {errors.property.message}
+                                    </p>
                                   )}
                                 </div>
                               )}
@@ -837,6 +885,9 @@ export default function PropertyForm() {
                           <Controller
                             name="propertyType"
                             control={control}
+                            rules={{
+                              required: "Please select a property type", // ✅ validation rule
+                            }}
                             render={({ field }) => (
                               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                                 {featureData
@@ -861,6 +912,12 @@ export default function PropertyForm() {
                               </div>
                             )}
                           />
+                          {/* ✅ Show error message below the button grid */}
+                          {errors.propertyType && (
+                            <p className="text-sm text-red-500 mt-1">
+                              {errors.propertyType.message}
+                            </p>
+                          )}
                         </div>
                       </div>
                     )}
@@ -881,14 +938,20 @@ export default function PropertyForm() {
                             id="apartmentName"
                             label="Apartment/Society Name"
                             placeholder="Name of apartment or society"
-                            {...register("apartmentName")}
+                            error={errors?.apartmentName?.message}
+                            {...register("apartmentName", {
+                              required: "Apartment name is required", // ✅ validation rule
+                            })}
                           />
 
                           <CustomInput
                             id="apartmentNo"
                             label="Flat No. / Apartment No."
                             placeholder="Flat or house number"
-                            {...register("apartmentNo")}
+                            error={errors?.apartmentNo?.message}
+                            {...register("apartmentNo", {
+                              required: "Flat number is required", // ✅ validation rule
+                            })}
                           />
 
                           <CustomInput
@@ -937,7 +1000,8 @@ export default function PropertyForm() {
                         </div>
 
                         {/* Area Details */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Area Details */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {[
                             {
                               label: "Carpet Area",
@@ -959,29 +1023,59 @@ export default function PropertyForm() {
                               <label className="block text-sm font-medium text-gray-700">
                                 {label}
                               </label>
+
                               <div className="flex gap-2">
-                                <input
-                                  type="number"
-                                  placeholder={placeholder}
-                                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                  {...register(`area.${index}.area`, {
-                                    valueAsNumber: true,
-                                  })}
-                                />
-                                <Controller
-                                  name={`area.${index}.areaMeasurement`}
-                                  control={control}
-                                  render={({ field }) => (
-                                    <select
-                                      className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                      value={field.value}
-                                      onChange={field.onChange}
-                                    >
-                                      <option value="SQ_FT">Sq. Ft</option>
-                                      <option value="SQ_M">Sq. Mt</option>
-                                    </select>
+                                {/* Area Input */}
+                                <div className="flex-1">
+                                  <input
+                                    type="number"
+                                    placeholder={placeholder}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                    {...register(`area.${index}.area`, {
+                                      valueAsNumber: true,
+                                      required: `${label} is required`, // ✅ required validation
+                                      min: {
+                                        value: 1,
+                                        message: `${label} must be greater than 0`,
+                                      },
+                                    })}
+                                  />
+                                  {errors.area?.[index]?.area && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {errors.area[index].area.message}
+                                    </p>
                                   )}
-                                />
+                                </div>
+
+                                {/* Measurement Select */}
+                                <div>
+                                  <Controller
+                                    name={`area.${index}.areaMeasurement`}
+                                    control={control}
+                                    rules={{
+                                      required: "Please select a unit",
+                                    }}
+                                    render={({ field }) => (
+                                      <select
+                                        className="w-[120px] px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        value={field.value || ""}
+                                        onChange={field.onChange}
+                                      >
+                                        <option value="">Select Unit</option>
+                                        <option value="SQ_FT">Sq. Ft</option>
+                                        <option value="SQ_M">Sq. Mt</option>
+                                      </select>
+                                    )}
+                                  />
+                                  {errors.area?.[index]?.areaMeasurement && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {
+                                        errors.area[index].areaMeasurement
+                                          .message
+                                      }
+                                    </p>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -1005,174 +1099,250 @@ export default function PropertyForm() {
                             <Controller
                               name="reraPossessionDate"
                               control={control}
+                              rules={{
+                                required: "Possession date is required", // ✅ Required validation
+                              }}
                               render={({ field }) => (
-                                <CustomPopover
-                                  isOpen={calendarOpen}
-                                  setIsOpen={setCalendarOpen}
-                                  trigger={
-                                    <button
-                                      type="button"
-                                      className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    >
-                                      {field.value ? (
-                                        format(field.value, "PPP")
-                                      ) : (
-                                        <span className="text-gray-400">
-                                          Pick a date
-                                        </span>
-                                      )}
-                                      <CalendarIcon className="h-4 w-4 text-gray-400" />
-                                    </button>
-                                  }
-                                  content={
-                                    <div className="p-2">
-                                      <CustomCalendar
-                                        selected={field.value || undefined}
-                                        onSelect={(date) => {
-                                          field.onChange(date);
-                                          setCalendarOpen(false);
-                                        }}
-                                      />
-                                    </div>
-                                  }
-                                />
+                                <div className="space-y-1">
+                                  <CustomPopover
+                                    isOpen={calendarOpen}
+                                    setIsOpen={setCalendarOpen}
+                                    trigger={
+                                      <button
+                                        type="button"
+                                        className={`w-full flex items-center justify-between px-3 py-2 border rounded-md shadow-sm text-sm ${
+                                          errors.reraPossessionDate
+                                            ? "border-red-500 text-red-600 focus:ring-red-500"
+                                            : "border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-blue-500"
+                                        }`}
+                                      >
+                                        {field.value ? (
+                                          format(field.value, "PPP")
+                                        ) : (
+                                          <span
+                                            className={
+                                              errors.reraPossessionDate
+                                                ? "text-red-500"
+                                                : "text-gray-400"
+                                            }
+                                          >
+                                            Pick a date
+                                          </span>
+                                        )}
+                                        <CalendarIcon
+                                          className={`h-4 w-4 ${
+                                            errors.reraPossessionDate
+                                              ? "text-red-500"
+                                              : "text-gray-400"
+                                          }`}
+                                        />
+                                      </button>
+                                    }
+                                    content={
+                                      <div className="p-2">
+                                        <CustomCalendar
+                                          selected={field.value || undefined}
+                                          onSelect={(date) => {
+                                            field.onChange(date);
+                                            setCalendarOpen(false);
+                                          }}
+                                        />
+                                      </div>
+                                    }
+                                  />
+
+                                  {/* ✅ Error message below */}
+                                  {errors.reraPossessionDate && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {errors.reraPossessionDate.message}
+                                    </p>
+                                  )}
+                                </div>
                               )}
                             />
                           </div>
                         </div>
 
                         {/* Bedroom, Balcony, Bathroom Counts */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          {[
-                            {
-                              label: "No. of Bedrooms",
-                              name: "noOfBedrooms",
-                              selectedValue: selectedBedrooms,
-                              setValueFn: setValue,
-                            },
-                            {
-                              label: "No. of Balconies",
-                              name: "noOfBalconies",
-                              selectedValue: selectedBalconies,
-                              setValueFn: setValue,
-                            },
-                            {
-                              label: "No. of Bathrooms",
-                              name: "noOfBathrooms",
-                              selectedValue: selectedBathroom,
-                              setValueFn: setValue,
-                            },
-                          ].map(
-                            ({ label, name, selectedValue, setValueFn }) => (
-                              <div className="space-y-2" key={name}>
-                                <label className="block text-sm font-medium text-gray-700">
-                                  {label}
-                                </label>
-                                <div className="flex flex-wrap gap-2 items-center">
-                                  {[0, 1, 2, 3].map((num) => (
-                                    <Controller
-                                      key={num}
-                                      name={name as keyof PropertyFormValues}
-                                      control={control}
-                                      render={({ field }) => (
-                                        <button
-                                          type="button"
-                                          className={`px-4 py-2 rounded-md border text-sm font-medium shadow-sm transition-all duration-150 ${
-                                            field.value === num
-                                              ? "bg-blue-600 text-white border-blue-600"
-                                              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                                          }`}
-                                          onClick={() => field.onChange(num)}
-                                        >
-                                          {num}
-                                        </button>
-                                      )}
+                        {[
+                          { label: "No. of Bedrooms", name: "noOfBedrooms" },
+                          { label: "No. of Balconies", name: "noOfBalconies" },
+                          { label: "No. of Bathrooms", name: "noOfBathrooms" },
+                        ].map(({ label, name }) => (
+                          <div className="space-y-2" key={name}>
+                            <label className="block text-sm font-medium text-gray-700">
+                              {label}
+                            </label>
+                            <Controller
+                              name={name as keyof PropertyFormValues}
+                              control={control}
+                              rules={{
+                                required: `${label} is required`, // ✅ required field
+                                min: {
+                                  value: 0,
+                                  message: `${label} must be at least 0`,
+                                },
+                              }}
+                              render={({ field, fieldState }) => (
+                                <div className="space-y-1">
+                                  <div className="flex flex-wrap gap-2 items-center">
+                                    {[0, 1, 2, 3].map((num) => (
+                                      <button
+                                        key={num}
+                                        type="button"
+                                        className={`px-4 py-2 rounded-md border text-sm font-medium shadow-sm transition-all duration-150 ${
+                                          field.value === num &&
+                                          !customInputs[name]
+                                            ? "bg-blue-600 text-white border-blue-600"
+                                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                                        }`}
+                                        onClick={() => {
+                                          field.onChange(num);
+                                          setCustomInputs((prev) => ({
+                                            ...prev,
+                                            [name]: false,
+                                          }));
+                                        }}
+                                      >
+                                        {num}
+                                      </button>
+                                    ))}
+
+                                    <input
+                                      type="number"
+                                      min={0}
+                                      placeholder="Custom"
+                                      className={`w-24 px-3 py-2 rounded-md shadow-sm sm:text-sm border ${
+                                        fieldState?.error
+                                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                                          : "border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                      }`}
+                                      value={
+                                        customInputs[name] ? field.value : ""
+                                      }
+                                      onChange={(e) => {
+                                        const val = parseInt(e.target.value);
+                                        if (!isNaN(val)) {
+                                          field.onChange(val);
+                                          setCustomInputs((prev) => ({
+                                            ...prev,
+                                            [name]: true,
+                                          }));
+                                        } else {
+                                          field.onChange("");
+                                          setCustomInputs((prev) => ({
+                                            ...prev,
+                                            [name]: false,
+                                          }));
+                                        }
+                                      }}
+                                      onWheel={(e) => e.preventDefault()}
                                     />
-                                  ))}
-                                  <input
-                                    type="number"
-                                    min={0}
-                                    placeholder="Custom"
-                                    className="w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                    value={
-                                      selectedValue > 3 ? selectedValue : ""
-                                    }
-                                    onChange={(e) =>
-                                      setValueFn(
-                                        name as keyof PropertyFormValues,
-                                        parseInt(e.target.value) || 0
-                                      )
-                                    }
-                                    onWheel={(e) => e.preventDefault()}
-                                  />
+                                  </div>
+
+                                  {/* ✅ Show validation error */}
+                                  {fieldState?.error && (
+                                    <p className="text-sm text-red-500">
+                                      {fieldState.error.message}
+                                    </p>
+                                  )}
                                 </div>
-                              </div>
-                            )
-                          )}
-                        </div>
+                              )}
+                            />
+                          </div>
+                        ))}
 
                         {/* Parking */}
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">
                             Parking
                           </label>
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                            {featureData
-                              ?.filter((item) => item.type === "PARKING")
-                              .flatMap((category) => category.features)
-                              .map((type) => (
-                                <Controller
-                                  key={type._id}
-                                  name="parking"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <CustomButton
-                                      type="button"
-                                      variant={
-                                        field.value === type._id
-                                          ? "default"
-                                          : "outline"
-                                      }
-                                      onClick={() => field.onChange(type._id)}
-                                    >
-                                      {type.name}
-                                    </CustomButton>
-                                  )}
-                                />
-                              ))}
-                          </div>
-                        </div>
 
+                          <Controller
+                            name="parking"
+                            control={control}
+                            rules={{
+                              required: "Please select a parking option",
+                            }}
+                            render={({ field }) => {
+                              const options = featureData
+                                ?.filter((item) => item.type === "PARKING")
+                                .flatMap((category) => category.features);
+
+                              return (
+                                <>
+                                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                    {options.map((type) => (
+                                      <CustomButton
+                                        key={type._id}
+                                        type="button"
+                                        variant={
+                                          field.value === type._id
+                                            ? "default"
+                                            : "outline"
+                                        }
+                                        onClick={() => field.onChange(type._id)}
+                                      >
+                                        {type.name}
+                                      </CustomButton>
+                                    ))}
+                                  </div>
+                                  {errors.parking && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {errors.parking.message}
+                                    </p>
+                                  )}
+                                </>
+                              );
+                            }}
+                          />
+                        </div>
                         {/* Furnishing */}
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">
                             Furnishing
                           </label>
-                          <div className="flex flex-wrap gap-2">
-                            {featureData
-                              .filter((item) => item.type === "FURNISHING")
-                              .flatMap((category) => category.features)
-                              .map((type) => (
-                                <Controller
-                                  key={type._id}
-                                  name="furnishing"
-                                  control={control}
-                                  render={({ field }) => (
-                                    <CustomButton
-                                      type="button"
-                                      variant={
-                                        field.value === type._id
-                                          ? "default"
-                                          : "outline"
-                                      }
-                                      onClick={() => field.onChange(type._id)}
-                                    >
-                                      {type.name}
-                                    </CustomButton>
+
+                          <Controller
+                            name="furnishing"
+                            control={control}
+                            rules={{
+                              required: "Please select a furnishing type",
+                            }}
+                            render={({ field }) => {
+                              const options = featureData
+                                .filter((item) => item.type === "FURNISHING")
+                                .flatMap((category) => category.features);
+
+                              return (
+                                <>
+                                  <div className="flex flex-wrap gap-2">
+                                    {options.map((type) => (
+                                      <CustomButton
+                                        key={type._id}
+                                        type="button"
+                                        variant={
+                                          field.value === type._id
+                                            ? "default"
+                                            : "outline"
+                                        }
+                                        onClick={() => field.onChange(type._id)}
+                                      >
+                                        {type.name}
+                                      </CustomButton>
+                                    ))}
+                                  </div>
+
+                                  {/* ✅ Error message */}
+                                  {errors.furnishing && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {errors.furnishing.message}
+                                    </p>
                                   )}
-                                />
-                              ))}
-                          </div>
+                                </>
+                              );
+                            }}
+                          />
                         </div>
                       </div>
                     )}
@@ -1189,105 +1359,154 @@ export default function PropertyForm() {
                         </div>
 
                         <div className="space-y-4">
+                          {/* Entrance Facing */}
                           <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">
                               Entrance Facing
                             </label>
-                            <div className="flex flex-wrap gap-2">
-                              {featureData
-                                .filter(
-                                  (item) => item.type === "ENTRANCE_FACING"
-                                )
-                                .flatMap((category) => category.features)
-                                .map((facing) => (
-                                  <Controller
-                                    key={facing._id}
-                                    name="entranceFacing"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === facing._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          field.onChange(facing._id)
-                                        }
-                                      >
-                                        {facing.name}
-                                      </CustomButton>
+                            <Controller
+                              name="entranceFacing"
+                              control={control}
+                              rules={{
+                                required: "Please select entrance facing",
+                              }}
+                              render={({ field }) => {
+                                const options = featureData
+                                  .filter(
+                                    (item) => item.type === "ENTRANCE_FACING"
+                                  )
+                                  .flatMap((category) => category.features);
+
+                                return (
+                                  <>
+                                    <div className="flex flex-wrap gap-2">
+                                      {options.map((facing) => (
+                                        <CustomButton
+                                          key={facing._id}
+                                          type="button"
+                                          variant={
+                                            field.value === facing._id
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            field.onChange(facing._id)
+                                          }
+                                        >
+                                          {facing.name}
+                                        </CustomButton>
+                                      ))}
+                                    </div>
+                                    {errors.entranceFacing && (
+                                      <p className="text-sm text-red-500 mt-1">
+                                        {errors.entranceFacing.message}
+                                      </p>
                                     )}
-                                  />
-                                ))}
-                            </div>
+                                  </>
+                                );
+                              }}
+                            />
                           </div>
 
+                          {/* Availability */}
                           <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">
                               Availability Status
                             </label>
-                            <div className="flex flex-wrap gap-2">
-                              {featureData
-                                .filter((item) => item.type === "AVAILABILITY")
-                                .flatMap((category) => category.features)
-                                .map((avail) => (
-                                  <Controller
-                                    key={avail._id}
-                                    name="availability"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === avail._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() =>
-                                          field.onChange(avail._id)
-                                        }
-                                      >
-                                        {avail.name}
-                                      </CustomButton>
+                            <Controller
+                              name="availability"
+                              control={control}
+                              rules={{
+                                required: "Please select availability status",
+                              }}
+                              render={({ field }) => {
+                                const options = featureData
+                                  .filter(
+                                    (item) => item.type === "AVAILABILITY"
+                                  )
+                                  .flatMap((category) => category.features);
+
+                                return (
+                                  <>
+                                    <div className="flex flex-wrap gap-2">
+                                      {options.map((avail) => (
+                                        <CustomButton
+                                          key={avail._id}
+                                          type="button"
+                                          variant={
+                                            field.value === avail._id
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            field.onChange(avail._id)
+                                          }
+                                        >
+                                          {avail.name}
+                                        </CustomButton>
+                                      ))}
+                                    </div>
+                                    {errors.availability && (
+                                      <p className="text-sm text-red-500 mt-1">
+                                        {errors.availability.message}
+                                      </p>
                                     )}
-                                  />
-                                ))}
-                            </div>
+                                  </>
+                                );
+                              }}
+                            />
                           </div>
 
+                          {/* Property Age */}
                           <div className="space-y-2">
                             <label className="block text-sm font-medium text-gray-700">
-                              Age of property
+                              Age of Property
                             </label>
-                            <div className="flex flex-wrap gap-2">
-                              {featureData
-                                .filter((item) => item.type === "PROPERTY_AGE")
-                                .flatMap((category) => category.features)
-                                .map((type) => (
-                                  <Controller
-                                    key={type._id}
-                                    name="propertyAge"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === type._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() => field.onChange(type._id)}
-                                      >
-                                        {type.name}
-                                      </CustomButton>
+                            <Controller
+                              name="propertyAge"
+                              control={control}
+                              rules={{
+                                required: "Please select age of property",
+                              }}
+                              render={({ field }) => {
+                                const options = featureData
+                                  .filter(
+                                    (item) => item.type === "PROPERTY_AGE"
+                                  )
+                                  .flatMap((category) => category.features);
+
+                                return (
+                                  <>
+                                    <div className="flex flex-wrap gap-2">
+                                      {options.map((type) => (
+                                        <CustomButton
+                                          key={type._id}
+                                          type="button"
+                                          variant={
+                                            field.value === type._id
+                                              ? "default"
+                                              : "outline"
+                                          }
+                                          onClick={() =>
+                                            field.onChange(type._id)
+                                          }
+                                        >
+                                          {type.name}
+                                        </CustomButton>
+                                      ))}
+                                    </div>
+                                    {errors.propertyAge && (
+                                      <p className="text-sm text-red-500 mt-1">
+                                        {errors.propertyAge.message}
+                                      </p>
                                     )}
-                                  />
-                                ))}
-                            </div>
+                                  </>
+                                );
+                              }}
+                            />
                           </div>
 
+                          {/* OC Available */}
                           <Controller
                             name="isOCAvailable"
                             control={control}
@@ -1301,6 +1520,7 @@ export default function PropertyForm() {
                             )}
                           />
 
+                          {/* CC Available */}
                           <Controller
                             name="isCCAvailable"
                             control={control}
@@ -1333,30 +1553,49 @@ export default function PropertyForm() {
                             <label className="block text-sm font-medium text-gray-700">
                               Ownership
                             </label>
-                            <div className="flex flex-wrap gap-2">
-                              {featureData
-                                .filter((item) => item.type === "OWNERSHIP")
-                                .flatMap((category) => category.features)
-                                .map((type) => (
-                                  <Controller
-                                    key={type._id}
-                                    name="ownership"
-                                    control={control}
-                                    render={({ field }) => (
-                                      <CustomButton
-                                        type="button"
-                                        variant={
-                                          field.value === type._id
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={() => field.onChange(type._id)}
-                                      >
-                                        {type.name}
-                                      </CustomButton>
-                                    )}
-                                  />
-                                ))}
+                            {/* Ownership */}
+                            <div className="space-y-2">
+                              <Controller
+                                name="ownership"
+                                control={control}
+                                rules={{
+                                  required: "Please select an ownership type",
+                                }}
+                                render={({ field }) => {
+                                  const options = featureData
+                                    .filter((item) => item.type === "OWNERSHIP")
+                                    .flatMap((category) => category.features);
+
+                                  return (
+                                    <>
+                                      <div className="flex flex-wrap gap-2">
+                                        {options.map((type) => (
+                                          <CustomButton
+                                            key={type._id}
+                                            type="button"
+                                            variant={
+                                              field.value === type._id
+                                                ? "default"
+                                                : "outline"
+                                            }
+                                            onClick={() =>
+                                              field.onChange(type._id)
+                                            }
+                                          >
+                                            {type.name}
+                                          </CustomButton>
+                                        ))}
+                                      </div>
+
+                                      {errors.ownership && (
+                                        <p className="text-sm text-red-500 mt-1">
+                                          {errors.ownership.message}
+                                        </p>
+                                      )}
+                                    </>
+                                  );
+                                }}
+                              />
                             </div>
                           </div>
 
@@ -1366,7 +1605,7 @@ export default function PropertyForm() {
                             type="number"
                             placeholder="Expected price"
                             prefix="₹"
-                            error={errors.expectedPrice?.message}
+                            error={errors.expectedPrice?.message} // ✅ passing error
                             {...register("expectedPrice", {
                               required: "Expected price is required",
                               valueAsNumber: true,
@@ -1736,11 +1975,13 @@ export default function PropertyForm() {
                             id="youtubeEmbedLink"
                             label="YouTube Embed Link"
                             placeholder="YouTube Link"
+                            error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
                             {...register("youtubeEmbedLink", {
-                              required: "This field is required",
+                              required: "This field is required", // ✅ Required validation
                             })}
                           />
-                          <p className="mt-1 text-sm text-gray-500">
+
+                          {/* <p className="mt-1 text-sm text-gray-500">
                             👉 Please paste the <strong>embed link</strong>{" "}
                             (e.g.,{" "}
                             <code>https://www.youtube.com/embed/VIDEO_ID</code>
@@ -1758,7 +1999,7 @@ export default function PropertyForm() {
                               </span>
                               " /&gt;
                             </code>
-                          </p>
+                          </p> */}
                         </div>
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">
@@ -1799,15 +2040,43 @@ export default function PropertyForm() {
                             Image Gallery
                           </label>
                           <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-                            <input
-                              type="file"
-                              id="imageGallery"
-                              multiple
-                              accept="image/*"
-                              className="hidden"
-                              ref={fileInputRef}
-                              onChange={handleImageUpload}
+                            <Controller
+                              name="imageGallery"
+                              control={control}
+                              rules={{
+                                required: "Please upload at least one image",
+                                validate: (files) =>
+                                  files && files.length > 0
+                                    ? true
+                                    : "Please select at least one image",
+                              }}
+                              render={({
+                                field: { onChange, ref, ...fieldProps },
+                              }) => (
+                                <>
+                                <input
+                                    type="file"
+                                    id="imageGallery"
+                                    multiple
+                                    accept="image/*"
+                                    className="hidden"
+                                    ref={fileInputRef}
+                                    onChange={(e) => {
+                                      const files = Array.from(e.target.files ?? []);
+                                      onChange(files); // Update RHF state
+                                      handleImageUpload(e); // Custom handler
+                                    }}
+                                  />
+
+                                  {errors.imageGallery && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                      {errors.imageGallery.message}
+                                    </p>
+                                  )}
+                                </>
+                              )}
                             />
+
                             <div className="flex flex-col items-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"

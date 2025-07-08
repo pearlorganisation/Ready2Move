@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { loginUser } from "@/lib/redux/actions/userAction";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -23,26 +24,35 @@ const schema = yup.object().shape({
 });
 
 const LoginPage = () => {
-const dispatch = useAppDispatch()
-const router = useRouter()  
-const {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
-const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
+  const { isSuccess, isError, isLoading } = useAppSelector(
+    (state) => state.user
+  );
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: any) => {
-    dispatch(loginUser(data))
-    console.log("Form Data:", data);
+  const onSubmit = async (data: any) => {
+    const resultAction = await dispatch(loginUser(data));
+    console.log("resultAction", resultAction);
+    if (resultAction.payload?.response.data.success === true) {
+      toast.success("Login successful");
+    } else {
+      toast.error(
+        resultAction.payload?.response.data.message || "Login failed"
+      );
+    }
   };
 
-  useEffect(()=>{
-          if(isSuccess){
-            router.push("/",{scroll:true})
-          }
-  },[isSuccess])
+  useEffect(() => {
+    if (isSuccess) {
+      router.push("/", { scroll: true });
+    }
+  }, [isSuccess]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -119,8 +129,16 @@ const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
             </div>
 
             {/* Login Button */}
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold p-2 rounded-lg transition-all duration-300">
-              Login
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full ${
+                isLoading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              } text-white font-semibold p-2 rounded-lg transition-all duration-300`}
+            >
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
 
@@ -131,7 +149,6 @@ const { isSuccess, isError, isLoading } = useAppSelector(state=> state.user)
               Register
             </a>
           </p>
-
         </div>
       </div>
     </div>
