@@ -9,6 +9,7 @@ import { registerUser } from "@/lib/redux/actions/authAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { AxiosResponse } from "axios";
 enum AccountType {
   AGENT = "AGENT",
   BUILDER = "BUILDER",
@@ -79,19 +80,20 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const passwordValue = watch("password", ""); // Watch password field
 
-  const onSubmit = (data: any) => {
-    dispatch(registerUser(data)).then((res) => {
-      const { response }: any = res?.payload as {
-        data?: { success?: boolean };
-      };
-      console.log("the returned data is", response);
-      if (response?.data?.success === true) {
-        router.push("/otpverification", { scroll: true });
-      } else {
-        toast.error(response?.data?.message || "Register failed");
-      }
-    });
-  };
+    const onSubmit = (data: any) => {
+      dispatch(registerUser(data)).then((res: any) => {
+        console.log("The response is:", res);
+
+        const success = res?.payload?.data?.success;
+        const message = res?.payload?.data?.message;
+
+        if (success === true) {
+          router.push("/otpverification", { scroll: true });
+        } else {
+          toast.error(message || "Register failed");
+        }
+      });
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -220,7 +222,7 @@ const RegisterPage = () => {
                   : "bg-blue-600 hover:bg-blue-700"
               } text-white font-semibold p-2 rounded-lg transition-all duration-300`}
             >
-              {isLoading ? "Logging in..." : "Create Account"}
+              {isLoading ? "Registering..." : "Create Account"}
             </button>
           </form>
 
