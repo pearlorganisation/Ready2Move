@@ -131,7 +131,7 @@ const ImageGallery = ({ images }: { images: Images[] }) => {
               </button>
 
               {/* Navigation Arrows */}
-              {images.length > 1 && (
+              {images?.length > 1 && (
                 <>
                   <button
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 text-white rounded-md transition-colors duration-200 flex items-center justify-center"

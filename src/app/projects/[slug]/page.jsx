@@ -5,13 +5,13 @@ import MySlugComp from "@/components/MySlugComp";
 
 export async function generateMetadata({ params }) {
   const res = await fetch(
-    `https://api.ready2move.co.in/api/v1/projects/${params.slug}`
+    `https://api.ready2move.co.in/api/v1/projects/${params?.slug}`
   );
   const projectData = await res.json(); // Renamed to avoid conflict with 'project' variable name if you declare one later
   // console.log("the res is", projectData);
   const title = projectData?.data?.title ?? "Project Preview";
   const description = projectData?.data?.description ?? "Explore this project";
-  const pageUrl = `https://ready2move.co.in/projects/${params.slug}`; // The canonical URL of THIS page
+  const pageUrl = `https://ready2move.co.in/projects/${params?.slug}`; // The canonical URL of THIS page
   const ogImageUrl = `${pageUrl}/opengraph-image`; // The URL for the OG image itself
 
   return {
@@ -28,15 +28,14 @@ export async function generateMetadata({ params }) {
           width: 1200,
           height: 630,
           alt: title,
-         },
-    
+        },
       ],
-     },
+    },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [ogImageUrl],  
+      images: [ogImageUrl],
     },
   };
 }

@@ -280,7 +280,7 @@ export const getAllProperties = createAsyncThunk(
       priceRange,
       bedRooms,
       bathRooms,
-      areaRange,
+
       q,
       service,
       propertyType,
@@ -288,7 +288,6 @@ export const getAllProperties = createAsyncThunk(
       page: number;
       limit: number;
       priceRange?: number;
-      areaRange?: string;
       bedRooms: number;
       bathRooms: number;
       q?: string;
@@ -309,9 +308,9 @@ export const getAllProperties = createAsyncThunk(
       if (page) queryParams.append("page", page.toString());
       if (limit) queryParams.append("limit", limit.toString());
       if (priceRange) queryParams.append("priceRange", priceRange.toString());
-      if (areaRange) queryParams.append("areaRange", areaRange);
+      // if (areaRange) queryParams.append("areaRange", areaRange);
       if (bedRooms) queryParams.append("bedrooms", bedRooms.toString());
-      if (bathRooms) queryParams.append("areaRange", bathRooms.toString());
+      if (bathRooms) queryParams.append("bathRooms", bathRooms.toString());
       if (q) queryParams.append("q", q);
       if (service) queryParams.append("service", service);
       if (propertyType) queryParams.append("propertyType", propertyType);

@@ -20,8 +20,8 @@ export const createProjectsByBuilder = createAsyncThunk(
       const formData = new FormData();
 
       // ✅ Append Image Gallery
-      if (Array.isArray(userdata?.imageGallary)) {
-        userdata.imageGallary.forEach((file) => {
+      if (Array.isArray(userdata?.imageGallery)) {
+        userdata.imageGallery.forEach((file) => {
           formData.append("imageGallery", file);
         });
       }

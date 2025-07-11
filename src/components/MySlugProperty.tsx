@@ -737,7 +737,12 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         />
                       </div>
                     ))} */}
-                  <ImageGallery images={singlePropertyData?.imageGallery} />
+                  {singlePropertyData?.imageGallery && (
+                    <>
+                      {" "}
+                      <ImageGallery images={singlePropertyData?.imageGallery} />
+                    </>
+                  )}
                 </div>
               </div>
 
