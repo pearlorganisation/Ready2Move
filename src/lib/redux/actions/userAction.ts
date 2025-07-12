@@ -18,9 +18,7 @@ export const loginUser = createAsyncThunk(
       );
       return data;
     } catch (error) {
-        
       return rejectWithValue(error);
-
     }
   }
 );
@@ -74,6 +72,24 @@ export const logout = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(error);
+    }
+  }
+);
+
+export const DelUserData = createAsyncThunk(
+  "delete/UserData",
+  async (id: string, { rejectWithValue }) => {
+    console.log("iddd", id);
+    try {
+      const { data } = await axiosInstance.delete(`/api/v1/users/${id}`);
+
+      return data;
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "User deletion failed";
+      return rejectWithValue(message);
     }
   }
 );
