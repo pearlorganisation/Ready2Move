@@ -83,7 +83,6 @@ const MySlugComp = ({ slug }: { slug: string }) => {
   return (
     <> 
     {isLoading ? <div>Loading...</div> :<>
-    
     <div className="container mx-auto  px-4">
       <Link href="/projects" className="group">
         <button className="mb-2 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
@@ -103,7 +102,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
               <div className="relative h-[300px] md:h-[400px]">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent z-10"></div>
                 <Image
-                  src={image.secure_url}
+                  src={image?.secure_url}
                   alt={`Property Image ${index + 1}`}
                   layout="fill"
                   objectFit="cover"
@@ -222,8 +221,8 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                       </svg>
                     </div>
                     <p className="font-medium">
-                      {singleProjectData?.areaRange.min}sq.ft -{" "}
-                      {singleProjectData?.areaRange.max}sq.ft
+                      {singleProjectData?.areaRange?.min}sq.ft -{" "}
+                      {singleProjectData?.areaRange?.max}sq.ft
                     </p>
                     <p className="text-sm text-gray-500">Area Range</p>
                   </div>
@@ -408,17 +407,6 @@ const MySlugComp = ({ slug }: { slug: string }) => {
               <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
                 <h1 className="font-bold text-2xl mt-4 mb-4">Image Gallery </h1>
                 <div className="flex flex-row gap-2">
-                  {/* {singleProjectData?.imageGallery
-                    ?.slice(0, 5)
-                    .map((image, index) => (
-                      <div className="">
-                        <img
-                          src={image?.secure_url}
-                          alt="Image "
-                          className="w-40 h-40"
-                        />
-                      </div>
-                    ))} */}
                   <ImageGallery images={singleProjectData?.imageGallery} />
                 </div>
               </div>
@@ -545,7 +533,10 @@ const MySlugComp = ({ slug }: { slug: string }) => {
           </div>
         </div>
       </div>
-    </div>    
+    </div>
+
+
+
     </>}
  
     </>
