@@ -22,9 +22,9 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
     dispatch(getSingleProperty({ slug: slug }));
   }, [slug]);
 
-  const { singlePropertyData } = useAppSelector((state) => state.property);
+  const { singlePropertyData,isLoading } = useAppSelector((state) => state?.property);
 
-  console.log(singlePropertyData, "the single property data is");
+ 
 
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +79,10 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
     }
   };
   return (
-    <div className="container mx-auto  px-4">
+
+    <>
+    {isLoading ? <div>Loading...</div>:<>
+        <div className="container mx-auto  px-4">
       <Link href="/properties" className="group">
         <button className="mb-2 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4 transition-colors" />
@@ -376,20 +379,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                   <div className="text-center">
                     <div className="flex justify-center mb-2">
-                      {/* <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-gray-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        /> */}
-                      {/* </svg> */}
+                
 
                       <LuBadgeIndianRupee className="h-6 w-6 text-gray-500" />
                     </div>
@@ -726,17 +716,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
               <div className="px-8 py-4 mb-8 bg-white rounded-lg shadow-sm">
                 <h1 className="font-bold text-2xl mt-4 mb-4">Image Gallery </h1>
                 <div className="flex flex-row gap-2">
-                  {/* {singleProjectData?.imageGallery
-                    ?.slice(0, 5)
-                    .map((image, index) => (
-                      <div className="">
-                        <img
-                          src={image?.secure_url}
-                          alt="Image "
-                          className="w-40 h-40"
-                        />
-                      </div>
-                    ))} */}
+ 
                   {singlePropertyData?.imageGallery && (
                     <>
                       {" "}
@@ -855,8 +835,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-blue-600 hover:bg-blue-700"
                     }`}
-                    // className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200"
-                  >
+                   >
                     {loading ? "Submitting..." : "  Enquiry Now"}
                   </button>
 
@@ -865,49 +844,17 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   </div>
                 </form>
 
-                {/* <div className="fixed bottom-6 right-6 flex flex-col gap-4">
-                  <button className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg relative">
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                      1
-                    </span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      />
-                    </svg>
-                  </button>
-                  <button className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                      />
-                    </svg>
-                  </button>
-                </div> */}
+                
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    
+    </>}
+    </>
+ 
   );
 };
 

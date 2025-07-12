@@ -23,7 +23,7 @@ const MySlugComp = ({ slug }: { slug: string }) => {
   }, [slug]);
 
   console.log("the slug is", slug);
-  const { singleProjectData } = useAppSelector((state) => state.projects);
+  const { singleProjectData ,isLoading} = useAppSelector((state) => state.projects);
 
   const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,37 +78,12 @@ const MySlugComp = ({ slug }: { slug: string }) => {
     }
   };
 
-  function convertToYouTubeEmbedLink(url: string) {
-    try {
-      const parsedUrl = new URL(url);
-      let videoId = "";
-
-      if (parsedUrl.hostname === "youtu.be") {
-        // Short URL format: https://youtu.be/VIDEO_ID
-        videoId = parsedUrl.pathname.slice(1);
-      } else if (
-        parsedUrl.hostname === "www.youtube.com" ||
-        parsedUrl.hostname === "youtube.com"
-      ) {
-        // Long URL format: https://www.youtube.com/watch?v=VIDEO_ID
-        if (parsedUrl.pathname === "/watch") {
-          videoId = parsedUrl.searchParams.get("v") || "";
-        } else if (parsedUrl.pathname.startsWith("/embed/")) {
-          return url; // Already an embed link
-        }
-      }
-
-      if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}`;
-      } else {
-        throw new Error("Invalid YouTube link");
-      }
-    } catch (error) {
-      return "Invalid YouTube URL";
-    }
-  }
+ 
 
   return (
+    <> 
+    {isLoading ? <div>Loading...</div> :<>
+    
     <div className="container mx-auto  px-4">
       <Link href="/projects" className="group">
         <button className="mb-2 flex items-center text-blue-600 group-hover:text-[#0010A3] transition-colors">
@@ -557,7 +532,6 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                         ? "bg-gray-400 cursor-not-allowed"
                         : "bg-blue-600 hover:bg-blue-700"
                     }`}
-                    // className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200"
                   >
                     {loading ? "Submitting..." : "  Enquiry Now"}
                   </button>
@@ -566,50 +540,15 @@ const MySlugComp = ({ slug }: { slug: string }) => {
                     <p>I agree to Ready2move T&C</p>
                   </div>
                 </form>
-
-                {/* <div className="fixed bottom-6 right-6 flex flex-col gap-4">
-                  <button className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg relative">
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                      1
-                    </span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      />
-                    </svg>
-                  </button>
-                  <button className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                      />
-                    </svg>
-                  </button>
-                </div> */}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div>    
+    </>}
+ 
+    </>
   );
 };
 
