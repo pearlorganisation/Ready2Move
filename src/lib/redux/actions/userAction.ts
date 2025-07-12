@@ -1,6 +1,7 @@
 import { UserData } from "@/components/DetailsModal";
 import { axiosInstance } from "@/lib/constants/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 export const loginUser = createAsyncThunk(
   "login/user",
@@ -83,12 +84,15 @@ export const DelUserData = createAsyncThunk(
     try {
       const { data } = await axiosInstance.delete(`/api/v1/users/${id}`);
 
+      toast.success("User deleted successfully ✅"); // ✅ Toast here
       return data;
     } catch (error: any) {
       const message =
         error.response?.data?.message ||
         error.message ||
         "User deletion failed";
+
+      toast.error(message); // ❌ Error toast
       return rejectWithValue(message);
     }
   }
