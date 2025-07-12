@@ -26,7 +26,7 @@ interface Login {
     role: string;
     isVerified: string;
   };
-  users: {};
+  users: any[];
   isUserUpdated: UserUpdated;
 }
 const initialState: Login = {
@@ -42,7 +42,7 @@ const initialState: Login = {
     role: "",
     isVerified: "",
   },
-  users: {},
+  users: [] as any,
   isUserUpdated: {
     isLoading: false,
     isSuccess: false,
@@ -72,7 +72,7 @@ const logInUserSlice = createSlice({
         role: "",
         isVerified: "",
       }),
-        (state.users = {});
+        (state.users = []);
     },
   },
   extraReducers: (builder) => {
@@ -159,7 +159,7 @@ const logInUserSlice = createSlice({
 
         // Optional: remove deleted user from state.users
 
-        state.users = state.usersData.filter(
+        state.users = state?.users?.filter(
           (user: any) => user._id !== action.meta.arg
         );
       })
