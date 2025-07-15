@@ -653,7 +653,7 @@ const Page = () => {
           onPageChange={handlePageClick}
         /> */}
 
-        {totalPages > 1 && (
+        {totalPages >= 1 && (
           <div className="mt-12 flex mb-6 justify-center">
             <nav className="flex items-center space-x-2">
               <button
