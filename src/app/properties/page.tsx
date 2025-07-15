@@ -207,7 +207,7 @@ const PropertiesPage = () => {
                   <input
                     type="range"
                     min="0"
-                    max="2000000"
+                    max="200000000"
                     step="50000"
                     value={priceRange}
                     onChange={(e) => setPriceRange(Number(e.target.value))}
