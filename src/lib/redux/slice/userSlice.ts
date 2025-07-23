@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  changeUserRole,
   DelUserData,
   fetchCurrentUser,
   loginUser,
@@ -167,6 +168,27 @@ const logInUserSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
+      });
+    builder
+      .addCase(changeUserRole.pending, (state) => {
+        state.isUserUpdated.isLoading = true;
+        state.isUserUpdated.isError = false;
+        state.isUserUpdated.isSuccess = false;
+      })
+      .addCase(changeUserRole.fulfilled, (state, action) => {
+        state.isUserUpdated.isLoading = false;
+        state.isUserUpdated.isSuccess = true;
+        state.isUserUpdated.isError = false;
+
+        const updatedUser = action.payload;
+        state.users = state.users.map((user: any) =>
+          user._id === updatedUser._id ? updatedUser : user
+        );
+      })
+      .addCase(changeUserRole.rejected, (state) => {
+        state.isUserUpdated.isLoading = false;
+        state.isUserUpdated.isError = true;
+        state.isUserUpdated.isSuccess = false;
       });
   },
 });

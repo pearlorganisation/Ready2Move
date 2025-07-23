@@ -97,3 +97,25 @@ export const DelUserData = createAsyncThunk(
     }
   }
 );
+
+export const changeUserRole = createAsyncThunk(
+  "user/changeUserRole",
+  async (
+    { userId, role }: { userId: string; role: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await axiosInstance.patch(
+        `/api/v1/users/${userId}/role`,
+        {
+          role,
+        }
+      );
+      return res.data.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to change role"
+      );
+    }
+  }
+);

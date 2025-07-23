@@ -7,6 +7,7 @@ export const getBlogs = createAsyncThunk(
     { page, limit }: { page: number; limit: number },
     { rejectWithValue }
   ) => {
+    console.log("page", page);
     try {
       const { data } = await axiosInstance.get(
         `/api/v1/blogs?page=${page}&limit=${limit}`,
