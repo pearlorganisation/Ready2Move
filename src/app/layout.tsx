@@ -10,13 +10,16 @@ import Script from "next/script"; // ✅ Required for GTM
 export const metadata: Metadata = {
   title: "Ready2Move",
   description: "Created By Pearl",
+  icons: {
+    icon: "../../public/icon-192.png",
+  },
   openGraph: {
-    title: 'Ready2Move',
-    description: 'Best Buying and Rental Properties',
-    url: 'https://ready2move.co.in/',
-    siteName: 'Ready2Move',
-    locale: 'en_US',
-    type: 'website',
+    title: "Ready2Move",
+    description: "Best Buying and Rental Properties",
+    url: "https://ready2move.co.in/",
+    siteName: "Ready2Move",
+    locale: "en_US",
+    type: "website",
     images:
       "https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg",
   },
@@ -42,7 +45,7 @@ export default function RootLayout({
 
       <body>
         {/* ✅ GTM NOSCRIPT (for users without JS) */}
-         <noscript>
+        <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-MD47XS64"
             height="0"

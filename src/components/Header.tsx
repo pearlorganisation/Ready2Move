@@ -5,13 +5,16 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { logoutUser } from "@/lib/redux/slice/userSlice";
 import { logout } from "@/lib/redux/actions/userAction";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { userData, isLoggedIn } = useAppSelector((state) => state?.user);
   const HandleLogout = () => {
     dispatch(logoutUser());
     dispatch(logout());
+    router.push("/login");
   };
 
   console.log("is logged in", isLoggedIn);
@@ -76,7 +79,7 @@ const Header = () => {
                   href={`/admin/superadmin/dashboard`}
                   className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
                 >
-                  Go to Dashboard
+                  Dashboard
                 </Link>
                 <button
                   className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
@@ -91,7 +94,7 @@ const Header = () => {
                   href={`/admin/${userData?.role.toLowerCase()}`}
                   className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"
                 >
-                  Go to Dashboard
+                  Dashboard
                 </Link>
                 <button
                   className="block py-2 px-4 font-semibold text-gray-900 hover:text-blue-700"

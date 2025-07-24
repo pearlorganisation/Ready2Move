@@ -10,9 +10,21 @@ import {
   HelpCircle,
   HousePlus,
   BookHeadphones,
+  LogOut,
 } from "lucide-react";
+import { useAppDispatch } from "@/lib/hooks/dispatchHook";
+import { useRouter } from "next/navigation";
+import { logoutUser } from "@/lib/redux/slice/userSlice";
+import { logout } from "@/lib/redux/actions/userAction";
 
 export function Sidebar() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    router.push("/login"); // redirect to login page
+  };
   return (
     <div className="w-64 bg-background border-r h-screen p-4">
       <div className="mb-8">
@@ -65,6 +77,14 @@ export function Sidebar() {
           label="Blogs"
         />
       </nav>
+      {/* Logout button at the bottom */}
+      <button
+        onClick={handleLogout}
+        className="mt-4 flex items-center rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        Logout
+      </button>
     </div>
   );
 }
