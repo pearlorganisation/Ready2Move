@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/helper/card";
-import { Building2, Users, House, X } from "lucide-react";
+import { Building2, Users, House, X, BookOpenText } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getDashboardData } from "@/lib/redux/actions/dashboardAction";
 import { Button } from "@/components/helper/button";
@@ -21,7 +21,6 @@ import {
   updateLeadById,
 } from "@/lib/redux/actions/leadsAction";
 import { FaChevronDown } from "react-icons/fa";
-import { RiBloggerLine } from "react-icons/ri";
 import DeleteModal from "@/components/DeletedModal";
 
 interface LeadRowProps {
@@ -154,7 +153,7 @@ export default function DashboardPage() {
               title="Blogs"
               value={dashboardData?.data?.totalBlogs ?? 0}
               description="Total Blogs"
-              icon={<RiBloggerLine className="h-5 w-5" />}
+              icon={<BookOpenText className="h-5 w-5" />}
             />
           </div>
 

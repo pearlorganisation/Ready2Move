@@ -2,20 +2,20 @@
 import type React from "react";
 import Link from "next/link";
 import {
+  LayoutDashboard ,
   Home,
   BarChart3,
   Building2,
-  FolderKanban,
   Users,
   HelpCircle,
+  BookOpenText,
   HousePlus,
-  BookHeadphones,
   LogOut,
+  Headset,
 } from "lucide-react";
 import { useAppDispatch } from "@/lib/hooks/dispatchHook";
 import { useRouter } from "next/navigation";
 import { logoutUser } from "@/lib/redux/slice/userSlice";
-import { logout } from "@/lib/redux/actions/userAction";
 
 export function Sidebar() {
   const dispatch = useAppDispatch();
@@ -33,7 +33,7 @@ export function Sidebar() {
       <nav className="space-y-2">
         <SidebarLink
           href="/admin/superadmin/dashboard"
-          icon={<Home className="mr-2 h-4 w-4" />}
+          icon={<LayoutDashboard  className="mr-2 h-4 w-4" />}
           label="Dashboard"
         />
         <SidebarLink
@@ -48,17 +48,17 @@ export function Sidebar() {
         />
         <SidebarLink
           href="/admin/superadmin/property"
-          icon={<Building2 className="mr-2 h-4 w-4" />}
+          icon={<Home className="mr-2 h-4 w-4" />}
           label="Property"
         />
         <SidebarLink
           href="/admin/superadmin/project"
-          icon={<FolderKanban className="mr-2 h-4 w-4" />}
+          icon={<Building2 className="mr-2 h-4 w-4" />}
           label="Projects"
         />
         <SidebarLink
           href="/admin/superadmin/leads"
-          icon={<BookHeadphones className="mr-2 h-4 w-4" />}
+          icon={<Headset  className="mr-2 h-4 w-4" />}
           label="Leads"
         />
         <SidebarLink
@@ -73,7 +73,7 @@ export function Sidebar() {
         />
         <SidebarLink
           href="/admin/superadmin/blogs"
-          icon={<HelpCircle className="mr-2 h-4 w-4" />}
+          icon={<BookOpenText  className="mr-2 h-4 w-4" />}
           label="Blogs"
         />
       </nav>

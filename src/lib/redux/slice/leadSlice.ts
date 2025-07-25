@@ -94,19 +94,19 @@ const leadSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // .addCase(GetUserByRoles.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = null;
-      // })
-      // .addCase(GetUserByRoles.fulfilled, (state, action) => {
-      //   state.users = action.payload.data;
-      //   state.pagination = action.payload.pagination;
-      //   state.loading = false;
-      // })
-      // .addCase(GetUserByRoles.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.error = action.payload as string;
-      // })
+      .addCase(GetUserByRoles.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetUserByRoles.fulfilled, (state, action) => {
+        state.users = action.payload.data;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+      })
+      .addCase(GetUserByRoles.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
 
       .addCase(createLeads.pending, (state) => {
         state.loading = true;

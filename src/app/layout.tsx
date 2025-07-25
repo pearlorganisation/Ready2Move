@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "../../public/icon-192.png",
   },
+  verification: {
+    google: 'ddBaCyXDPOcDT9xwLDJPYnKw2QTpA3OvJgfeTUGQ_TA',
+  },
   openGraph: {
     title: "Ready2Move",
     description: "Best Buying and Rental Properties",
@@ -42,6 +45,19 @@ export default function RootLayout({
           })(window,document,'script','dataLayer','GTM-MD47XS64');
         `}
       </Script>
+
+      <Script
+  src="https://www.googletagmanager.com/gtag/js?id=G-PR0QL0Q6FE"
+  strategy="afterInteractive"
+/>
+<Script id="ga-init" strategy="afterInteractive">
+  {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-PR0QL0Q6FE');
+  `}
+</Script>
 
       <body>
         {/* ✅ GTM NOSCRIPT (for users without JS) */}

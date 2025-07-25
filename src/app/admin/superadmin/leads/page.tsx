@@ -45,6 +45,10 @@ interface LeadRowProps {
   createdAt: string;
   project?: any;
   property?: any;
+  currentPage: number;
+  currentStatus: string;
+  propertyOrProject: string;
+  feedBack?: string;
 }
 
 export default function LeadsPage() {
@@ -168,6 +172,7 @@ export default function LeadsPage() {
               <th className="p-3 border">Project/Property</th>
               <th className="p-3 border">Assigned To</th>
               <th className="p-3 border">Status</th>
+              <th className="p-3 border">Feedback</th>
               <th className="p-3 border">Date</th>
               <th className="p-3 border text-right">Actions</th>
             </tr>
@@ -175,7 +180,10 @@ export default function LeadsPage() {
           <tbody>
             {leads?.length > 0 ? (
               leads?.map((lead, index) => (
-                <LeadRow key={lead._id} Sno={index + 1} {...lead} />
+                <LeadRow key={lead._id} Sno={index + 1} {...lead} 
+                currentPage={currentPage}
+                currentStatus={currentStatus}
+                propertyOrProject={propertyOrProject}/>
               ))
             ) : (
               <tr>
@@ -215,10 +223,13 @@ function LeadRow({
   phoneNumber,
   project,
   property,
-
   assignedTo,
   status,
   createdAt,
+  currentPage,
+  currentStatus,
+  propertyOrProject,
+  feedBack = "", 
 }: {
   Sno: number;
 } & LeadRowProps) {
@@ -260,6 +271,7 @@ function LeadRow({
   const {
     register,
     handleSubmit,
+    reset,
     setValue,
     formState: { errors },
   } = useForm({
@@ -271,9 +283,24 @@ function LeadRow({
       property,
       assignedTo,
       status,
-      feedBack: "",
+      feedBack,
     },
   });
+
+  useEffect(() => {
+  if (isEditDialogOpen) {
+    reset({
+      name,
+      email,
+      phoneNumber,
+      project,
+      property,
+      assignedTo,
+      status,
+      feedBack,
+    });
+  }
+}, [isEditDialogOpen, name, email, phoneNumber, project, property, assignedTo, status, feedBack, reset]);
 
   const handleEdit = () => {
     setIsEditDialogOpen(true);
@@ -287,6 +314,15 @@ function LeadRow({
       await dispatch(updateLeadById({ id: _id, updatedData: data })).unwrap();
       toast.success("Lead updated successfully!");
       setIsEditDialogOpen(false);
+      // Re-fetch leads on the same page with current filters
+await dispatch(
+  getAllLeads({
+    page: currentPage,
+    limit: 5,
+    status: currentStatus,
+    propertyOrProject,
+  })
+);
     } catch (error) {
       toast.error("Failed to update lead!");
     }
@@ -335,6 +371,18 @@ function LeadRow({
             {status}
           </span>
         </td>
+        <td
+  className="p-3 border max-w-xs truncate"
+  title={feedBack ? feedBack : ""}
+>
+  {feedBack === null || feedBack === undefined || feedBack === ""
+    ? "No Feedback"
+    : feedBack.length > 10
+    ? feedBack.slice(0, 10) + "..."
+    : feedBack}
+</td>
+
+
         <td className="p-3 border">
           {new Date(createdAt).toLocaleDateString()}
         </td>
