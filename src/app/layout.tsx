@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Ready2Move",
   description: "Created By Pearl",
   icons: {
-    icon: "../../public/icon-192.png",
+    icon: "/sitefavicon.png",
   },
   verification: {
     google: 'ddBaCyXDPOcDT9xwLDJPYnKw2QTpA3OvJgfeTUGQ_TA',
