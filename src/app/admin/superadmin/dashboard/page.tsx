@@ -73,9 +73,9 @@ export default function DashboardPage() {
     formState: { errors },
   } = useForm<Partial<LeadRowProps>>({
     defaultValues: {
-      name: "",
-      email: "",
-      phoneNumber: "",
+      // name: "",
+      // email: "",
+      // phoneNumber: "",
       assignedTo: "",
       status: "PENDING",
       feedBack: "",
@@ -87,6 +87,7 @@ export default function DashboardPage() {
     setSelectedLeadId(lead._id);
     setValue("assignedTo", lead.assignedTo?._id || "");
     setValue("status", lead.status);
+    setValue("feedBack", lead?.feedBack);
     setNewAssignee(
       lead.assignedTo
         ? { name: lead.assignedTo.name, role: lead.assignedTo.role || "" }
@@ -172,6 +173,7 @@ export default function DashboardPage() {
                   <th className="text-center">Phone Number</th>
                   <th className="text-center">Assigned To</th>
                   <th className="text-center">Status</th>
+                  <th className="text-center">Feedback</th>
                   <th className="text-center">Date</th>
                   <th className="text-center">Actions</th>
                 </tr>
@@ -194,6 +196,16 @@ export default function DashboardPage() {
                           <span className="bg-blue-500 text-white px-3 py-1 rounded text-sm">
                             {item.status}
                           </span>
+                        </td>
+                           <td
+                          className="p-3 border max-w-xs truncate"
+                          title={item?.feedBack ? item?.feedBack : ""}
+                        >
+                          {item?.feedBack === null || item?.feedBack === undefined || item?.feedBack === ""
+                            ? "No Feedback"
+                            : item?.feedBack.length > 10
+                            ? item?.feedBack.slice(0, 10) + "..."
+                            : item?.feedBack}
                         </td>
                         <td className="p-2">
                           {new Date(item.createdAt).toLocaleDateString()}

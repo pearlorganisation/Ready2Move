@@ -371,7 +371,7 @@ await dispatch(
             {status}
           </span>
         </td>
-        <td
+<td
   className="p-3 border max-w-xs truncate"
   title={feedBack ? feedBack : ""}
 >
