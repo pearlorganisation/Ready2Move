@@ -5,9 +5,7 @@ import { axiosInstance } from "@/lib/constants/axiosInstance"
  
 const RoleRedirect = ({role}:{role:string}) => {
   const router = useRouter()
-  const pathname = usePathname()
-  console.log("the pathname of the page is", pathname)
-
+  
   const [userdata, setuserdata] = useState<{ role: string } | null>(null)
 
   useEffect(() => {
