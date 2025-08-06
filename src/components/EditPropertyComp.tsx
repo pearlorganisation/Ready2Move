@@ -1,10 +1,9 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { axiosInstance } from '@/lib/constants/axiosInstance';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook';
-import { getSingleProject } from '@/lib/redux/actions/projectAction';
 import { getSingleProperty } from '@/lib/redux/actions/propertyAction';
 import { useRouter } from "next/navigation"; // ✅ App Router
 import { getFeatures } from '@/lib/redux/actions/featuresAction';

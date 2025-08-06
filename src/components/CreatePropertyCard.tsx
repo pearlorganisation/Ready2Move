@@ -14,8 +14,8 @@ import {
   getAllProperties,
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
-import { useRouter } from "next/navigation"; // ✅ App Router
-import Propertylisting from "../app/admin/superadmin/propertylist/page"
+import { useRouter } from "next/navigation";  
+import Propertylisting from "@/components/propertylist/page"
 type FormData = {
   title: string;
   slug: string;
@@ -592,8 +592,7 @@ export default function PropertyComponent() {
     setValue("slug", slugify(value, { lower: true, strict: true, trim: true }));
   };
 
-  console.log("the steps are", steps.length);
-  console.log("the current steps are", currentStep);
+ 
   // Handle image upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -613,8 +612,7 @@ export default function PropertyComponent() {
   const onSubmit = (data: any) => {
     const formData = { ...data, id: userData?._id };
     dispatch(createPropertyByAdmin({ userdata: formData })).then((res) => {
-      console.log("the res is", res);
-      if (res?.payload?.success == true) {
+       if (res?.payload?.success == true) {
         dispatch(
           getAllProperties({
             page: 1,
@@ -646,7 +644,7 @@ export default function PropertyComponent() {
         </button>
       </div>
       <div>
-        <Propertylisting />
+        <Propertylisting from='AGENT' />
       </div>
       <div className="flex max-w-full">
         {OpenPropertyModal && (

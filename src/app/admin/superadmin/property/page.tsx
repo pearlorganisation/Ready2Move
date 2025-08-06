@@ -15,7 +15,7 @@ import {
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
-import Propertylisting from "../propertylist/page";
+import Propertylisting from "@/components/propertylist/page"
 type FormData = {
   title: string;
   slug: string;
@@ -646,7 +646,7 @@ export default function PropertyForm() {
         </button>
       </div>
       <div>
-        <Propertylisting />
+        <Propertylisting from='ADMIN' />
       </div>
       <div className="flex max-w-full">
         {OpenPropertyModal && (

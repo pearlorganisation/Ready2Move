@@ -2,10 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { getAllProjects } from "@/lib/redux/actions/projectAction";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import PaginationMainComponent from "@/components/PaginationMain";
-import { Delete } from "lucide-react";
 import {
   deleteProperty,
   getAllProperties,
@@ -14,7 +12,11 @@ import {
 import { useRouter } from "next/navigation"; // ✅ App Router
 import DeleteModal from "@/components/DeletedModal";
 
-const ProjectListing = () => {
+type Property ={
+  from: string
+}
+
+const ProjectListing = ({from}:Property) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -30,10 +32,10 @@ const ProjectListing = () => {
       setCurrentPage(page);
     }
   };
-
+ 
+  const link = from === 'ADMIN' ? `/admin/superadmin/property/edit`:`/admin/agent/edit` 
   const handleModalOpen = (slug: string) => {
-    console.log("slug", slug);
-    router.push(`/admin/superadmin/property/edit/${slug}`);
+      router.push(`${link}/${slug}`);
   };
   useEffect(() => {
     dispatch(
@@ -132,8 +134,7 @@ const ProjectListing = () => {
                   )}
                 </td>
 
-                {/* fdsmnhfdngm,dfn,ngm,dnm,ndsm,nm,dsn,sdn */}
-
+ 
                 <td className="p-3 flex justify-center items-center mt-6 gap-4">
                   <button
                     className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500"
