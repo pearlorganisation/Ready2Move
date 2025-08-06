@@ -15,7 +15,7 @@ import {
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
-import Propertylisting from "../propertylist/page";
+import Propertylisting from "../app/admin/superadmin/propertylist/page"
 type FormData = {
   title: string;
   slug: string;
@@ -458,7 +458,7 @@ const CustomPopover = ({
   );
 };
 
-export default function PropertyForm() {
+export default function PropertyComponent() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);

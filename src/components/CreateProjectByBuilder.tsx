@@ -56,31 +56,17 @@ const CreateProjectBuilderForm: React.FC<CreateProjectBuilderFormProps> = ({
   const { featureData } = useAppSelector((state) => state?.features);
   const { userData } = useAppSelector((state) => state?.user);
 
-  // Handle image preview
-  // const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (!e.target.files) return;
-
-  //   const files = Array.from(e.target.files) as File[];
-  //   setSelectedImages(files);
-
-  //   const previews = files.map((file) => URL.createObjectURL(file));
-  //   setPreviewImages(previews);
-  // };
-
+ 
   const title = watch("title");
   const service = watch("service");
   const projectType = watch("projectType");
-
-  // const handleOpenAddProject =()=>{
-  //   setOpenAddProjectModal(!openAddProjectModal)
-  // }
-
+ 
   const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
     const files = Array.from(e.target.files) as File[];
     console.log(files);
-    // Deduplicate by name and size (can be more advanced if needed)
+  
     const newFiles = files.filter(
       (file) =>
         !selectedImages.some(
@@ -95,8 +81,7 @@ const CreateProjectBuilderForm: React.FC<CreateProjectBuilderFormProps> = ({
 
     const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
     setPreviewImages((prev) => [...prev, ...newPreviews]);
-
-    // Reset input value to allow re-upload of same file if needed
+ 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
