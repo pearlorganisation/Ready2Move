@@ -1970,9 +1970,9 @@ export default function PropertyComponent() {
                             id="youtubeEmbedLink"
                             label="YouTube Embed Link"
                             placeholder="YouTube Link"
-                            error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
+                            // error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
                             {...register("youtubeEmbedLink", {
-                              required: "This field is required", // ✅ Required validation
+                              // required: "This field is required", // ✅ Required validation
                             })}
                           />
 
