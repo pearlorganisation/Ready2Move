@@ -2166,17 +2166,18 @@ export default function PropertyComponent() {
                         Publish
                       </button>
                     ) : (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          const valid = await trigger(); // validate current step
-                          if (valid) {
-                            handleNext();
-                          }
-                        }}
-                      >
-                        Next
-                      </button>
+                      <CustomButton
+                          type="button"
+                          variant="outline"
+                          onClick={async () => {
+                            const valid = await trigger(); // validate current step
+                            if (valid) {
+                              handleNext();
+                            }
+                          }}
+                        >
+                          Next
+                        </CustomButton>
                     )}
                   </div>
                 </div>
