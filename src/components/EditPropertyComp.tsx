@@ -179,30 +179,23 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
     name: 'area',
   });
 
-const servicename= watch('service')
-  //  console.log("the service name", servicename)
-  const onSubmit = async (data: Property) => {
+    const onSubmit = async (data: Property) => {
        const formData = new FormData();
 
-      // ✅ Append Basic Details
-      // formData.append("user", data?.id || "");
-      formData.append("title", data?.title || "");
-      // formData.append("slug", data?.slug || "");
-      formData.append("subTitle", data?.subTitle || "");
+       formData.append("title", data?.title || "");
+       formData.append("subTitle", data?.subTitle || "");
       formData.append("description", data?.description || "");
       formData.append("service", data?.service);
       formData.append("property", data?.property || "RESIDENTIAL");
       formData.append("propertyType", data?.propertyType || "");
 
-      // ✅ Append Location Details
-      formData.append("apartmentName", data?.apartmentName || "");
+       formData.append("apartmentName", data?.apartmentName || "");
       formData.append("apartmentNo", data?.apartmentNo || "");
       formData.append("locality", data?.locality || "");
       formData.append("city", data?.city || "");
       formData.append("state", data?.state || "");
 
-      // ✅ Append Property Size & Configuration
-      data?.area?.forEach((areaItem, index) => {
+       data?.area?.forEach((areaItem, index) => {
         formData.append(`area[${index}][name]`, areaItem.name);
         formData.append(`area[${index}][area]`, areaItem.area.toString());
         formData.append(
@@ -210,20 +203,6 @@ const servicename= watch('service')
           areaItem.areaMeasurement
         );
       });
-
-      // if (data?.area) {
-      //   formData.append("area[area]", data.area.toString());
-      //   formData.append("area[measurement]", data.measurement);
-      // }
-
-      // formData.append(
-      //   "propertyFloor",
-      //   data?.propertyFloor?.toString() || "0"
-      // );
-      // formData.append("totalFloors", data?.totalFloors?.toString() || "0");
-      // formData.append("roadWidth", data?.roadWidth?.toString() || "0");
-
-      // ✅ Append Legal & Registration
       if (data?.reraNumber)
         formData.append("reraNumber", data.reraNumber);
       if (data?.reraPossessionDate)
@@ -232,8 +211,7 @@ const servicename= watch('service')
           data.reraPossessionDate
         );
 
-      // ✅ Append Property Features
-      formData.append(
+       formData.append(
         "noOfBedrooms",
         data?.noOfBedrooms?.toString() || "0"
       );
@@ -260,8 +238,7 @@ const servicename= watch('service')
       );
       formData.append("ownership", data?.ownership || "");
 
-      // ✅ Append Pricing & Charges
-      formData.append(
+       formData.append(
         "expectedPrice",
         data?.expectedPrice?.toString() || "0"
       );
@@ -274,23 +251,11 @@ const servicename= watch('service')
         data?.isBrokerageCharge ? "true" : "false"
       );
       formData.append("brokerage", data?.brokerage?.toString() || "0");
-      // formData.append(
-      //   "maintenanceCharge",
-      //   data?.maintenanceCharge?.toString() || "0"
-      // );
-      // formData.append(
-      //   "maintenanceFrequency",
-      //   data?.maintenanceFrequency || ""
-      // );
-
-      // ✅ Append Financial & Legal
       if (Array.isArray(data?.bankOfApproval)) {
         data.bankOfApproval.forEach((bank) => {
           formData.append("bankOfApproval", bank);
         });
       }
-
-      // ✅ Append Amenities & Features
       if (Array.isArray(data?.aminities)) {
         data.aminities.forEach((amenity) => {
           formData.append("aminities", amenity);
@@ -301,9 +266,6 @@ if (Array.isArray(data?.waterSource)) {
           formData.append("waterSource", source);
         });
       }
-
-      // formData.append("waterSource", data?.waterSource || "");
-
       if (Array.isArray(data?.otherFeatures)) {
         data.otherFeatures.forEach((feature) => {
           formData.append("otherFeatures", feature);
@@ -311,15 +273,7 @@ if (Array.isArray(data?.waterSource)) {
       }
 
       formData.append("propertyFlooring", data?.propertyFlooring || "");
-      // formData.append("powerBackup", data?.powerBackup || "");
-
-      // if (Array.isArray(data?.nearbyLandmarks)) {
-      //   data.nearbyLandmarks.forEach((landmark) => {
-      //     formData.append("nearbyLandmarks", landmark);
-      //   });
-      // }
-
-      // ✅ Append Media
+ 
       if (Array.isArray(data?.imageGallery)) {
         data.imageGallery.forEach((file) => {
           formData.append("imageGallery", file);
@@ -340,8 +294,7 @@ if (Array.isArray(data?.waterSource)) {
     try {
       await axiosInstance.patch(`/api/v1/properties/${slug}`, formData,config);
       alert('Property updated successfully!');
-      // router.push('/admin/superadmin/property')
-    } catch (err) {
+     } catch (err) {
       console.error(err);
       alert('Failed to update Property.');
     }
@@ -351,7 +304,7 @@ if (Array.isArray(data?.waterSource)) {
 
   return (
       <>
-          <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-xl mt-6">
+          <div className="w-full p-6 bg-white shadow-md rounded-xl mt-6">
             <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Edit Property</h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -395,9 +348,6 @@ if (Array.isArray(data?.waterSource)) {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Price Max</label>
                 <input {...register('priceRange.max')} placeholder="Price Max" type="number" className="w-full p-3 border rounded-md" />
               </div>
-
-              {/* Area Range */}
-            
               {fields.map((item, index) => (
                 <div key={item.id} className="space-y-2">
                   <select {...register(`area.${index}.name`)}>
@@ -879,21 +829,14 @@ if (Array.isArray(data?.waterSource)) {
                   </div>
                   
                   <div>
-                    {/* <label>Add Images</label>
-                    <input 
-                     type='file'
-                     multiple
-                     id="images"
-                     {...register('imageGallery')}
-                    /> */}
+                  
                 <label>Add Images</label>
                   <input
                       type="file"
                       id="imageGallery"
                       multiple
                       accept="image/*"
-                      // className="hidden"
-                      ref={fileInputRef}
+                       ref={fileInputRef}
                       onChange={handleImageUpload}
                     />
                   </div>

@@ -6,11 +6,6 @@ import { Home, BarChart3, Building2, FolderKanban, Users, HelpCircle, HousePlus,
 export function AgentSidebar({ setTab }: { setTab: (index:number) => void }) {
     const navItems=[
         {id:0, label:"Projects"},
-        // {id:1, label:"Item 2"},
-        // {id:2, label:"Item 3"},
-        // {id:3, label:"Item 4"},
-        // {id:4, label:"Item 5"},
-
     ]
   return (
     <div className="w-64 bg-background border-r h-screen p-4">
