@@ -583,18 +583,15 @@ export default function PropertyComponent() {
     },
   ];
 
-  // Watch form values for dynamic updates
-   const isBrokerageCharge = watch("isBrokerageCharge");
+    const isBrokerageCharge = watch("isBrokerageCharge");
  
-  // Update slug when title changes
-  const handleTitleChange = (value: string) => {
+   const handleTitleChange = (value: string) => {
     setValue("title", value);
     setValue("slug", slugify(value, { lower: true, strict: true, trim: true }));
   };
 
  
-  // Handle image upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files) as File[];
     setValue("imageGallery", files);
@@ -632,10 +629,8 @@ export default function PropertyComponent() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-end mt-6 px-6">
-      {/* Sidebar */}
-      <div></div>
-      <div className="flex  justify-end">
+    <div className="flex flex-col justify-end mt-6">
+      <div className="flex justify-end">
         <button
           onClick={handleModalOpen}
           className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "

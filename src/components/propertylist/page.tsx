@@ -93,12 +93,11 @@ const ProjectListing = ({from}:Property) => {
             <th className="p-3 border">Actions</th>
           </tr>
         </thead>
-        <tbody>
+        {/* <tbody>
           {Array.isArray(propertyData) &&
             propertyData?.map((project: any, index: any) => (
               <tr key={project?._id} className="border-t">
-                {/* <td className="p-3 border">{index + 1}</td> */}
-
+ 
                 <td className="p-3 border">
                   {(currentPage - 1) * limit + index + 1}
                 </td>
@@ -153,7 +152,68 @@ const ProjectListing = ({from}:Property) => {
                 </td>
               </tr>
             ))}
-        </tbody>
+        </tbody> */}
+
+        <tbody>
+  {Array.isArray(propertyData) && propertyData.length > 0 ? (
+    propertyData.map((project: any, index: any) => (
+      <tr key={project?._id} className="border-t">
+        <td className="p-3 border">
+          {(currentPage - 1) * limit + index + 1}
+        </td>
+        <td className="p-3 border">{project?.title}</td>
+        <td className="p-3 border">
+          {project.imageGallery.slice(0, 1).map((img: any) => (
+            <img
+              key={img}
+              src={img.secure_url}
+              alt="image"
+              className="w-20 h-20 rounded-md"
+            />
+          ))}
+        </td>
+        <td className="p-3 border">{project?.propertyType?.name}</td>
+        <td className="p-3 border">
+          {project.city} {project.locality} {project.state}
+        </td>
+        <td className="p-3 border">{project?.reraNumber}</td>
+        <td className="p-3 border">{project?.service}</td>
+        <td className="p-3 border">
+          {project.isFeatured ? (
+            <span className="px-2 py-1 text-xs rounded bg-green-500 text-white">
+              YES
+            </span>
+          ) : (
+            <span className="px-2 py-1 text-xs rounded bg-gray-400 text-white">
+              NO
+            </span>
+          )}
+        </td>
+        <td className="p-3 flex justify-center items-center mt-6 gap-4">
+          <button
+            className="bg-yellow-400 p-2 rounded text-white hover:bg-yellow-500"
+            onClick={() => handleModalOpen(project.slug)}
+          >
+            <FaEdit />
+          </button>
+          <button
+            className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
+            onClick={() => handleDelete(project._id)}
+          >
+            <FaTrash />
+          </button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={9} className="text-center p-4 text-gray-500">
+        No data available
+      </td>
+    </tr>
+  )}
+</tbody>
+
       </table>
 
       <div className="mt-12 flex justify-center">
