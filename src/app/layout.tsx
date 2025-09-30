@@ -6,6 +6,7 @@ import FooterWrapper from "@/components/FooterWrapper";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Script from "next/script"; // ✅ Required for GTM
+import WhatsAppWrapper from "@/components/WhatsappWrapper";
 
 export const metadata: Metadata = {
   title: "Ready2Move",
@@ -73,6 +74,7 @@ export default function RootLayout({
         <ReduxProvider>
           <HeaderWrapper />
           <main>{children}</main>
+          <WhatsAppWrapper />
           <FooterWrapper />
           <ToastContainer position="top-right" autoClose={3000} />
         </ReduxProvider>
