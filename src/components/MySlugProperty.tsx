@@ -739,6 +739,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         src={singlePropertyData?.youtubeEmbedLink?.replace("youtube.com", "youtube-nocookie.com")}
                         title="YouTube video player"
                         // frameBorder="0"
+                        referrerPolicy="strict-origin-when-cross-origin"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       ></iframe>
