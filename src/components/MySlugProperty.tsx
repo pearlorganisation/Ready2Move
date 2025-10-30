@@ -18,10 +18,7 @@ import ImageGallery from "./ImageGallery";
 import { LuBadgeIndianRupee } from "react-icons/lu";
 const MySlugProperty = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(getSingleProperty({ slug: slug }));
-  }, [slug]);
-
+   
   const { singlePropertyData,isLoading } = useAppSelector((state) => state?.property);
 
  
@@ -77,6 +74,12 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
     } finally {
       setIsLoading(false);
     }
+
+
+  useEffect(() => {
+    dispatch(getSingleProperty({ slug: slug }));
+  }, [slug]);
+
   };
   return (
 
@@ -729,10 +732,11 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                   <div className="aspect-w-16 aspect-h-9">
                     <div className="w-full h-0 pb-[56.25%] relative bg-gray-200">
                       <iframe
+                        style={{ border: "0" }}
                         className="absolute inset-0 w-full h-full"
-                        src={singlePropertyData?.youtubeEmbedLink}
+                        src={singlePropertyData?.youtubeEmbedLink?.replace("youtube.com", "youtube-nocookie.com")}
                         title="YouTube video player"
-                        frameBorder="0"
+                        // frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       ></iframe>

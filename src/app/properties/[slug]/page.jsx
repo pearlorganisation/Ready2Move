@@ -39,7 +39,7 @@ export async function generateMetadata({ params }) {
 export default function Page({ params }) {
   return (
     <div className="mt-2">
-      <MySlugProperty slug={params.slug} />
+      <MySlugProperty slug={params?.slug} />
     </div>
   );
 }
