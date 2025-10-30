@@ -76,11 +76,13 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
     }
 
 
+ 
+
+  };
+    
   useEffect(() => {
     dispatch(getSingleProperty({ slug: slug }));
   }, [slug]);
-
-  };
   return (
 
     <>
