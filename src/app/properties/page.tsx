@@ -1,10 +1,13 @@
 "use client";
 
 import { useDebounce } from "@/lib/hooks/debounceHook";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
-import { getAllProperties } from "@/lib/redux/actions/propertyAction";
+import { useAppDispatch, useAppSelector,  } from "@/lib/hooks/dispatchHook";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProperties, getAllLocations } from "@/lib/redux/actions/propertyAction";
+import { ChevronRight, MapPin, Search, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+
 import {
   FaSearch,
   FaBed,
@@ -22,6 +25,7 @@ import {
 const PropertiesPage = () => {
   const dispatch = useAppDispatch();
   const { propertyData, paginate } = useAppSelector((state) => state.property);
+  const { allLocations, isLoading } = useAppSelector((state) => state.property);
 
   const [service, setService] = useState("");
   const [propertyType, setPropertyType] = useState("");
@@ -34,6 +38,16 @@ const PropertiesPage = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+const locationRef = useRef<HTMLDivElement>(null);
+
+   useEffect(() => {
+  dispatch(getAllLocations());
+}, [dispatch]);
+
+const uniqueLocations = Array.from(new Set(allLocations?.map(l => l.fullLocation)))
+  .map(full => allLocations.find(l => l.fullLocation === full));
+
 
   // Debounced values
   const debouncedPriceRange = useDebounce(priceRange, 500);
@@ -44,6 +58,42 @@ const PropertiesPage = () => {
   // Pagination
   const totalPages = Math.ceil(paginate?.total / paginate?.limit) || 0;
   const itemsPerPage = 6;
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (locationRef.current && !locationRef.current.contains(event.target as Node)) {
+      setIsLocationOpen(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+ 
+  // Single Source of Truth for fetching properties
+useEffect(() => {
+  dispatch(
+    getAllProperties({
+      page: currentPage,
+      limit: itemsPerPage,
+      service: service?.toUpperCase() as any,
+      propertyType: propertyType?.toUpperCase() as any,
+      // 'q' is the query parameter used in your backend for searching
+      q: debouncedSearch || undefined, 
+      priceRange: debouncedPriceRange,
+      bedRooms: debouncedBedRoom,
+      bathRooms: debouncedBathRoom,
+    })
+  );
+}, [
+  dispatch,
+  currentPage,
+  service,
+  propertyType,
+  debouncedSearch, // Selection from dropdown OR typing in search bar triggers this
+  debouncedPriceRange,
+  debouncedBedRoom,
+  debouncedBathRoom,
+]);
+
 
   const handlePageClick = (page: number) => {
     if (page > 0 && page <= totalPages) {
@@ -69,6 +119,32 @@ const PropertiesPage = () => {
     setBathrooms(0);
     setActiveFilter("all");
   };
+
+  useEffect(() => {
+  dispatch(
+    getAllProperties({
+      page: currentPage,
+      limit: itemsPerPage,
+      service: service?.toUpperCase() as any,
+      propertyType: propertyType?.toUpperCase() as any,
+      // CHANGE HERE: Map the search query specifically to the location field
+      location: debouncedSearch || undefined, 
+      priceRange: debouncedPriceRange,
+      bedRooms: debouncedBedRoom,
+      bathRooms: debouncedBathRoom,
+    })
+  );
+}, [
+  dispatch,
+  currentPage,
+  service,
+  propertyType,
+  debouncedSearch, // This now triggers location-based search
+  debouncedPriceRange,
+  debouncedBedRoom,
+  debouncedBathRoom,
+]);
+
 
   // Fetch properties
   useEffect(() => {
@@ -198,81 +274,114 @@ const PropertiesPage = () => {
             </div>
 
             {/* Advanced Filters */}
-            <div className="bg-gray-50 rounded-xl p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Max Price: ₹{priceRange.toLocaleString()}
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="200000000"
-                    step="50000"
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-emerald"
-                  />
-                </div>
+          {/* Advanced Filters */}
+<div className="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-sm relative">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-end">
+    
+    {/* 1. Price Range */}
+    <div className="flex flex-col">
+      <label className="block text-sm font-semibold text-gray-700 mb-3">
+        Max Price: <span className="text-[#1E3D9C]">₹{priceRange.toLocaleString()}</span>
+      </label>
+      <div className="h-[42px] flex items-center">
+        <input
+          type="range"
+          min="0"
+          max="200000000"
+          step="50000"
+          value={priceRange}
+          onChange={(e) => setPriceRange(Number(e.target.value))}
+          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E3D9C]"
+        />
+      </div>
+    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bedrooms
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setBedrooms(Math.max(0, bedrooms - 1))}
-                      className="w-8 h-8 rounded-full
-                       bg-blue-100 text-blue-800 hover:bg-blue-300  flex items-center justify-center"
-                    >
-                      -
-                    </button>
-                    <span className="w-8 text-center font-medium">
-                      {bedrooms}
-                    </span>
-                    <button
-                      onClick={() => setBedrooms(bedrooms + 1)}
-                      className="w-8 h-8 rounded-full
-                       bg-blue-100 text-blue-800 hover:bg-blue-300  flex items-center justify-center"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
+    {/* 2. Bedrooms */}
+    <div className="flex flex-col">
+      <label className="block text-sm font-semibold text-gray-700 mb-3">Bedrooms</label>
+      <div className="flex items-center space-x-3 h-[42px]">
+        <button
+          onClick={() => setBedrooms(Math.max(0, bedrooms - 1))}
+          className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-[#1E3D9C] transition-all flex items-center justify-center shadow-sm"
+        >-</button>
+        <span className="w-6 text-center font-bold text-gray-800">{bedrooms}</span>
+        <button
+          onClick={() => setBedrooms(bedrooms + 1)}
+          className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-[#1E3D9C] transition-all flex items-center justify-center shadow-sm"
+        >+</button>
+      </div>
+    </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bathrooms
-                  </label>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => setBathrooms(Math.max(0, bathrooms - 1))}
-                      className="w-8 h-8 rounded-full bg-blue-100 text-blue-800 hover:bg-blue-300 flex items-center justify-center"
-                    >
-                      -
-                    </button>
-                    <span className="w-8 text-center font-medium">
-                      {bathrooms}
-                    </span>
-                    <button
-                      onClick={() => setBathrooms(bathrooms + 1)}
-                      className="w-8 h-8 rounded-full  bg-blue-100 text-blue-800 hover:bg-blue-300  flex items-center justify-center"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
+    {/* 3. Bathrooms */}
+    <div className="flex flex-col">
+      <label className="block text-sm font-semibold text-gray-700 mb-3">Bathrooms</label>
+      <div className="flex items-center space-x-3 h-[42px]">
+        <button
+          onClick={() => setBathrooms(Math.max(0, bathrooms - 1))}
+          className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-[#1E3D9C] transition-all flex items-center justify-center shadow-sm"
+        >-</button>
+        <span className="w-6 text-center font-bold text-gray-800">{bathrooms}</span>
+        <button
+          onClick={() => setBathrooms(bathrooms + 1)}
+          className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-[#1E3D9C] transition-all flex items-center justify-center shadow-sm"
+        >+</button>
+      </div>
+    </div>
 
-                <div className="flex items-end">
-                  <button
-                    onClick={resetFilters}
-                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    Reset Filters
-                  </button>
-                </div>
+    {/* 4. Custom Location Picker (FORCED DOWNWARD) */}
+    <div className="flex flex-col relative" ref={locationRef}>
+      <label className="block text-sm font-semibold text-gray-700 mb-3">Location</label>
+      <div 
+        onClick={() => setIsLocationOpen(!isLocationOpen)}
+        className="flex items-center bg-white border border-gray-200 rounded-lg px-3 h-[42px] shadow-sm cursor-pointer hover:border-[#1E3D9C] transition-all group"
+      >
+        <MapPin className="text-[#1E3D9C] w-5 h-5 shrink-0 mr-2" />
+        <span className="text-gray-700 text-sm font-medium truncate flex-1">
+          {searchQuery || "All Locations"}
+        </span>
+        <ChevronDown className={`text-gray-400 w-4 h-4 transition-transform ${isLocationOpen ? 'rotate-180' : ''}`} />
+      </div>
+
+      {/* Forced Dropdown Menu */}
+      {isLocationOpen && (
+        <div className="absolute top-[110%] left-0 w-full max-h-60 bg-white border border-gray-200 rounded-xl shadow-xl z-[999] overflow-y-auto py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div 
+            className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm font-medium text-[#1E3D9C]"
+            onClick={() => { setSearchQuery(""); setIsLocationOpen(false); }}
+          >
+            All Locations
+          </div>
+          {allLocations && allLocations.length > 0 ? (
+            allLocations.map((loc: any, index: number) => (
+              <div 
+                key={index}
+                className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-700 border-t border-gray-50"
+                onClick={() => {
+                  setSearchQuery(loc.locality);
+                  setIsLocationOpen(false);
+                }}
+              >
+                {loc.fullLocation}
               </div>
-            </div>
+            ))
+          ) : (
+            <div className="px-4 py-2 text-sm text-gray-400">Loading locations...</div>
+          )}
+        </div>
+      )}
+    </div>
+
+    {/* 5. Reset Button */}
+    <div className="flex flex-col">
+      <button
+        onClick={resetFilters}
+        className="w-full h-[42px] bg-[#1E3D9C] text-white font-semibold rounded-lg hover:bg-[#182F7A] transition-all shadow-md active:scale-95"
+      >
+        Reset Filters
+      </button>
+    </div>
+  </div>
+</div>
           </div>
         </div>
       </header>

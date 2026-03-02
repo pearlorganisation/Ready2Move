@@ -4,6 +4,7 @@ import {
   getAllProperties,
   getAllSearchedProperties,
   getSingleProperty,
+  getAllLocations
 } from "../actions/propertyAction";
 import { Paginate } from "@/lib/util/paginateInterface";
 import { SimpleType } from "@/lib/Interfaces/property";
@@ -196,6 +197,7 @@ export interface PropertyState {
   propertyData: PropertyData[];
   searchedPropertyData: SearchedPropertyData;
   singlePropertyData: SingleProperty;
+  allLocations: any[];
   paginate: Paginate;
 }
 
@@ -203,6 +205,7 @@ export const initialPropertyState: PropertyState = {
   isLoading: false,
   isSuccess: false,
   isError: false,
+  allLocations: [],
   propertyData: [{
     _id: "",
     user: "",
@@ -434,6 +437,21 @@ const createPropertySlice = createSlice({
         state.isSuccess = false;
         state.isError = true;
         state.singlePropertyData = initialPropertyState.singlePropertyData;
+      })
+
+     
+
+      .addCase(getAllLocations.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllLocations.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.allLocations = action.payload; 
+      })
+      .addCase(getAllLocations.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
       });
       
   },

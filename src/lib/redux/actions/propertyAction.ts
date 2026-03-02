@@ -420,3 +420,19 @@ export const deleteProperty = createAsyncThunk(
     }
   }
 );
+
+
+export const getAllLocations = createAsyncThunk(
+  "location/getAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.get("/api/v1/properties/locations");
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);
+
