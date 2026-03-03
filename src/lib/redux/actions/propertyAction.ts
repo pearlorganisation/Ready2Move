@@ -348,6 +348,7 @@ export const getAllSearchedProperties = createAsyncThunk(
       priceRange?: string;
       areaRange?: string;
       bedRooms: number;
+       location?: string;
       bathRooms: number;
       q?: string;
       service?: "RENT" | "SELL";
