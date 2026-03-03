@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://api.ready2move.co.in/sitemap.xml
