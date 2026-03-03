@@ -39,6 +39,7 @@ interface UserData {
   noOfBedrooms?: number;
   noOfBathrooms?: number;
   noOfBalconies?: number;
+   
   parking?: string;
   furnishing?: string;
   entranceFacing?: string;
@@ -289,6 +290,7 @@ export const getAllProperties = createAsyncThunk(
       limit: number;
       priceRange?: number;
       bedRooms: number;
+       location?: string; 
       bathRooms: number;
       q?: string;
       service?: "RENT" | "BUY";

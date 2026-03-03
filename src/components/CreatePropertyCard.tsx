@@ -1602,6 +1602,10 @@ export default function PropertyComponent() {
                             })}
                           />
 
+                          
+
+                          
+
                           <Controller
                             name="isPriceNegotiable"
                             control={control}

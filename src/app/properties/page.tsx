@@ -197,7 +197,6 @@ useEffect(() => {
                   Discover your perfect home or investment
                 </p>
               </div>
-
               <div className="flex items-center space-x-4 mt-4 lg:mt-0">
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-600">View:</span>
