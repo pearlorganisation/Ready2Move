@@ -2315,7 +2315,8 @@ type FormData = {
   ownership: string;
 
   // Pricing & Charges
-  expectedPrice: number;
+   pricingType: string,
+  pricingValue: number,
   isPriceNegotiable: boolean;
   isBrokerageCharge: boolean;
   brokerage: number;
@@ -2777,7 +2778,8 @@ export default function PropertyForm() {
       isCCAvailable: false,
       ownership: "",
 
-      expectedPrice: 0,
+       pricingType: "",
+       pricingValue: 0,
       isPriceNegotiable: false,
       isBrokerageCharge: false,
       brokerage: 0,
@@ -3896,7 +3898,7 @@ export default function PropertyForm() {
                             </div>
                           </div>
 
-                          <CustomInput
+                          {/* <CustomInput
                             id="expectedPrice"
                             label="Expected Price"
                             type="number"
@@ -3907,20 +3909,37 @@ export default function PropertyForm() {
                               required: "Expected price is required",
                               valueAsNumber: true,
                             })}
-                          />
+                          /> */}
 
-  <CustomInput
-                            id="expectedPrice"
-                            label="Expected Price"
-                            type="number"
-                            placeholder="Expected price"
-                            prefix="₹"
-                            error={errors.expectedPrice?.message} // ✅ passing error
-                            {...register("expectedPrice", {
-                              required: "Expected price is required",
-                              valueAsNumber: true,
-                            })}
-                          />
+{/* Replace the manual select/input in Step 4 with this: */}
+<div className="space-y-4">
+  <div className="space-y-2">
+    <label className="block text-sm font-medium text-gray-700">Expecting Price</label>
+    <select
+      {...register("pricingType", { required: "Pricing type is required" })}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+    >
+      <option value="">Select Pricing Type</option>
+      <option value="PERCENTAGE">Percentage (%)</option>
+      <option value="MONTH_RENT">Month Rent</option>
+    </select>
+    {errors.pricingType && <p className="text-red-500 text-xs">{errors.pricingType.message}</p>}
+  </div>
+
+  <div className="space-y-2">
+    <label className="block text-sm font-medium text-gray-700">Pricing Value</label>
+    <CustomInput
+      id="pricingValue"
+      type="number"
+      placeholder="Enter value"
+      error={errors.pricingValue?.message}
+      {...register("pricingValue", { 
+        required: "Value is required",
+        valueAsNumber: true 
+      })}
+    />
+  </div>
+</div>
                           <Controller
                             name="isPriceNegotiable"
                             control={control}
