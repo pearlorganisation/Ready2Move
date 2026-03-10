@@ -446,6 +446,18 @@ if (Array.isArray(data?.waterSource)) {
                   </select>
                 </div>
               ))}
+
+
+ <div className=" p-4 rounded-md border ">
+          <label className="block text-sm  mb-1">Expected Price (Final)</label>
+          <input 
+            type="number" 
+            {...register('expectedPrice', { valueAsNumber: true })} 
+            placeholder="e.g. 5000000"
+            className="w-full p-3 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500" 
+          />
+        </div>
+
 {/* 
               <div className="col-span-2 grid grid-cols-2 gap-4 border p-4 rounded-md bg-gray-50">
   <div>
