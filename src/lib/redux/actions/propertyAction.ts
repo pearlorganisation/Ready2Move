@@ -48,8 +48,9 @@ interface UserData {
   isOCAvailable?: boolean;
   isCCAvailable?: boolean;
   ownership?: string;
-  pricingType?: string;
-  pricingValue?: number;
+  // pricingType?: string;
+  // pricingValue?: number;
+    expectedPrice?: number;
   isPriceNegotiable?: boolean;
   isBrokerageCharge?: boolean;
   brokerage?: number;
@@ -153,14 +154,19 @@ export const createPropertyByAdmin = createAsyncThunk(
       formData.append("ownership", userdata?.ownership || "");
 
       // ✅ Append Pricing & Charges
+      // formData.append(
+      //   "pricingType",
+      //   userdata?.pricingType || "perMonth"
+      // );
+      // formData.append(
+      //   "pricingValue",
+      //   userdata?.pricingValue?.toString() || "0"
+      // );
+
       formData.append(
-        "pricingType",
-        userdata?.pricingType || "perMonth"
-      );
-      formData.append(
-        "pricingValue",
-        userdata?.pricingValue?.toString() || "0"
-      );
+        "expectedPrice",
+           userdata?.expectedPrice?.toString() || "0"
+      )
       formData.append(
         "isPriceNegotiable",
         userdata?.isPriceNegotiable ? "true" : "false"

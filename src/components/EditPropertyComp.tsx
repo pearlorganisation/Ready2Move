@@ -44,8 +44,9 @@ export interface Property {
   isOCAvailable:boolean;
   isCCAvailable:boolean;
   ownership: string;
- pricingType: "PERCENTAGE" | "MONTH_RENT" | "";
-  pricingValue: number;
+//  pricingType: "PERCENTAGE" | "MONTH_RENT" | "";
+//   pricingValue: number;
+ expectedPrice:number;
   isPriceNegotiable:boolean;
   isBrokerageCharge:boolean;
   brokerage:number;
@@ -99,8 +100,9 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
       isOCAvailable:false,
       isCCAvailable:false,
       ownership: "",
-     pricingType: "",
-      pricingValue: 0,
+    //  pricingType: "",
+    expectedPrice:0,
+      // pricingValue: 0,
       isPriceNegotiable: false,
       isBrokerageCharge: false,
       brokerage: 0,
@@ -118,76 +120,131 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
       setPreviewImages(files.map((file) => URL.createObjectURL(file)));
     };
   
-  useEffect(() => {
-  if (singlePropertyData) {
-    // Cast to any locally to stop the "Red Line" conflict between Redux and the Form
-    const data = singlePropertyData as any;
+//   useEffect(() => {
+//   if (singlePropertyData) {
+//     // Cast to any locally to stop the "Red Line" conflict between Redux and the Form
+//     const data = singlePropertyData as any;
 
-    // 1. Basic Details
-    setValue('service', data.service || '');
-    setValue('title', data.title || '');
-    setValue('subTitle', data.subTitle || '');
-    setValue('description', data.description || '');
-    setValue('locality', data.locality || '');
-    setValue('city', data.city || '');
-    setValue('state', data.state || '');
-    setValue('apartmentName', data.apartmentName || '');
-    setValue('apartmentNo', data.apartmentNo || '');
-    setValue('youtubeEmbedLink', data.youtubeEmbedLink || '');
+//     // 1. Basic Details
+//     setValue('service', data.service || '');
+//     setValue('title', data.title || '');
+//     setValue('subTitle', data.subTitle || '');
+//     setValue('description', data.description || '');
+//     setValue('locality', data.locality || '');
+//     setValue('city', data.city || '');
+//     setValue('state', data.state || '');
+//     setValue('apartmentName', data.apartmentName || '');
+//     setValue('apartmentNo', data.apartmentNo || '');
+//     setValue('youtubeEmbedLink', data.youtubeEmbedLink || '');
     
-    // 2. Numbers (Ensuring strict number type)
-    setValue('noOfBedrooms', Number(data.noOfBedrooms || 0));
-    setValue('noOfBathrooms', Number(data.noOfBathrooms || 0));
-    setValue('noOfBalconies', Number(data.noOfBalconies || 0));
-    setValue('pricingValue', Number(data.pricingValue || 0));
-    setValue('brokerage', Number(data.brokerage || 0));
-    setValue('priceRange.min', Number(data.priceRange?.min || 0));
-    setValue('priceRange.max', Number(data.priceRange?.max || 0));
+//     // 2. Numbers (Ensuring strict number type)
+//     setValue('noOfBedrooms', Number(data.noOfBedrooms || 0));
+//     setValue('noOfBathrooms', Number(data.noOfBathrooms || 0));
+//     setValue('noOfBalconies', Number(data.noOfBalconies || 0));
+//     setValue('pricingValue', Number(data.pricingValue || 0));
+//     setValue('brokerage', Number(data.brokerage || 0));
+//     setValue('priceRange.min', Number(data.priceRange?.min || 0));
+//     setValue('priceRange.max', Number(data.priceRange?.max || 0));
 
-    // 3. Pricing & Booleans
-    setValue('pricingType', data.pricingType || "");
-    setValue('isPriceNegotiable', Boolean(data.isPriceNegotiable));
-    setValue('isBrokerageCharge', Boolean(data.isBrokerageCharge));
-    setValue('isFeatured', Boolean(data.isFeatured));
-    setValue('isOCAvailable', Boolean(data.isOCAvailable));
-    setValue('isCCAvailable', Boolean(data.isCCAvailable));
+//     // 3. Pricing & Booleans
+//     setValue('pricingType', data.pricingType || "");
+//     setValue('isPriceNegotiable', Boolean(data.isPriceNegotiable));
+//     setValue('isBrokerageCharge', Boolean(data.isBrokerageCharge));
+//     setValue('isFeatured', Boolean(data.isFeatured));
+//     setValue('isOCAvailable', Boolean(data.isOCAvailable));
+//     setValue('isCCAvailable', Boolean(data.isCCAvailable));
 
-    // 4. Single Object IDs (Extracting ._id)
-    setValue('parking', data.parking?._id || "");
-    setValue('furnishing', data.furnishing?._id || "");
-    setValue('entranceFacing', data.entranceFacing?._id || "");
-    setValue('availability', data.availability?._id || "");
-    setValue('propertyAge', data.propertyAge?._id || "");
-    setValue('propertyFlooring', data.propertyFlooring?._id || "");
-    setValue('ownership', data.ownership?._id || "");
-    setValue('propertyType', data.propertyType?._id || "");
+//     // 4. Single Object IDs (Extracting ._id)
+//     setValue('parking', data.parking?._id || "");
+//     setValue('furnishing', data.furnishing?._id || "");
+//     setValue('entranceFacing', data.entranceFacing?._id || "");
+//     setValue('availability', data.availability?._id || "");
+//     setValue('propertyAge', data.propertyAge?._id || "");
+//     setValue('propertyFlooring', data.propertyFlooring?._id || "");
+//     setValue('ownership', data.ownership?._id || "");
+//     setValue('propertyType', data.propertyType?._id || "");
 
-    // 5. Arrays (Mapping to string IDs)
-    setValue('aminities', data.aminities?.map((item: any) => item._id) || []);
-    setValue('waterSource', data.waterSource?.map((item: any) => item._id) || []);
-    setValue('otherFeatures', data.otherFeatures?.map((item: any) => item._id) || []);
+//     // 5. Arrays (Mapping to string IDs)
+//     setValue('aminities', data.aminities?.map((item: any) => item._id) || []);
+//     setValue('waterSource', data.waterSource?.map((item: any) => item._id) || []);
+//     setValue('otherFeatures', data.otherFeatures?.map((item: any) => item._id) || []);
 
-    // 6. Handle bankOfApproval (Check if array or single object)
-    if (Array.isArray(data.bankOfApproval)) {
-        setValue('bankOfApproval', data.bankOfApproval.map((b: any) => b._id || b));
-    } else {
-        setValue('bankOfApproval', data.bankOfApproval?._id || "");
-    }
+//     // 6. Handle bankOfApproval (Check if array or single object)
+//     if (Array.isArray(data.bankOfApproval)) {
+//         setValue('bankOfApproval', data.bankOfApproval.map((b: any) => b._id || b));
+//     } else {
+//         setValue('bankOfApproval', data.bankOfApproval?._id || "");
+//     }
 
-    // 7. Date formatting
-    if (data.reraPossessionDate) {
-        setValue('reraPossessionDate', data.reraPossessionDate.split("T")[0]);
-    }
+//     // 7. Date formatting
+//     if (data.reraPossessionDate) {
+//         setValue('reraPossessionDate', data.reraPossessionDate.split("T")[0]);
+//     }
 
-    // 8. Area Mapping
-    const mappedArea = data.area?.map((item: any) => ({
-      name: item.name,
-      area: Number(item.area),
-      areaMeasurement: item.areaMeasurement,
-    })) || [];
-    setValue('area', mappedArea);
-  }
-}, [singlePropertyData, setValue]);    
+//     // 8. Area Mapping
+//     const mappedArea = data.area?.map((item: any) => ({
+//       name: item.name,
+//       area: Number(item.area),
+//       areaMeasurement: item.areaMeasurement,
+//     })) || [];
+//     setValue('area', mappedArea);
+//   }
+// }, [singlePropertyData, setValue]);    
+
+
+ useEffect(() => {
+ if (singlePropertyData) {
+      setValue('service', singlePropertyData?.service || '')
+      setValue('title', singlePropertyData.title || '');
+      setValue('subTitle', singlePropertyData.subTitle || '');
+      setValue('description', singlePropertyData.description || '');
+      setValue('locality', singlePropertyData.locality || '');
+      setValue('city', singlePropertyData.city || '');
+      setValue('state', singlePropertyData.state || '');
+       const mappedArea = singlePropertyData.area?.map((item) => ({
+        ...item,
+        areaMeasurement: item.areaMeasurement as "SQ_FT" | "SQ_M",
+        name: item.name as "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA",
+      })) || [];
+      setValue('area', mappedArea);
+      setValue('reraNumber', singlePropertyData.reraNumber || '');
+       const formattedDate = singlePropertyData.reraPossessionDate
+        ? singlePropertyData.reraPossessionDate.split("T")[0]
+        : '';
+      setValue('reraPossessionDate', formattedDate);
+      setValue('youtubeEmbedLink', singlePropertyData.youtubeEmbedLink || '');
+      setValue('isFeatured', singlePropertyData.isFeatured ?? false);
+      const mappedAmenities = singlePropertyData.aminities?.map((item) => item._id) || [];
+      setValue('aminities', mappedAmenities);
+      setValue('isFeatured', singlePropertyData?.isFeatured)
+      setValue('noOfBedrooms', singlePropertyData?.noOfBedrooms)
+      setValue('noOfBathrooms', singlePropertyData?.noOfBathrooms)
+      setValue('noOfBalconies', singlePropertyData?.noOfBalconies)
+      setValue('parking', singlePropertyData?.parking?._id)
+      setValue('furnishing', singlePropertyData?.furnishing?._id)
+      setValue('entranceFacing', singlePropertyData?.entranceFacing?._id)
+      setValue('availability', singlePropertyData?.availability?._id)
+      setValue('propertyAge', singlePropertyData?.propertyAge?._id)
+      setValue('expectedPrice', singlePropertyData?.expectedPrice)
+      setValue('isPriceNegotiable', singlePropertyData?.isPriceNegotiable)
+      setValue('isBrokerageCharge', singlePropertyData?.isBrokerageCharge)
+      setValue('brokerage', singlePropertyData?.brokerage)
+      const waterSourceId = singlePropertyData?.waterSource?.map((item)=> item?._id) || []
+      setValue('waterSource', waterSourceId)
+      setValue('propertyFlooring', singlePropertyData?.propertyFlooring?._id)
+      const mappedOtherFeatures = singlePropertyData?.otherFeatures?.map((item)=> item._id) || [];
+      setValue('otherFeatures', mappedOtherFeatures);
+      setValue('bankOfApproval', singlePropertyData?.bankOfApproval?.[0]?._id);
+      setValue('ownership', singlePropertyData?.ownership?._id);
+      setValue('isOCAvailable', singlePropertyData?.isOCAvailable);
+      setValue('isCCAvailable', singlePropertyData?.isCCAvailable);
+      setValue('apartmentName', singlePropertyData?.apartmentName);
+      setValue('apartmentNo', singlePropertyData?.apartmentNo);
+      setValue('propertyType', singlePropertyData?.propertyType?._id);
+    }                       
+                                      
+  }, [singlePropertyData, setValue]);   
+
 
   useEffect(()=>{
     dispatch(getFeatures())
@@ -257,8 +314,11 @@ const EditProPertyComp = ({slug}:{slug:string}) => {
       );
       formData.append("ownership", data?.ownership || "");
 
-       formData.append("pricingType", data.pricingType || "MONTH_RENT");
- formData.append("pricingValue", data?.pricingValue?.toString() || "0");
+//        formData.append("pricingType", data.pricingType || "MONTH_RENT");
+//  formData.append("pricingValue", data?.pricingValue?.toString() || "0");
+
+formData.append("expectedPrice", data.expectedPrice.toString());
+
       formData.append(
         "isPriceNegotiable",
         data?.isPriceNegotiable ? "true" : "false"
@@ -386,7 +446,7 @@ if (Array.isArray(data?.waterSource)) {
                   </select>
                 </div>
               ))}
-
+{/* 
               <div className="col-span-2 grid grid-cols-2 gap-4 border p-4 rounded-md bg-gray-50">
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">Expecting Price</label>
@@ -397,13 +457,13 @@ if (Array.isArray(data?.waterSource)) {
   </div>
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">Pricing Value</label>
-    <input 
+    {/* <input 
       type="number" 
       {...register('pricingValue', { valueAsNumber: true })} 
       className="w-full p-3 border rounded-md" 
-    />
-  </div>
-</div>
+    /> */}
+  {/* </div>
+</div> */} 
 
               {/* RERA */}
               <div>
