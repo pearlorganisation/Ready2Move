@@ -16,6 +16,89 @@ import { createLeads } from "@/lib/redux/actions/leadsAction";
 import { getSingleProperty } from "@/lib/redux/actions/propertyAction";
 import ImageGallery from "./ImageGallery";
 import { LuBadgeIndianRupee } from "react-icons/lu";
+
+
+type FormData = {
+  title: string;
+  slug: string;
+  subTitle: string;
+  description: string;
+  service: "SELL" | "RENT";
+  property: "RESIDENTIAL" | "COMMERCIAL";
+  propertyType: string;
+
+  // Location Details
+  apartmentName: string;
+  apartmentNo: string;
+  locality: { name: string }[];
+  city: string;
+  state: string;
+
+  // Property Size & Configuration
+  area: {
+    name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
+    area: number;
+    areaMeasurement: "SQ_FT" | "SQ_M";
+  }[];
+  landArea: { area: number; measurement: string };
+  propertyFloor: number;
+  totalFloors: number;
+  roadWidth: number;
+
+  // Legal & Registration
+  reraNumber: string;
+  reraPossessionDate: Date | null;
+
+  // Property Features
+  noOfBedrooms: number;
+  noOfBathrooms: number;
+  noOfBalconies: number;
+  parking: string;
+  furnishing: string;
+  entranceFacing: string;
+  availability: string;
+  propertyAge: string;
+  isOCAvailable: boolean;
+  isCCAvailable: boolean;
+  ownership: string;
+
+  // Pricing & Charges
+  brokeragepricingType: string,
+  brokeragepricingValue: number,
+  expectedPrice: number;
+  isPriceNegotiable: boolean;
+  isBrokerageCharge: boolean;
+  brokerage: number;
+  maintenanceCharge: number;
+  maintenanceFrequency: string;
+
+  // Financial & Legal
+  bankOfApproval: string[];
+
+  // Amenities & Features
+  amenities: string[];
+  waterSource: string;
+  otherFeatures: string[];
+  propertyFlooring: string;
+  powerBackup: string;
+  nearbyLandmarks: string[];
+
+  // Media
+  imageGallery: File[];
+  youtubeEmbedLink: string;
+  isFeatured: boolean;
+};
+type PropertyFormValues = Pick<
+  FormData,
+  "noOfBedrooms" | "noOfBalconies" | "noOfBathrooms"
+>;
+
+
+
+
+
+
+
 const MySlugProperty = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
    
@@ -52,6 +135,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
         email: formData.email,
         phoneNumber: formData.phone,
         message: formData.message,
+        
       };
 
       if (singlePropertyData?.propertyType) {
@@ -367,10 +451,18 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                           />
                         </svg>
                       </div>
-                      <p className="font-medium">
-                        {singlePropertyData?.locality}
-                      </p>
-                      <p className="text-sm text-gray-500">Locality</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+  {Array.isArray(singlePropertyData?.locality) &&
+    singlePropertyData.locality.map((loc, index) => (
+      <span
+        key={index}
+        className="px-1 py-1 text-sm rounded-full"
+      >
+        {loc}
+      </span>
+    ))}
+</div>
+                      <p className="text-sm mt-1 text-gray-500">Locality</p>
                     </div>
                   </div>
                 </div>
@@ -691,11 +783,13 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                       </span>
                     </li>
                     {singlePropertyData?.isBrokerageCharge && (
-                      <li>
-                        <span className="font-medium">Brokerage:</span>{" "}
-                        {singlePropertyData?.brokerage}%
-                      </li>
-                    )}
+  <li>
+    <span className="font-medium">Brokerage Charge:</span>{" "}
+    {singlePropertyData?.brokeragepricingType === "PERCENTAGE"
+      ? `${singlePropertyData?.brokeragepricingValue ?? 0}%`
+      : `${singlePropertyData?.brokeragepricingValue ?? 0} Month Rent`}
+  </li>
+)}
                   </ul>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-8">

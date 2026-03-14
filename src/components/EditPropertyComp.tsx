@@ -1,988 +1,414 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-
 import { useForm, useFieldArray } from 'react-hook-form';
 import { axiosInstance } from '@/lib/constants/axiosInstance';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/dispatchHook';
 import { getSingleProperty } from '@/lib/redux/actions/propertyAction';
-import { useRouter } from "next/navigation"; // ✅ App Router
+import { useRouter } from "next/navigation"; 
 import { getFeatures } from '@/lib/redux/actions/featuresAction';
 import Image from 'next/image';
 
-export interface Property {
-  _id?: string;
-  title: string; //
-  subTitle: string;//
-  description: string;//
-  locality: string;//
-  city: string;//
-  state: string;//
-  priceRange: { min:number; max: number };
-  area: {  //
-    name: "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA";
-    area: number;
-    areaMeasurement: "SQ_FT" | "SQ_M";
-  }[];
-  aminities:  string[];//
-  reraNumber: string;//
-  reraPossessionDate: string;//
-  youtubeEmbedLink: string;//
-  service:  string;//
-  property: 'RESIDENTIAL' | 'COMMERCIAL';//
-  isFeatured: boolean;//
-  propertyType:string;//
-  apartmentName:string;//
-  apartmentNo:string;//
-  noOfBedrooms:number;
-  noOfBathrooms:number;
-  noOfBalconies:number;
-  parking: string;
-  furnishing:string;
-  entranceFacing:string;
-  availability:string;
-  propertyAge:string;
-  isOCAvailable:boolean;
-  isCCAvailable:boolean;
-  ownership: string;
-//  pricingType: "PERCENTAGE" | "MONTH_RENT" | "";
-//   pricingValue: number;
- expectedPrice:number;
-  isPriceNegotiable:boolean;
-  isBrokerageCharge:boolean;
-  brokerage:number;
-  bankOfApproval:string;
-  waterSource: string[];
-  otherFeatures: string[];
-  propertyFlooring: string;
-  imageGallery: File[]    // will add late
-
-}
- 
-const EditProPertyComp = ({slug}:{slug:string}) => {
+const EditProPertyComp = ({ slug }: { slug: string }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter()
-  const dispatch=useAppDispatch();
-  const { singlePropertyData, paginate } = useAppSelector((state) => state.property);
-  const { featureData } = useAppSelector(state=> state.features);
-  useEffect(()=>{
-    dispatch(getSingleProperty({slug:slug}))
-  },[])
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { singlePropertyData } = useAppSelector((state) => state.property);
+  const { featureData } = useAppSelector(state => state.features);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
 
-  const { register, handleSubmit, reset, control, setValue, formState: { errors }, watch } = useForm<Property>({
+  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<any>({
     defaultValues: {
-      service: '',
-      property: 'RESIDENTIAL',
-      title: '',
-      subTitle: '',
-      description: '',
-      locality: '',
-      city: '',
-      state: '',
+        title: "",
+    subTitle: "",
+    expectedPrice: 0, // Adding this here will fix the error on setValue('expectedPrice', ...)
+    brokeragepricingType: "",
+    brokeragepricingValue: 0,
+   
+   
+    
+      priceRange: { min: 0, max: 0 },
+       locality: [{ name: "" }],
       area: [],
-      reraNumber: '',
-      reraPossessionDate: '',
-      youtubeEmbedLink: '',
-      isFeatured: false,
       aminities: [],
-      priceRange: {min:0, max:0},
-      propertyType:"",
-      apartmentName:"",
-      apartmentNo:"",
-      noOfBedrooms:0,
-      noOfBathrooms:0,
-      noOfBalconies:0,
-      parking: "",
-      furnishing:"",
-      entranceFacing:"",
-      availability:"",
-      propertyAge:"",
-      isOCAvailable:false,
-      isCCAvailable:false,
-      ownership: "",
-    //  pricingType: "",
-    expectedPrice:0,
-      // pricingValue: 0,
-      isPriceNegotiable: false,
-      isBrokerageCharge: false,
-      brokerage: 0,
-      bankOfApproval: "",
       waterSource: [],
-      otherFeatures:[],
-      propertyFlooring:""
+      otherFeatures: [],
+      bankOfApproval: []
     },
   });
 
-   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.files) return;
-      const files = Array.from(e.target.files);
-      setValue("imageGallery", files);
-      setPreviewImages(files.map((file) => URL.createObjectURL(file)));
-    };
-  
-//   useEffect(() => {
-//   if (singlePropertyData) {
-//     // Cast to any locally to stop the "Red Line" conflict between Redux and the Form
-//     const data = singlePropertyData as any;
+  const { fields: localityFields, append: appendLocality, remove: removeLocality } = useFieldArray({ 
+  control, 
+  name: 'locality' 
+});
+  const isBrokerageCharge = watch("isBrokerageCharge");
 
-//     // 1. Basic Details
-//     setValue('service', data.service || '');
-//     setValue('title', data.title || '');
-//     setValue('subTitle', data.subTitle || '');
-//     setValue('description', data.description || '');
-//     setValue('locality', data.locality || '');
-//     setValue('city', data.city || '');
-//     setValue('state', data.state || '');
-//     setValue('apartmentName', data.apartmentName || '');
-//     setValue('apartmentNo', data.apartmentNo || '');
-//     setValue('youtubeEmbedLink', data.youtubeEmbedLink || '');
-    
-//     // 2. Numbers (Ensuring strict number type)
-//     setValue('noOfBedrooms', Number(data.noOfBedrooms || 0));
-//     setValue('noOfBathrooms', Number(data.noOfBathrooms || 0));
-//     setValue('noOfBalconies', Number(data.noOfBalconies || 0));
-//     setValue('pricingValue', Number(data.pricingValue || 0));
-//     setValue('brokerage', Number(data.brokerage || 0));
-//     setValue('priceRange.min', Number(data.priceRange?.min || 0));
-//     setValue('priceRange.max', Number(data.priceRange?.max || 0));
+  useEffect(() => {
+    dispatch(getSingleProperty({ slug }));
+    dispatch(getFeatures());
+  }, [slug, dispatch]);
 
-//     // 3. Pricing & Booleans
-//     setValue('pricingType', data.pricingType || "");
-//     setValue('isPriceNegotiable', Boolean(data.isPriceNegotiable));
-//     setValue('isBrokerageCharge', Boolean(data.isBrokerageCharge));
-//     setValue('isFeatured', Boolean(data.isFeatured));
-//     setValue('isOCAvailable', Boolean(data.isOCAvailable));
-//     setValue('isCCAvailable', Boolean(data.isCCAvailable));
+  useEffect(() => {
+    if (singlePropertyData) {
 
-//     // 4. Single Object IDs (Extracting ._id)
-//     setValue('parking', data.parking?._id || "");
-//     setValue('furnishing', data.furnishing?._id || "");
-//     setValue('entranceFacing', data.entranceFacing?._id || "");
-//     setValue('availability', data.availability?._id || "");
-//     setValue('propertyAge', data.propertyAge?._id || "");
-//     setValue('propertyFlooring', data.propertyFlooring?._id || "");
-//     setValue('ownership', data.ownership?._id || "");
-//     setValue('propertyType', data.propertyType?._id || "");
-
-//     // 5. Arrays (Mapping to string IDs)
-//     setValue('aminities', data.aminities?.map((item: any) => item._id) || []);
-//     setValue('waterSource', data.waterSource?.map((item: any) => item._id) || []);
-//     setValue('otherFeatures', data.otherFeatures?.map((item: any) => item._id) || []);
-
-//     // 6. Handle bankOfApproval (Check if array or single object)
-//     if (Array.isArray(data.bankOfApproval)) {
-//         setValue('bankOfApproval', data.bankOfApproval.map((b: any) => b._id || b));
-//     } else {
-//         setValue('bankOfApproval', data.bankOfApproval?._id || "");
-//     }
-
-//     // 7. Date formatting
-//     if (data.reraPossessionDate) {
-//         setValue('reraPossessionDate', data.reraPossessionDate.split("T")[0]);
-//     }
-
-//     // 8. Area Mapping
-//     const mappedArea = data.area?.map((item: any) => ({
-//       name: item.name,
-//       area: Number(item.area),
-//       areaMeasurement: item.areaMeasurement,
-//     })) || [];
-//     setValue('area', mappedArea);
-//   }
-// }, [singlePropertyData, setValue]);    
-
-
- useEffect(() => {
- if (singlePropertyData) {
-      setValue('service', singlePropertyData?.service || '')
+       if (singlePropertyData.locality && Array.isArray(singlePropertyData.locality)) {
+      setValue('locality', singlePropertyData.locality.map((l: string) => ({ name: l })));
+    } else {
+      setValue('locality', [{ name: "" }]);
+    }
+      // 1. Basic & Service
       setValue('title', singlePropertyData.title || '');
       setValue('subTitle', singlePropertyData.subTitle || '');
       setValue('description', singlePropertyData.description || '');
-      setValue('locality', singlePropertyData.locality || '');
+      setValue('service', singlePropertyData.service || '');
+      setValue('property', singlePropertyData.property || 'RESIDENTIAL');
+      setValue('propertyType', singlePropertyData.propertyType?._id || "");
+
+      // 2. Location
+      setValue('apartmentName', singlePropertyData.apartmentName || '');
+      setValue('apartmentNo', singlePropertyData.apartmentNo || '');
+
       setValue('city', singlePropertyData.city || '');
       setValue('state', singlePropertyData.state || '');
-       const mappedArea = singlePropertyData.area?.map((item) => ({
-        ...item,
-        areaMeasurement: item.areaMeasurement as "SQ_FT" | "SQ_M",
-        name: item.name as "CARPET_AREA" | "BUILT_UP_AREA" | "SUPER_AREA",
-      })) || [];
-      setValue('area', mappedArea);
+
+      // 3. Configuration
+      setValue('noOfBedrooms', singlePropertyData.noOfBedrooms || 0);
+      setValue('noOfBathrooms', singlePropertyData.noOfBathrooms || 0);
+      setValue('noOfBalconies', singlePropertyData.noOfBalconies || 0);
+      setValue('area', singlePropertyData.area?.map((item: any) => ({
+        name: item.name,
+        area: item.area,
+        areaMeasurement: item.areaMeasurement,
+      })) || []);
+
+      // 4. Financial
+      setValue('expectedPrice', singlePropertyData.expectedPrice || 0);
+      setValue('priceRange.min', singlePropertyData.priceRange?.min || 0);
+      setValue('priceRange.max', singlePropertyData.priceRange?.max || 0);
+      setValue('isPriceNegotiable', !!singlePropertyData.isPriceNegotiable);
+      setValue('isBrokerageCharge', !!singlePropertyData.isBrokerageCharge);
+      setValue('brokeragepricingType', singlePropertyData.brokeragepricingType || "");
+      setValue('brokeragepricingValue', singlePropertyData.brokeragepricingValue || 0);
+
+      // 5. Legal
       setValue('reraNumber', singlePropertyData.reraNumber || '');
-       const formattedDate = singlePropertyData.reraPossessionDate
-        ? singlePropertyData.reraPossessionDate.split("T")[0]
-        : '';
-      setValue('reraPossessionDate', formattedDate);
+      if (singlePropertyData.reraPossessionDate) {
+        setValue('reraPossessionDate', singlePropertyData.reraPossessionDate.split("T")[0]);
+      }
+      setValue('isOCAvailable', !!singlePropertyData.isOCAvailable);
+      setValue('isCCAvailable', !!singlePropertyData.isCCAvailable);
+      setValue('ownership', singlePropertyData.ownership?._id || "");
+      setValue('bankOfApproval', singlePropertyData.bankOfApproval?.map((b: any) => b._id) || []);
+
+      // 6. Features & Media
+      setValue('parking', singlePropertyData.parking?._id || "");
+      setValue('furnishing', singlePropertyData.furnishing?._id || "");
+      setValue('entranceFacing', singlePropertyData.entranceFacing?._id || "");
+      setValue('availability', singlePropertyData.availability?._id || "");
+      setValue('propertyAge', singlePropertyData.propertyAge?._id || "");
+      setValue('propertyFlooring', singlePropertyData.propertyFlooring?._id || "");
       setValue('youtubeEmbedLink', singlePropertyData.youtubeEmbedLink || '');
-      setValue('isFeatured', singlePropertyData.isFeatured ?? false);
-      const mappedAmenities = singlePropertyData.aminities?.map((item) => item._id) || [];
-      setValue('aminities', mappedAmenities);
-      setValue('isFeatured', singlePropertyData?.isFeatured)
-      setValue('noOfBedrooms', singlePropertyData?.noOfBedrooms)
-      setValue('noOfBathrooms', singlePropertyData?.noOfBathrooms)
-      setValue('noOfBalconies', singlePropertyData?.noOfBalconies)
-      setValue('parking', singlePropertyData?.parking?._id)
-      setValue('furnishing', singlePropertyData?.furnishing?._id)
-      setValue('entranceFacing', singlePropertyData?.entranceFacing?._id)
-      setValue('availability', singlePropertyData?.availability?._id)
-      setValue('propertyAge', singlePropertyData?.propertyAge?._id)
-      setValue('expectedPrice', singlePropertyData?.expectedPrice)
-      setValue('isPriceNegotiable', singlePropertyData?.isPriceNegotiable)
-      setValue('isBrokerageCharge', singlePropertyData?.isBrokerageCharge)
-      setValue('brokerage', singlePropertyData?.brokerage)
-      const waterSourceId = singlePropertyData?.waterSource?.map((item)=> item?._id) || []
-      setValue('waterSource', waterSourceId)
-      setValue('propertyFlooring', singlePropertyData?.propertyFlooring?._id)
-      const mappedOtherFeatures = singlePropertyData?.otherFeatures?.map((item)=> item._id) || [];
-      setValue('otherFeatures', mappedOtherFeatures);
-      setValue('bankOfApproval', singlePropertyData?.bankOfApproval?.[0]?._id);
-      setValue('ownership', singlePropertyData?.ownership?._id);
-      setValue('isOCAvailable', singlePropertyData?.isOCAvailable);
-      setValue('isCCAvailable', singlePropertyData?.isCCAvailable);
-      setValue('apartmentName', singlePropertyData?.apartmentName);
-      setValue('apartmentNo', singlePropertyData?.apartmentNo);
-      setValue('propertyType', singlePropertyData?.propertyType?._id);
-    }                       
-                                      
-  }, [singlePropertyData, setValue]);   
+      setValue('isFeatured', !!singlePropertyData.isFeatured);
 
-
-  useEffect(()=>{
-    dispatch(getFeatures())
-  },[])
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'area',
-  });
-
-    const onSubmit = async (data: Property) => {
-       const formData = new FormData();
-
-       formData.append("title", data?.title || "");
-       formData.append("subTitle", data?.subTitle || "");
-      formData.append("description", data?.description || "");
-      formData.append("service", data?.service);
-      formData.append("property", data?.property || "RESIDENTIAL");
-      formData.append("propertyType", data?.propertyType || "");
-
-       formData.append("apartmentName", data?.apartmentName || "");
-      formData.append("apartmentNo", data?.apartmentNo || "");
-      formData.append("locality", data?.locality || "");
-      formData.append("city", data?.city || "");
-      formData.append("state", data?.state || "");
-
-       data?.area?.forEach((areaItem, index) => {
-        formData.append(`area[${index}][name]`, areaItem.name);
-        formData.append(`area[${index}][area]`, areaItem.area.toString());
-        formData.append(
-          `area[${index}][areaMeasurement]`,
-          areaItem.areaMeasurement
-        );
-      });
-      if (data?.reraNumber)
-        formData.append("reraNumber", data.reraNumber);
-      if (data?.reraPossessionDate)
-        formData.append(
-          "reraPossessionDate",
-          data.reraPossessionDate
-        );
-
-       formData.append(
-        "noOfBedrooms",
-        data?.noOfBedrooms?.toString() || "0"
-      );
-      formData.append(
-        "noOfBathrooms",
-        data?.noOfBathrooms?.toString() || "0"
-      );
-      formData.append(
-        "noOfBalconies",
-        data?.noOfBalconies?.toString() || "0"
-      );
-      formData.append("parking", data?.parking || "");
-      formData.append("furnishing", data?.furnishing || "");
-      formData.append("entranceFacing", data?.entranceFacing || "");
-      formData.append("availability", data?.availability || "");
-      formData.append("propertyAge", data?.propertyAge || "");
-      formData.append(
-        "isOCAvailable",
-        data?.isOCAvailable ? "true" : "false"
-      );
-      formData.append(
-        "isCCAvailable",
-        data?.isCCAvailable ? "true" : "false"
-      );
-      formData.append("ownership", data?.ownership || "");
-
-//        formData.append("pricingType", data.pricingType || "MONTH_RENT");
-//  formData.append("pricingValue", data?.pricingValue?.toString() || "0");
-
-formData.append("expectedPrice", data.expectedPrice.toString());
-
-      formData.append(
-        "isPriceNegotiable",
-        data?.isPriceNegotiable ? "true" : "false"
-      );
-      formData.append(
-        "isBrokerageCharge",
-        data?.isBrokerageCharge ? "true" : "false"
-      );
-      formData.append("brokerage", data?.brokerage?.toString() || "0");
-      if (Array.isArray(data?.bankOfApproval)) {
-        data.bankOfApproval.forEach((bank) => {
-          formData.append("bankOfApproval", bank);
-        });
-      }
-      if (Array.isArray(data?.aminities)) {
-        data.aminities.forEach((amenity) => {
-          formData.append("aminities", amenity);
-        });
-      }
-if (Array.isArray(data?.waterSource)) {
-        data.waterSource.forEach((source) => {
-          formData.append("waterSource", source);
-        });
-      }
-      if (Array.isArray(data?.otherFeatures)) {
-        data.otherFeatures.forEach((feature) => {
-          formData.append("otherFeatures", feature);
-        });
-      }
-
-      formData.append("propertyFlooring", data?.propertyFlooring || "");
- 
-      if (Array.isArray(data?.imageGallery)) {
-        data.imageGallery.forEach((file) => {
-          formData.append("imageGallery", file);
-        });
-      }
-
-      if (data?.youtubeEmbedLink) {
-        formData.append("youtubeEmbedLink", data.youtubeEmbedLink);
-      }
-
-      formData.append("isFeatured", data?.isFeatured ? "true" : "false");
-
-      const config = {
-        headers:{
-             "Content-Type": 'multipart/form-data' 
-          }
-      }
-    try {
-      await axiosInstance.patch(`/api/v1/properties/${slug}`, formData,config);
-      alert('Property updated successfully!');
-       router.back(); 
-     } catch (err) {
-      console.error(err);
-      alert('Failed to update Property.');
+      // 7. Multi-Select Arrays
+      setValue('aminities', singlePropertyData.aminities?.map((a: any) => a._id) || []);
+      setValue('waterSource', singlePropertyData.waterSource?.map((w: any) => w._id) || []);
+      setValue('otherFeatures', singlePropertyData.otherFeatures?.map((o: any) => o._id) || []);
     }
+  }, [singlePropertyData, setValue]);
+
+  const { fields: areaFields } = useFieldArray({ control, name: 'area' });
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    setValue("imageGallery", files as any);
+    setPreviewImages(files.map((file) => URL.createObjectURL(file)));
   };
 
+  const onSubmit = async (data: any) => {
+    const formData = new FormData();
+    
+    // Simple strings and numbers
+    const keys = [
+      'title', 'subTitle', 'description', 'service', 'property', 'propertyType',
+      'apartmentName', 'apartmentNo',  'city', 'state', 'reraNumber',
+      'reraPossessionDate', 'noOfBedrooms', 'noOfBathrooms', 'noOfBalconies',
+      'parking', 'furnishing', 'entranceFacing', 'availability', 'propertyAge',
+      'ownership', 'propertyFlooring', 'youtubeEmbedLink', 'expectedPrice'
+    ];
+    keys.forEach(k => formData.append(k, data[k]?.toString() || ""));
 
+    data.locality.forEach((loc: any) => {
+  const cleanName = loc.name?.trim(); // Remove accidental spaces
+  if (cleanName) {
+    formData.append("locality", cleanName); // Only append if it's not empty
+  }
+});
+
+    // Price Range Object
+    formData.append("priceRange[min]", data.priceRange.min.toString());
+    formData.append("priceRange[max]", data.priceRange.max.toString());
+
+    // Booleans
+    formData.append("isFeatured", data.isFeatured ? "true" : "false");
+    formData.append("isOCAvailable", data.isOCAvailable ? "true" : "false");
+    formData.append("isCCAvailable", data.isCCAvailable ? "true" : "false");
+    formData.append("isPriceNegotiable", data.isPriceNegotiable ? "true" : "false");
+    formData.append("isBrokerageCharge", data.isBrokerageCharge ? "true" : "false");
+
+    if (data.isBrokerageCharge) {
+      formData.append("brokeragepricingType", data.brokeragepricingType);
+      formData.append("brokeragepricingValue", data.brokeragepricingValue.toString());
+    }
+
+    // Arrays
+    data.area.forEach((item: any, i: number) => {
+      formData.append(`area[${i}][name]`, item.name);
+      formData.append(`area[${i}][area]`, item.area.toString());
+      formData.append(`area[${i}][areaMeasurement]`, item.areaMeasurement);
+    });
+
+    ['aminities', 'waterSource', 'otherFeatures', 'bankOfApproval'].forEach(key => {
+      if (Array.isArray(data[key])) {
+        data[key].forEach((id: string) => formData.append(key, id));
+      }
+    });
+
+    if (data.imageGallery) {
+      Array.from(data.imageGallery).forEach((file: any) => formData.append("imageGallery", file));
+    }
+
+    try {
+      await axiosInstance.patch(`/api/v1/properties/${slug}`, formData, {
+        headers: { "Content-Type": 'multipart/form-data' }
+      });
+      alert('Property updated successfully!');
+      router.back();
+    } catch (err) { console.error(err); alert('Update failed'); }
+  };
 
   return (
-      <>
-          <div className="w-full p-6 bg-white shadow-md rounded-xl mt-6">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Edit Property</h2>
+    <div className="w-full p-6 bg-white shadow-md rounded-xl mt-6">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center border-b pb-4">Edit Property Details</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
 
-            <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Title & Subtitle */}
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                <input {...register('title')} placeholder="Project Title" className="w-full p-3 border rounded-md" />
-              </div>
-
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-                <input {...register('subTitle')} placeholder="Project Subtitle" className="w-full p-3 border rounded-md" />
-              </div>
-
-              {/* Description */}
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea {...register('description')} placeholder="Description" rows={4} className="w-full p-3 border rounded-md" />
-              </div>
-
-              {/* Location Info */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Locality</label>
-                <input {...register('locality')} placeholder="Locality" className="w-full p-3 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                <input {...register('city')} placeholder="City" className="w-full p-3 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                <input {...register('state')} placeholder="State" className="w-full p-3 border rounded-md" />
-              </div>
-
-              Price Range
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price Min</label>
-                <input {...register('priceRange.min')} placeholder="Price Min" type="number" className="w-full p-3 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price Max</label>
-                <input {...register('priceRange.max')} placeholder="Price Max" type="number" className="w-full p-3 border rounded-md" />
-              </div>
-              {fields.map((item, index) => (
-                <div key={item.id} className="space-y-2">
-                  <select {...register(`area.${index}.name`)}>
-                    <option value="CARPET_AREA">Carpet Area</option>
-                    <option value="BUILT_UP_AREA">Built-Up Area</option>
-                    <option value="SUPER_AREA">Super Area</option>
-                  </select>
-                  
-                  <input
-                    type="number"
-                    {...register(`area.${index}.area`)}
-                    placeholder="Enter Area"
-                  />
-                  
-                  <select {...register(`area.${index}.areaMeasurement`)}>
-                    <option value="SQ_FT">SQ.FT</option>
-                    <option value="SQ_M">SQ.M</option>
-                  </select>
-                </div>
-              ))}
-
-
- <div className=" p-4 rounded-md border ">
-          <label className="block text-sm  mb-1">Expected Price (Final)</label>
-          <input 
-            type="number" 
-            {...register('expectedPrice', { valueAsNumber: true })} 
-            placeholder="e.g. 5000000"
-            className="w-full p-3 border border-blue-300 rounded-md focus:ring-2 focus:ring-blue-500" 
-          />
-        </div>
-
-{/* 
-              <div className="col-span-2 grid grid-cols-2 gap-4 border p-4 rounded-md bg-gray-50">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Expecting Price</label>
-    <select {...register('pricingType')} className="w-full p-3 border rounded-md">
-      <option value="MONTH_RENT">Month Rent</option>
-      <option value="PERCENTAGE">Percentage (%)</option>
-    </select>
-  </div>
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Pricing Value</label>
-    {/* <input 
-      type="number" 
-      {...register('pricingValue', { valueAsNumber: true })} 
-      className="w-full p-3 border rounded-md" 
-    /> */}
-  {/* </div>
-</div> */} 
-
-              {/* RERA */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">RERA Number</label>
-                <input {...register('reraNumber')} placeholder="RERA Number" className="w-full p-3 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Possession Date</label>
-                <input {...register('reraPossessionDate')} type="date" className="w-full p-3 border rounded-md" />
-              </div>
-               
-               {/** previously not used fields */}
-               <div> 
-                  <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">No Of Bedrooms</label>
-                      <input
-                        type="number"
-                        {...register(`noOfBedrooms`)}
-                        placeholder="Enter No of Bedrooms"
-                        className='w-full p-3 border rounded-md'
-                      />
-                  </div>
-                   <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">No Of Bathrooms</label>
-                      <input
-                        type="number"
-                        {...register(`noOfBathrooms`)}
-                        placeholder="Enter No of No Of Bathrooms"
-                        className='w-full p-3 border rounded-md'
-                      />
-                  </div>
-                   <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">No Of Balconies</label>
-                      <input
-                        type="number"
-                        {...register(`noOfBalconies`)}
-                        placeholder="Enter No of Bedrooms"
-                        className='w-full p-3 border rounded-md'
-                      />
-                  </div>
-               
- 
-               </div>
-                 {/** Section for the aminities */}
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "AMENITIES")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="checkbox"
-                              id={`amenity-${feature._id}`}
-                              {...register("aminities")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-                  
-    
-                  <div>
-                      {featureData
-                      ?.filter((item) => item?.type == "PARKING")
-                      ?.map((category) => (
-                        <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                          <legend className="px-2 font-medium text-gray-700">
-                            {category.type.replace("_", " ")}
-                          </legend>
-                          {category?.features?.map((feature) => (
-                            <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                              <input
-                                type="checkbox"
-                                id={`parking-${feature._id}`}
-                                {...register("parking")}
-                                value={feature._id}
-                                
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                                {feature.name}
-                              </label>
-                            </div>
-                          ))}
-                        </fieldset>
-                      ))}
-                  </div>
-                  <div>
-                      {featureData
-                      ?.filter((item) => item?.type == "FURNISHING")
-                      ?.map((category) => (
-                        <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                          <legend className="px-2 font-medium text-gray-700">
-                            {category.type.replace("_", " ")}
-                          </legend>
-                          {category?.features?.map((feature) => (
-                            <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                              <input
-                                type="checkbox"
-                                id={`parking-${feature._id}`}
-                                {...register("furnishing")}
-                                value={feature._id}
-                                
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              />
-                              <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                                {feature.name}
-                              </label>
-                            </div>
-                          ))}
-                        </fieldset>
-                      ))}
-                  </div>
-                 
-
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "ENTRANCE_FACING")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`entranceFacing-${feature._id}`}
-                              {...register("entranceFacing")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                    </div>
-                    <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "AVAILABILITY")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`availability-${feature._id}`}
-                              {...register("availability")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-                  
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "PROPERTY_AGE")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`propertyAge-${feature._id}`}
-                              {...register("propertyAge")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-
-                   <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "OWNERSHIP")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`ownership-${feature._id}`}
-                              {...register("ownership")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "BANKS")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`bankOfApproval-${feature._id}`}
-                              {...register("bankOfApproval")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "WATER_SOURCE")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="checkbox"
-                              id={`waterSource-${feature._id}`}
-                              {...register("waterSource")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-                   <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "OTHER_FEATURES")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="checkbox"
-                              id={`otherFeatures-${feature._id}`}
-                              {...register("otherFeatures")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "FLOORING")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`propertyFlooring-${feature._id}`}
-                              {...register("propertyFlooring")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-                  
-                  <div>
-                    {featureData
-                    ?.filter((item) => item?.type == "PROPERTY_TYPE")
-                    ?.map((category) => (
-                      <fieldset key={category.type} className="border  w-48  border-gray-300 rounded-md p-4">
-                        <legend className="px-2 font-medium text-gray-700">
-                          {category.type.replace("_", " ")}
-                        </legend>
-                        {category?.features?.map((feature) => (
-                          <div key={feature._id} className="flex flex-row items-center space-x-2 py-1">
-                            <input
-                              type="radio"
-                              id={`propertyType-${feature._id}`}
-                              {...register("propertyType")}
-                              value={feature._id}
-                              
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                            />
-                            <label htmlFor={`amenity-${feature._id}`} className="text-sm text-gray-700">
-                              {feature.name}
-                            </label>
-                          </div>
-                        ))}
-                      </fieldset>
-                    ))}
-                  </div>
-              {/* YouTube Link */}
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">YouTube Embed Link</label>
-                    <input {...register('youtubeEmbedLink')} placeholder="YouTube Link" className="w-full p-3 border rounded-md" />
-                  </div>
-
-              {/* Service Type */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
-                    <select {...register('service')} className="w-full p-3 border rounded-md">
-                      <option value="RENT">RENT</option>
-                      <option value="SELL">SELL</option>
-                    </select>
-                  </div>
-
-              {/* Property Type */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
-                    <select {...register('property')} className="w-full p-3 border rounded-md">
-                      <option value="RESIDENTIAL">Residential</option>
-                      <option value="COMMERCIAL">Commercial</option>
-                    </select>
-                  </div>
-
-              {/* Featured */}
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      {...register('isFeatured')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Mark as Featured Property</label>
-                  </div>
-                 
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      {...register('isCCAvailable')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Is CC Available</label>
-                  </div>
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      {...register('isOCAvailable')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Is OC Available</label>
-                  </div>
-                   <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="input"
-                      {...register('apartmentName')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Apartment Name</label>
-                  </div>
-
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="input"
-                      {...register('apartmentNo')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Apartment Number</label>
-                  </div>
-
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      {...register('isPriceNegotiable')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Is Price Negotiable</label>
-                  </div>
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="checkbox"
-                      {...register('isBrokerageCharge')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Is Brokerage</label>
-                  </div>
-
-                  <div className="col-span-2 flex items-center space-x-3">
-                    <input
-                      type="input"
-                      {...register('brokerage')}
-                
-                    />
-                    <label className="text-sm text-gray-700">Brokerage</label>
-                  </div>
-                  
-                  <div>
-                  
-                <label>Add Images</label>
-                  <input
-                      type="file"
-                      id="imageGallery"
-                      multiple
-                      accept="image/*"
-                       ref={fileInputRef}
-                      onChange={handleImageUpload}
-                    />
-                  </div>
-              {/* Submit Button */}
-              <div className="col-span-2">
-                <button type="submit" className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200">
-                  Update Property
-                </button>
-              </div>
-            </form>
-            {/** already posted images */}
+        {/* --- SECTION 1: BASIC INFO --- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h3 className="col-span-2 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Basic Information</h3>
+          <div className="col-span-2"><label className="text-sm font-medium">Title</label><input {...register('title')} className="w-full p-3 border rounded-md" /></div>
+          <div className="col-span-2"><label className="text-sm font-medium">Subtitle</label><input {...register('subTitle')} className="w-full p-3 border rounded-md" /></div>
+          <div className="col-span-2"><label className="text-sm font-medium">Description</label><textarea {...register('description')} rows={4} className="w-full p-3 border rounded-md" /></div>
           
-          
-          <div className="flex flex-wrap gap-2.5">  
-            {singlePropertyData?.imageGallery?.map((item: { secure_url: string; public_id: string; id?: string }, index: number) => (
-              <div
-                key={item.public_id || item.id || `gallery-img-${index}`}
-                className="relative w-[200px] h-[150px] border border-gray-200 overflow-hidden"
-              >
-                <Image
-                  src={item.secure_url}
-                  alt={`Gallery image ${item.public_id || index + 1}`}
-                  fill
-                  className="object-cover"
-                  priority={index === 0}
-                  // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Still recommended
-                />
+          <div>
+            <label className="text-sm font-medium">Service Type</label>
+            <select {...register('service')} className="w-full p-3 border rounded-md"><option value="SELL">SELL</option><option value="RENT">RENT</option></select>
+          </div>
+          <div>
+            <label className="text-sm font-medium">Category</label>
+            <select {...register('property')} className="w-full p-3 border rounded-md"><option value="RESIDENTIAL">RESIDENTIAL</option><option value="COMMERCIAL">COMMERCIAL</option></select>
+          </div>
+        </section>
+
+        {/* --- SECTION 2: LOCATION --- */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-4 rounded-lg">
+          <h3 className="col-span-3 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Location Details</h3>
+          <div><label className="text-sm font-medium">Apartment Name</label><input {...register('apartmentName')} className="w-full p-3 border rounded-md" /></div>
+          <div><label className="text-sm font-medium">Flat/Apt No</label><input {...register('apartmentNo')} className="w-full p-3 border rounded-md" /></div>
+         {/* --- SECTION 2: LOCATION --- */}
+<section className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-4 rounded-lg">
+  <h3 className="col-span-3 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Location Details</h3>
+  <div><label className="text-sm font-medium">Apartment Name</label><input {...register('apartmentName')} className="w-full p-3 border rounded-md" /></div>
+  <div><label className="text-sm font-medium">Flat/Apt No</label><input {...register('apartmentNo')} className="w-full p-3 border rounded-md" /></div>
+  
+  {/* Multi-Locality Section */}
+  <div className="col-span-3 space-y-3">
+    <div className="flex justify-between items-center">
+      <label className="text-sm font-bold text-gray-600">Localities / Landmarks</label>
+      <button 
+        type="button" 
+        onClick={() => appendLocality({ name: "" })}
+        className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+      >
+        + Add More
+      </button>
     </div>
-  ))}
-          </div> 
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {localityFields.map((field, index) => (
+        <div key={field.id} className="flex items-center space-x-2">
+          <input 
+            {...register(`locality.${index}.name`)} 
+            placeholder="e.g. Near Station"
+            className="w-full p-3 border rounded-md bg-white" 
+          />
+          {localityFields.length > 1 && (
+            <button 
+              type="button" 
+              onClick={() => removeLocality(index)}
+              className="text-red-500 p-2 hover:bg-red-50 rounded"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div><label className="text-sm font-medium">City</label><input {...register('city')} className="w-full p-3 border rounded-md" /></div>
+  <div><label className="text-sm font-medium">State</label><input {...register('state')} className="w-full p-3 border rounded-md" /></div>
+</section>
+          <div><label className="text-sm font-medium">City</label><input {...register('city')} className="w-full p-3 border rounded-md" /></div>
+          <div><label className="text-sm font-medium">State</label><input {...register('state')} className="w-full p-3 border rounded-md" /></div>
+        </section>
+
+       
+      {/* --- SECTION 3: CONFIGURATION --- */}
+<section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <h3 className="col-span-3 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Property Configuration</h3>
+  <div><label className="text-sm font-medium">Bedrooms</label><input type="number" {...register('noOfBedrooms')} className="w-full p-3 border rounded-md" /></div>
+  <div><label className="text-sm font-medium">Bathrooms</label><input type="number" {...register('noOfBathrooms')} className="w-full p-3 border rounded-md" /></div>
+  <div><label className="text-sm font-medium">Balconies</label><input type="number" {...register('noOfBalconies')} className="w-full p-3 border rounded-md" /></div>
+  
+  <div className="col-span-3 border-t pt-4">
+    <label className="font-bold block mb-3">Area measurements</label>
+  
+    {areaFields.map((field, index) => (
+      <div key={field.id} className="grid grid-cols-3 gap-4 mb-3">
+        <input readOnly {...register(`area.${index}.name`)} className="bg-gray-100 p-3 border rounded" />
+        <input type="number" {...register(`area.${index}.area`)} className="p-3 border rounded" />
+        <select {...register(`area.${index}.areaMeasurement`)} className="p-3 border rounded">
+          <option value="SQ_FT">SQ_FT</option>
+          <option value="SQ_M">SQ_M</option>
+        </select>
+      </div>
+    ))}
+  </div>
+</section>
+
+        {/* --- SECTION 4: FINANCIAL --- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-blue-50 p-6 rounded-lg">
+          <h3 className="col-span-2 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Financial Details</h3>
+          <div><label className="text-sm font-bold">Expected Price (Final)</label><input type="number" {...register('expectedPrice')} className="w-full p-3 border rounded-md border-blue-300" /></div>
+          <div className="flex items-end space-x-3 pb-3">
+            <input type="checkbox" {...register('isPriceNegotiable')} className="w-5 h-5" />
+            <label className="font-medium">Price is Negotiable</label>
+          </div>
+          <div><label className="text-sm font-medium">Price Range (Min)</label><input type="number" {...register('priceRange.min')} className="w-full p-3 border rounded-md" /></div>
+          <div><label className="text-sm font-medium">Price Range (Max)</label><input type="number" {...register('priceRange.max')} className="w-full p-3 border rounded-md" /></div>
           
-         
+          <div className="col-span-2 border-t border-blue-200 pt-4 flex items-center space-x-4">
+            <input type="checkbox" id="brk" {...register('isBrokerageCharge')} className="w-5 h-5" />
+            <label htmlFor="brk" className="font-bold">I charge brokerage</label>
+          </div>
+          {isBrokerageCharge && (
+            <div className="col-span-2 grid grid-cols-2 gap-4 animate-in fade-in">
+              <div><label className="text-sm">Brokerage Type</label><select {...register('brokeragepricingType')} className="w-full p-3 border rounded-md bg-white"><option value="PERCENTAGE">Percentage (%)</option><option value="MONTH_RENT">Month Rent</option></select></div>
+              <div><label className="text-sm">Value</label><input type="number" {...register('brokeragepricingValue')} className="w-full p-3 border rounded-md bg-white" /></div>
+            </div>
+          )}
+        </section>
+
+        {/* --- SECTION 5: LEGAL & STATUS --- */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h3 className="col-span-2 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Legal & Status</h3>
+          <div><label className="text-sm font-medium">RERA Number</label><input {...register('reraNumber')} className="w-full p-3 border rounded-md" /></div>
+          <div><label className="text-sm font-medium">Possession Date</label><input type="date" {...register('reraPossessionDate')} className="w-full p-3 border rounded-md" /></div>
+          
+          <div className="flex space-x-6">
+            <label className="flex items-center space-x-2"><input type="checkbox" {...register('isOCAvailable')} /> <span>OC Available</span></label>
+            <label className="flex items-center space-x-2"><input type="checkbox" {...register('isCCAvailable')} /> <span>CC Available</span></label>
           </div>
 
-      </>
+          <div>
+            <label className="text-sm font-medium">Ownership Type</label>
+            <select {...register('ownership')} className="w-full p-3 border rounded-md">
+              {featureData?.find(f => f.type === 'OWNERSHIP')?.features.map(f => (<option key={f._id} value={f._id}>{f.name}</option>))}
+            </select>
+          </div>
 
+          <fieldset className="col-span-2 border p-4 rounded">
+            <legend className="px-2 font-bold">Approved Banks</legend>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {featureData?.find(f => f.type === 'BANKS')?.features.map(f => (
+                <label key={f._id} className="flex items-center space-x-2 text-sm">
+                  <input type="checkbox" value={f._id} {...register('bankOfApproval')} /> <span>{f.name}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </section>
 
-     
+        {/* --- SECTION 6: FEATURES & AMENITIES --- */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <h3 className="col-span-3 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Features & Amenities</h3>
+          
+          {[
+            { label: 'Sub-Property Type', name: 'propertyType', type: 'PROPERTY_TYPE' },
+            { label: 'Parking', name: 'parking', type: 'PARKING' },
+            { label: 'Furnishing', name: 'furnishing', type: 'FURNISHING' },
+            { label: 'Entrance Facing', name: 'entranceFacing', type: 'ENTRANCE_FACING' },
+            { label: 'Availability', name: 'availability', type: 'AVAILABILITY' },
+            { label: 'Property Age', name: 'propertyAge', type: 'PROPERTY_AGE' },
+            { label: 'Flooring', name: 'propertyFlooring', type: 'FLOORING' }
+          ].map(item => (
+            <div key={item.name}>
+              <label className="text-xs font-bold text-gray-500 uppercase">{item.label}</label>
+              <select {...register(item.name as any)} className="w-full p-3 border rounded-md bg-white">
+                <option value="">Select...</option>
+                {featureData?.find(f => f.type === item.type)?.features.map(f => (<option key={f._id} value={f._id}>{f.name}</option>))}
+              </select>
+            </div>
+          ))}
+
+          <div className="col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6 border-t pt-6">
+            <fieldset className="border p-4 rounded"><legend className="font-bold px-2">Amenities</legend>
+              <div className="h-40 overflow-y-auto space-y-1">
+                {featureData?.find(f => f.type === 'AMENITIES')?.features.map(f => (
+                  <label key={f._id} className="flex items-center space-x-2 text-sm"><input type="checkbox" value={f._id} {...register('aminities')} /><span>{f.name}</span></label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="border p-4 rounded"><legend className="font-bold px-2">Water Source</legend>
+              {featureData?.find(f => f.type === 'WATER_SOURCE')?.features.map(f => (
+                <label key={f._id} className="flex items-center space-x-2 text-sm"><input type="checkbox" value={f._id} {...register('waterSource')} /><span>{f.name}</span></label>
+              ))}
+            </fieldset>
+            <fieldset className="border p-4 rounded"><legend className="font-bold px-2">Other Features</legend>
+              {featureData?.find(f => f.type === 'OTHER_FEATURES')?.features.map(f => (
+                <label key={f._id} className="flex items-center space-x-2 text-sm"><input type="checkbox" value={f._id} {...register('otherFeatures')} /><span>{f.name}</span></label>
+              ))}
+            </fieldset>
+          </div>
+        </section>
+
+        {/* --- SECTION 7: MEDIA --- */}
+        <section className="space-y-6 border-t pt-8">
+          <h3 className="text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Media & Visibility</h3>
+          <div><label className="text-sm font-medium">YouTube Embed Link</label><input {...register('youtubeEmbedLink')} className="w-full p-3 border rounded-md" placeholder="https://www.youtube.com/embed/..." /></div>
+          <label className="flex items-center space-x-3 p-4 bg-yellow-50 rounded-md border border-yellow-200">
+            <input type="checkbox" {...register('isFeatured')} className="w-6 h-6" />
+            <span className="font-bold text-yellow-800">Feature this property on the homepage</span>
+          </label>
+
+          <div className="p-6 border-2 border-dashed rounded-lg">
+            <label className="block font-bold mb-4">Gallery Images</label>
+            <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+            <div className="flex flex-wrap gap-4">
+              {singlePropertyData?.imageGallery?.map((img: any) => (
+                <div key={img.public_id} className="relative w-32 h-32 rounded-lg overflow-hidden borderShadow"><Image src={img.secure_url} alt="property" fill className="object-cover" /></div>
+              ))}
+              {previewImages.map((src, i) => (
+                <div key={i} className="relative w-32 h-32 rounded-lg overflow-hidden borderShadow ring-4 ring-green-400"><Image src={src} alt="preview" fill className="object-cover" /></div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <button type="submit" className="w-full py-5 bg-blue-600 text-white text-xl font-bold rounded-xl hover:bg-blue-700 shadow-lg transform transition active:scale-95">
+          Save All Changes
+        </button>
+      </form>
+    </div>
   );
 };
 

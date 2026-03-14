@@ -32,7 +32,7 @@ export interface PropertyData {
   propertyType: SimpleType;
   apartmentName: string;
   apartmentNo: string;
-  locality: string;
+  locality: string[];
   city: string;
   state: string;
   area: {
@@ -85,7 +85,7 @@ export interface SearchedPropertyData {
   propertyType: SimpleType;
   apartmentName: string;
   apartmentNo: string;
-  locality: string;
+  locality: string[];
   city: string;
   state: string;
   area: {
@@ -156,10 +156,14 @@ export interface SingleProperty {
   propertyType: SimpleType;
   apartmentName: string;
   apartmentNo: string;
-  locality: string;
+  locality: string[];
   city: string;
   state: string;
   area: AreaField[];
+  priceRange: {
+    min: number;
+    max: number;
+  };
   reraNumber: string;
   reraPossessionDate: string;
   noOfBedrooms: number;
@@ -168,6 +172,8 @@ export interface SingleProperty {
   parking: SimpleField;
   furnishing: SimpleField;
   entranceFacing: SimpleField;
+   brokeragepricingType: string; 
+  brokeragepricingValue: number;
   availability: SimpleField;
   propertyAge: SimpleField;
   isOCAvailable: boolean;
@@ -194,11 +200,14 @@ export interface PropertyState {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
-  propertyData: PropertyData[];
+
   searchedPropertyData: SearchedPropertyData;
   singlePropertyData: SingleProperty;
   allLocations: any[];
+   
+   propertyData: any[];
   paginate: Paginate;
+  priceRange: number;
 }
 
 export const initialPropertyState: PropertyState = {
@@ -206,6 +215,7 @@ export const initialPropertyState: PropertyState = {
   isSuccess: false,
   isError: false,
   allLocations: [],
+   priceRange: 0, 
   propertyData: [{
     _id: "",
     user: "",
@@ -222,7 +232,7 @@ export const initialPropertyState: PropertyState = {
     },
     apartmentName: "",
     apartmentNo: "",
-    locality: "",
+    locality: [],
     city: "",
     state: "",
     area: [],
@@ -245,6 +255,7 @@ export const initialPropertyState: PropertyState = {
     brokerage: 0,
     bankOfApproval: [],
     aminities: [],
+   
     waterSource: "",
     otherFeatures: [],
     propertyFlooring: "",
@@ -273,7 +284,7 @@ export const initialPropertyState: PropertyState = {
     },
     apartmentName: "",
     apartmentNo: "",
-    locality: "",
+    locality: [],
     city: "",
     state: "",
     area: [],
@@ -303,7 +314,7 @@ export const initialPropertyState: PropertyState = {
     isFeatured: false,
     youtubeEmbedLink: "",
   },
-  singlePropertyData: {
+singlePropertyData: {
     _id: "",
     user: "",
     title: "",
@@ -319,10 +330,15 @@ export const initialPropertyState: PropertyState = {
     },
     apartmentName: "",
     apartmentNo: "",
-    locality: "",
+    locality: [],
     city: "",
     state: "",
     area: [{ name: "", area: 0, areaMeasurement: "" }],
+    // ADDED THIS:
+   priceRange : {
+      min: 0,
+      max: 0,
+    },
     reraNumber: "",
     reraPossessionDate: "",
     noOfBedrooms: 0,
@@ -331,6 +347,9 @@ export const initialPropertyState: PropertyState = {
     parking: { _id: "", name: "", type: "" },
     furnishing: { _id: "", name: "", type: "" },
     entranceFacing: { _id: "", name: "", type: "" },
+    // ADDED THESE:
+    brokeragepricingType: "", 
+    brokeragepricingValue: 0,
     availability: { _id: "", name: "", type: "" },
     propertyAge: { _id: "", name: "", type: "" },
     isOCAvailable: false,

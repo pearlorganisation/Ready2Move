@@ -8,10 +8,34 @@ interface AreaDetail {
   areaMeasurement: string;
 }
 
+interface PropertyState {
+  singlePropertyData: UserData | null;
+  isLoading: boolean;
+}
+interface SinglePropertyData {
+  title?: string;
+  description?: string;
+  expectedPrice?: number;
+
+  isBrokerageCharge?: boolean;
+  brokeragepricingType?: string;
+  brokeragepricingValue?: number;
+}
+
+const initialState: PropertyState = {
+  singlePropertyData: null,
+  isLoading: false,
+};
+
 // Interface for the 'landArea' object
 interface LandAreaDetail {
   area: number;
   measurement: string;
+}
+
+interface NamedObject {
+  _id?: string;
+  name?: string;
 }
 
 // Main interface for the userdata object
@@ -26,7 +50,7 @@ interface UserData {
   propertyType?: string;
   apartmentName?: string;
   apartmentNo?: string;
-  locality?: string;
+  locality?: string[]; 
   city?: string;
   state?: string;
   area?: AreaDetail[]; // Array of AreaDetail objects
@@ -39,7 +63,7 @@ interface UserData {
   noOfBedrooms?: number;
   noOfBathrooms?: number;
   noOfBalconies?: number;
-   
+   priceRange?:number;
   parking?: string;
   furnishing?: string;
   entranceFacing?: string;
@@ -48,12 +72,13 @@ interface UserData {
   isOCAvailable?: boolean;
   isCCAvailable?: boolean;
   ownership?: string;
-  // pricingType?: string;
-  // pricingValue?: number;
+ 
     expectedPrice?: number;
   isPriceNegotiable?: boolean;
   isBrokerageCharge?: boolean;
-  brokerage?: number;
+  // brokerage?: number;
+   brokeragepricingType?: string;
+  brokeragepricingValue?: number;
   maintenanceCharge?: number;
   maintenanceFrequency?: string;
   bankOfApproval?: string[]; // Array of strings
@@ -90,7 +115,13 @@ export const createPropertyByAdmin = createAsyncThunk(
       // ✅ Append Location Details
       formData.append("apartmentName", userdata?.apartmentName || "");
       formData.append("apartmentNo", userdata?.apartmentNo || "");
-      formData.append("locality", userdata?.locality || "");
+      if (Array.isArray(userdata?.locality)) {
+  userdata.locality.forEach((loc) => {
+    formData.append("locality", loc); // This sends them as separate items
+  });
+} else {
+  formData.append("locality", userdata?.locality || "");
+}
       formData.append("city", userdata?.city || "");
       formData.append("state", userdata?.state || "");
 
@@ -175,7 +206,15 @@ export const createPropertyByAdmin = createAsyncThunk(
         "isBrokerageCharge",
         userdata?.isBrokerageCharge ? "true" : "false"
       );
-      formData.append("brokerage", userdata?.brokerage?.toString() || "0");
+      formData.append(
+        "brokeragepricingType",
+        userdata?.brokeragepricingType || "perMonth"
+      );
+      formData.append(
+        "brokeragepricingValue",
+        userdata?.brokeragepricingValue?.toString() || "0"
+      );
+      // formData.append("brokerage", userdata?.brokerage?.toString() || "0");
       formData.append(
         "maintenanceCharge",
         userdata?.maintenanceCharge?.toString() || "0"
