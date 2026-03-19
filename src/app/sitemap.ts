@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 const BASE_URL = "https://ready2move.co.in";
-const API_URL = "https://api.ready2move.co.in/";
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_DEV_BASE_URL || "https://api.ready2move.co.in";
 
 async function fetchSlugs(endpoint: string) {
   try {
