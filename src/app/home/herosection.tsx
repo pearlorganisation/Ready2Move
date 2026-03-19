@@ -51,7 +51,7 @@ export default function HeroSection() {
         </div>
 
         <div className="container mx-auto px-4 z-10 text-center lg:mt-40 shadow-xl/20">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 top-4 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 top-4 bg-clip-text text-white">
             {bannerData?.[0]?.headline}
           </h1>
           <p className="text-white text-lg md:text-xl max-w-4xl mx-auto mb-12">

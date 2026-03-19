@@ -9,8 +9,8 @@ import Script from "next/script"; // ✅ Required for GTM
 import WhatsAppWrapper from "@/components/WhatsappWrapper";
 
 export const metadata: Metadata = {
-  title: "Ready2Move",
-  description: "Created By Pearl",
+  title: "Flats for Sale & Rent in Vile Parle, Andheri & Santacruz | 1, 2, 3 BHK",
+  description: "Looking for 1, 2, or 3 BHK flats for sale or rent in Vile Parle, Andheri, and Santacruz? Explore premium residential listings with top amenities. Find your dream home today!",
   icons: {
     icon: "/sitefavicon.png",
   },

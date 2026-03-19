@@ -12,10 +12,13 @@ import {
   Phone,
   Mail,
   Play,
+  Youtube,
+  Linkedin,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getAllCityData } from "@/lib/redux/actions/footerAction";
 import QuickLinks from "./QuickLinks";
+import { FaQuora } from "react-icons/fa";
 
 const Footer = () => {
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
@@ -56,20 +59,39 @@ const Footer = () => {
                 empowering buyers to make informed decisions based on their
                 specific needs and preferences.
               </p>
-              <div className="flex space-x-4 mb-6">
-                <Link href="#" className="hover:text-gray-300">
-                  <Play className="w-5 h-5" />
-                </Link>
-                <Link href="#" className="hover:text-gray-300">
-                  <Facebook className="w-5 h-5" />
-                </Link>
-                <Link href="#" className="hover:text-gray-300">
-                  <Twitter className="w-5 h-5" />
-                </Link>
-                <Link href="#" className="hover:text-gray-300">
-                  <Instagram className="w-5 h-5" />
-                </Link>
-              </div>
+            <div className="flex space-x-4 mb-6">
+
+  {/* Facebook */}
+  <Link href="https://facebook.com" target="_blank" className="hover:text-gray-300">
+    <Facebook className="w-5 h-5" />
+  </Link>
+
+  {/* YouTube */}
+  <Link href="https://youtube.com" target="_blank" className="hover:text-gray-300">
+    <Youtube className="w-5 h-5" />
+  </Link>
+
+  {/* Instagram */}
+  <Link href="https://instagram.com" target="_blank" className="hover:text-gray-300">
+    <Instagram className="w-5 h-5" />
+  </Link>
+
+  {/* LinkedIn */}
+  <Link href="https://linkedin.com" target="_blank" className="hover:text-gray-300">
+    <Linkedin className="w-5 h-5" />
+  </Link>
+
+  {/* Twitter */}
+  <Link href="https://twitter.com" target="_blank" className="hover:text-gray-300">
+    <Twitter className="w-5 h-5" />
+  </Link>
+
+  {/* Quora (custom text/icon) */}
+ <Link href="https://quora.com" target="_blank" className="hover:text-gray-300">
+  <FaQuora className="w-5 h-5" />
+</Link>
+
+</div>
               <div className="space-y-2">
                 <div className="flex items-start">
                   <Phone className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
