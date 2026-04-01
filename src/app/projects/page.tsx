@@ -450,17 +450,17 @@ const Page = () => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-[35%_auto] gap-6  ">
+      {/* <div className="grid md:grid-cols-[35%_auto] gap-6  ">
         {/* Sidebar Filters */}
-        <div className="max-w-md mx-auto  rounded-2xl p-6">
+        {/* <div className="max-w-md mx-auto  rounded-2xl p-6"> */} 
           {/* Breadcrumb */}
 
-          <div className=" h-screen w-full max-w-sm mx-auto  ">
+          {/* <div className=" h-screen w-full max-w-sm mx-auto  "> */}
             {/* Header */}
 
-            <div className="overflow-y-auto h-full pb-20 sticky">
+            {/* <div className="overflow-y-auto h-full pb-20 sticky">
               {/* Applied Filters Section */}
-              <div className="p-4 border-b border-gray-50">
+              {/* <div className="p-4 border-b border-gray-50">
                 <div className="flex justify-between items-center">
                   <h2 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
                     Applied Filters
@@ -472,10 +472,10 @@ const Page = () => {
                     Clear All
                   </button>
                 </div>
-              </div>
+              </div> */}
 
               {/* Budget Filter */}
-              <div className="p-4 border-b border-gray-50">
+              {/* <div className="p-4 border-b border-gray-50">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
                     Budget
@@ -500,7 +500,7 @@ const Page = () => {
                   </div>
 
                   {/* Price Slider */}
-                  <div
+                  {/* <div
                     ref={priceSliderRef}
                     className="relative h-2 bg-gray-200 rounded-full my-8"
                     style={
@@ -520,10 +520,10 @@ const Page = () => {
                       ref={priceMaxThumbRef}
                       className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-800 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Price Inputs */}
-                  <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <label className="block text-xs text-gray-500 mb-1 font-medium">
                         from
@@ -551,12 +551,12 @@ const Page = () => {
                         className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent"
                       />
                     </div>
-                  </div>
-                </div>
-              </div>
+                  </div> */}
+                {/* </div>
+              </div> */} 
 
               {/* Area Filter */}
-              <div className="p-4 border-b border-gray-50">
+              {/* <div className="p-4 border-b border-gray-50">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
                     Area
@@ -578,7 +578,7 @@ const Page = () => {
                   </div>
 
                   {/* Area Slider */}
-                  <div
+                  {/* <div
                     ref={areaSliderRef}
                     className="relative h-2 bg-gray-200 rounded-full my-8"
                   >
@@ -590,10 +590,10 @@ const Page = () => {
                       ref={areaMaxThumbRef}
                       className="absolute top-1/2 -translate-y-1/2 -ml-3 w-6 h-6 bg-white border-2 border-blue-800 rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-shadow"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Area Inputs */}
-                  <div className="flex items-center gap-3">
+                  {/* <div className="flex items-center gap-3">
                     <div className="flex-1">
                       <label className="block text-xs text-gray-500 mb-1 font-medium">
                         from
@@ -623,12 +623,12 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              </div> */}
+            {/* </div> */}
+          {/* </div>
+        </div>  */}
 
-        <div className="grid grid-cols-1 gap-10">
+        <div className="p-10 grid grid-cols-1 md:grid-cols-2  gap-10">
           {Array.isArray(projectData) && projectData?.length > 0 ? (
             projectData.map((project: any) => {
               console.log(project, "my project single");
@@ -644,7 +644,7 @@ const Page = () => {
             </div>
           )}
         </div>
-      </div>
+      {/* </div> */}
       <div className="w-full flex justify-center">
         {/* <Pagination
           total={paginate?.total}

@@ -193,8 +193,25 @@ export interface SingleProperty {
   youtubeEmbedLink: string;
   createdAt: string;
   updatedAt: string;
-  __v: number;
+   ogMetaField: {
+    ogTitle: string;
+    ogDescription: string;
+    ogImage: {
+      secure_url: string;
+      public_id: string;
+    };
+  };
 }
+
+export interface OGMeta {
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: {
+    secure_url: string;
+    public_id: string;
+  };
+}
+
 
 export interface PropertyState {
   isLoading: boolean;
@@ -348,7 +365,15 @@ singlePropertyData: {
     furnishing: { _id: "", name: "", type: "" },
     entranceFacing: { _id: "", name: "", type: "" },
     // ADDED THESE:
-    brokeragepricingType: "", 
+    ogMetaField: {
+      ogTitle: "",
+      ogDescription: "",
+      ogImage: {
+        secure_url: "",
+        public_id: "",
+      },
+    },
+    brokeragepricingType: "",
     brokeragepricingValue: 0,
     availability: { _id: "", name: "", type: "" },
     propertyAge: { _id: "", name: "", type: "" },
@@ -369,7 +394,7 @@ singlePropertyData: {
     youtubeEmbedLink: "",
     createdAt: "",
     updatedAt: "",
-    __v: 0,
+   
   },
   paginate: {
     total: 0,

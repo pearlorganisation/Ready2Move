@@ -38,6 +38,15 @@ interface NamedObject {
   name?: string;
 }
 
+interface OGMeta {
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: {
+    secure_url: string;
+    public_id: string;
+  };
+}
+
 // Main interface for the userdata object
 interface UserData {
   id?: string;
@@ -72,6 +81,8 @@ interface UserData {
   isOCAvailable?: boolean;
   isCCAvailable?: boolean;
   ownership?: string;
+
+  ogMetaField?: OGMeta;
  
     expectedPrice?: number;
   isPriceNegotiable?: boolean;
@@ -91,6 +102,9 @@ interface UserData {
   imageGallery?: File[]; // Array of File objects (assuming standard browser File API)
   youtubeEmbedLink?: string;
   isFeatured?: boolean;
+  ogTitle: string;        // Mandatory
+  ogDescription: string;  // Mandatory
+  ogImage?: FileList | File[]; 
 }
 export const createPropertyByAdmin = createAsyncThunk(
   "create/project",
@@ -208,7 +222,7 @@ export const createPropertyByAdmin = createAsyncThunk(
       );
       formData.append(
         "brokeragepricingType",
-        userdata?.brokeragepricingType || "perMonth"
+        userdata?.brokeragepricingType || ""
       );
       formData.append(
         "brokeragepricingValue",
@@ -270,6 +284,16 @@ export const createPropertyByAdmin = createAsyncThunk(
       }
 
       formData.append("isFeatured", userdata?.isFeatured ? "true" : "false");
+       
+       formData.append("ogTitle", userdata.ogTitle);
+      formData.append("ogDescription", userdata.ogDescription);
+      if (userdata.ogImage && userdata.ogImage.length > 0) {
+        // If it's a FileList or Array, take the first file
+        formData.append("ogImage", userdata.ogImage[0]);
+      } else {
+        return rejectWithValue("OG Image is required for social sharing");
+      }
+
 
       console.log("The formData after is", formData);
 

@@ -7,6 +7,10 @@ import { getAllProperties, getAllLocations } from "@/lib/redux/actions/propertyA
 import { ChevronRight, MapPin, Search, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import { GenerateOgMetadata } from "@/components/GenerateOgMetadata";
+
+
+
 
 import {
   FaSearch,
@@ -177,12 +181,19 @@ useEffect(() => {
     { id: "all", label: "All Properties", count: paginate?.total || 0 },
     { id: "buy", label: "Buy", count: 0 },
     { id: "rent", label: "Rent", count: 0 },
-    { id: "commercial", label: "Commercial", count: 0 },
-    { id: "residential", label: "Residential", count: 0 },
+    // { id: "commercial", label: "Commercial", count: 0 },
+    // { id: "residential", label: "Residential", count: 0 },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-hidden">
+
+
+
+<div>
+  <GenerateOgMetadata />
+</div>
+
       {/* Header */}
       <header className="bg-white shadow-sm border-b  top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -246,22 +257,29 @@ useEffect(() => {
                 <button
                   key={filter.id}
                   onClick={() => {
-                    setActiveFilter(filter.id);
-                    if (filter.id === "buy") setService("BUY");
-                    else if (filter.id === "rent") setService("RENT");
-                    else if (filter.id === "commercial")
-                      setPropertyType("COMMERCIAL");
-                    else if (filter.id === "residential")
-                      setPropertyType("RESIDENTIAL");
-                    else if (filter.id === "all") {
-                      setService("");
-                      setPropertyType("");
-                    }
-                  }}
+  setActiveFilter(filter.id);
+
+  if (filter.id === "buy") {
+    setService("BUY");
+    setPropertyType("");
+  } else if (filter.id === "rent") {
+    setService("RENT");
+    setPropertyType("");
+  } else if (filter.id === "commercial") {
+    setPropertyType("COMMERCIAL");
+  } else if (filter.id === "residential") {
+    setPropertyType("RESIDENTIAL");
+  } else if (filter.id === "all") {
+    setService("");
+    setPropertyType("");
+  }
+
+  setCurrentPage(1);
+}}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeFilter === filter.id
                       ? "bg-[#1E3D9C] text-white"
-                      : "bg-white text-gray-700 border border-gray-300hover:bg-[#182F7A] hover:text-blue-800"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-blue-50 hover:text-[#1E3D9C]"
                   }`}
                 >
                   {filter.label}
@@ -272,13 +290,47 @@ useEffect(() => {
               ))}
             </div>
 
+            {service && (
+  <div className="flex flex-wrap items-center gap-3 mb-4">
+    <span className="text-sm font-medium text-gray-600">Property Type:</span>
+
+    <button
+      onClick={() => {
+        setPropertyType("RESIDENTIAL");
+        setCurrentPage(1);
+      }}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+        propertyType === "RESIDENTIAL"
+          ? "bg-[#1E3D9C] text-white"
+          : "bg-white text-gray-700 border border-gray-300 hover:bg-blue-50 hover:text-[#1E3D9C]"
+      }`}
+    >
+      Residential
+    </button>
+
+    <button
+      onClick={() => {
+        setPropertyType("COMMERCIAL");
+        setCurrentPage(1);
+      }}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+        propertyType === "COMMERCIAL"
+          ? "bg-[#1E3D9C] text-white"
+          : "bg-white text-gray-700 border border-gray-300 hover:bg-blue-50 hover:text-[#1E3D9C]"
+      }`}
+    >
+      Commercial
+    </button>
+  </div>
+)}
+
             {/* Advanced Filters */}
           {/* Advanced Filters */}
 <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 shadow-sm relative">
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-end">
     
     {/* 1. Price Range */}
-    <div className="flex flex-col">
+    {/* <div className="flex flex-col">
       <label className="block text-sm font-semibold text-gray-700 mb-3">
         Max Price: <span className="text-[#1E3D9C]">₹{priceRange.toLocaleString()}</span>
       </label>
@@ -293,7 +345,7 @@ useEffect(() => {
           className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1E3D9C]"
         />
       </div>
-    </div>
+    </div> */}
 
     {/* 2. Bedrooms */}
     <div className="flex flex-col">
@@ -312,7 +364,7 @@ useEffect(() => {
     </div>
 
     {/* 3. Bathrooms */}
-    <div className="flex flex-col">
+    {/* <div className="flex flex-col">
       <label className="block text-sm font-semibold text-gray-700 mb-3">Bathrooms</label>
       <div className="flex items-center space-x-3 h-[42px]">
         <button
@@ -325,7 +377,7 @@ useEffect(() => {
           className="w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-[#1E3D9C] transition-all flex items-center justify-center shadow-sm"
         >+</button>
       </div>
-    </div>
+    </div> */}
 
     {/* 4. Custom Location Picker (FORCED DOWNWARD) */}
     <div className="flex flex-col relative" ref={locationRef}>

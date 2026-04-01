@@ -4,26 +4,31 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const getBlogs = createAsyncThunk(
   "blogs/getAll",
   async (
-    { page, limit }: { page: number; limit: number },
+    // 1. Added sort?: string here
+    { page, limit, sort }: { page: number; limit: number; sort?: string },
     { rejectWithValue }
   ) => {
     try {
-      const { data } = await axiosInstance.get(
-        `/api/v1/blogs?page=${page}&limit=${limit}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      // 2. Build the URL dynamically to include sort if it exists
+      let url = `/api/v1/blogs?page=${page}&limit=${limit}`;
+      if (sort) {
+        url += `&sort=${sort}`;
+      }
 
-      return data; // should include blogs array + pagination info
+      const { data } = await axiosInstance.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      return data; 
     } catch (error: any) {
       const message = error.response?.data?.message || "Failed to fetch blogs.";
       return rejectWithValue(message);
     }
   }
 );
+
 export const createBlog = createAsyncThunk(
   "create/blog",
   async (formdata: FormData, { rejectWithValue }) => {
@@ -41,7 +46,7 @@ export const createBlog = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
-        error.response.data.message || "failed to create banner"
+        error.response?.data?.message || "failed to create blog"
       );
     }
   }
@@ -89,18 +94,12 @@ export const deleteBlog = createAsyncThunk(
   "delete/blog",
   async (id: string, { rejectWithValue }) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-      const { data } = await axiosInstance.delete(
-        `/api/v1/blogs/${id}`,
-        config
-      );
+      // Note: Delete usually doesn't need multipart/form-data
+      await axiosInstance.delete(`/api/v1/blogs/${id}`);
       return id;
     } catch (error: any) {
-      rejectWithValue(error.response.data.message);
+      // IMPORTANT: Added 'return' here, otherwise Redux won't catch the error properly
+      return rejectWithValue(error.response?.data?.message || "Failed to delete");
     }
   }
 );
@@ -109,15 +108,11 @@ export const getSingleBlog = createAsyncThunk(
   "get/single-blog",
   async (slug: string, { rejectWithValue }) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const { data } = await axiosInstance.get(`/api/v1/blogs/${slug}`, config);
+      const { data } = await axiosInstance.get(`/api/v1/blogs/${slug}`);
       return data.data;
     } catch (error: any) {
-      rejectWithValue(error.response.data.message);
+      // IMPORTANT: Added 'return' here
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch blog");
     }
   }
 );

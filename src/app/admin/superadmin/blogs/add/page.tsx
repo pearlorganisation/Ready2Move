@@ -73,13 +73,16 @@ type BlogFormInputs = {
   content: string;
   thumbImage?: FileList;
   slug: string;
+  ogImage?: FileList;
+  ogTitle: string;
+  ogDescription: string;
 };
 
 const Page = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean | false>(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
+const [ogPreview, setOgPreview] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -105,6 +108,11 @@ const Page = () => {
     if (data.thumbImage && data.thumbImage[0]) {
       formData.append("thumbImage", data.thumbImage[0]);
     }
+    formData.append("ogTitle", data.ogTitle);
+    formData.append("ogDescription", data.ogDescription);
+    if (data.ogImage && data.ogImage[0]) {
+      formData.append("ogImage", data.ogImage[0]);
+    }
 
     await dispatch(createBlog(formData) as any);
 
@@ -119,6 +127,14 @@ const Page = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
+  const handleOgImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    const previewUrl = URL.createObjectURL(file);
+    setOgPreview(previewUrl);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-10">
@@ -228,6 +244,37 @@ const Page = () => {
               />
             </div>
           )}
+
+
+           <div className="border-t pt-6">
+                              <h3 className="text-xl font-bold text-slate-800 mb-6">OG Meta Fields</h3>
+                              <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                                <div className="md:col-span-7 space-y-5">
+                                  <div>
+                                    <label className="block text-sm font-semibold text-gray-700">Meta Title</label>
+                                    <input className="w-full px-4 py-2 border border-gray-300 rounded-md" {...register("ogTitle", { required: "Required" })} />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold text-gray-700">Meta Description</label>
+                                    <textarea rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-md" {...register("ogDescription", { required: "Required" })} />
+                                  </div>
+                                </div>
+                                <div className="md:col-span-5">
+                                  <label className="block text-sm font-semibold text-gray-700">Social Share Image</label>
+                                  <div className="bg-slate-50 p-4 rounded-xl border border-dashed border-slate-300">
+                                   <input
+  type="file"
+  accept="image/*"
+  {...register("ogImage", { required: "Required" })}
+  onChange={handleOgImageChange}
+/>
+                                    <div className="w-full aspect-video bg-white mt-4 rounded-lg overflow-hidden">
+                                      {ogPreview && <img src={ogPreview} className="w-full h-full object-cover" />}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
           {/* Submit */}
           <button

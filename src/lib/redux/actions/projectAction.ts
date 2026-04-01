@@ -39,6 +39,19 @@ export const createProjectsByBuilder = createAsyncThunk(
       formData.append("projectType", userdata?.projectType || "");
       formData.append("reraNumber", userdata?.reraNumber.toString());
       formData.append("reraPossessionDate", userdata?.reraPossessionDate);
+     
+    formData.append("ogTitle", userdata.ogTitle || "");
+formData.append("ogDescription", userdata.ogDescription || "");
+
+// ✅ FIXED: Append the actual File from the FileList
+// If it's a FileList from react-hook-form, take the first element [0]
+const ogImageFiles = userdata.ogImage; 
+
+if (ogImageFiles && ogImageFiles.length > 0) {
+  // We use [0] because FileList is like an array
+  formData.append("ogImage", ogImageFiles[0]); 
+}
+
       // ✅ Append Area Range
       if (
         userdata?.areaRangeMin !== undefined &&

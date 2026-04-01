@@ -15,7 +15,7 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
   const { singlePropertyData } = useAppSelector((state) => state.property);
   const { featureData } = useAppSelector(state => state.features);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-
+ const [ogPreview, setOgPreview] = useState<string | null>(null);
   const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<any>({
     defaultValues: {
         title: "",
@@ -63,6 +63,16 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
       setValue('property', singlePropertyData.property || 'RESIDENTIAL');
       setValue('propertyType', singlePropertyData.propertyType?._id || "");
 
+     if (singlePropertyData?.ogMetaField) {
+  setValue('ogTitle', singlePropertyData.ogMetaField.ogTitle || '');
+  setValue('ogDescription', singlePropertyData.ogMetaField.ogDescription || '');
+  
+ 
+  if (singlePropertyData.ogMetaField.ogImage?.secure_url) {
+    setOgPreview(singlePropertyData.ogMetaField.ogImage.secure_url);
+  }
+}
+
       // 2. Location
       setValue('apartmentName', singlePropertyData.apartmentName || '');
       setValue('apartmentNo', singlePropertyData.apartmentNo || '');
@@ -109,6 +119,11 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
       setValue('youtubeEmbedLink', singlePropertyData.youtubeEmbedLink || '');
       setValue('isFeatured', !!singlePropertyData.isFeatured);
 
+
+      
+     
+
+
       // 7. Multi-Select Arrays
       setValue('aminities', singlePropertyData.aminities?.map((a: any) => a._id) || []);
       setValue('waterSource', singlePropertyData.waterSource?.map((w: any) => w._id) || []);
@@ -145,6 +160,8 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
   }
 });
 
+
+
     // Price Range Object
     formData.append("priceRange[min]", data.priceRange.min.toString());
     formData.append("priceRange[max]", data.priceRange.max.toString());
@@ -160,6 +177,13 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
       formData.append("brokeragepricingType", data.brokeragepricingType);
       formData.append("brokeragepricingValue", data.brokeragepricingValue.toString());
     }
+
+    formData.append("ogTitle", data.ogTitle || "");
+formData.append("ogDescription", data.ogDescription || "");
+
+if (data.ogImage instanceof File) {
+  formData.append("ogImage", data.ogImage);
+}
 
     // Arrays
     data.area.forEach((item: any, i: number) => {
@@ -186,6 +210,15 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
       router.back();
     } catch (err) { console.error(err); alert('Update failed'); }
   };
+
+
+   const handleOgImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    setValue("ogImage", file);
+    setOgPreview(URL.createObjectURL(file));
+  }
+};
 
   return (
     <div className="w-full p-6 bg-white shadow-md rounded-xl mt-6">
@@ -402,6 +435,26 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
               ))}
             </div>
           </div>
+<div className="bg-gray-50 p-6 rounded-xl space-y-4">
+  <h4 className="font-bold">OG Meta Field</h4>
+  <div>
+    <label className="text-sm">OG Title</label>
+    <input {...register('ogTitle')} className="w-full p-3 border rounded-md" />
+  </div>
+  <div>
+    <label className="text-sm">OG Description</label>
+    <input {...register('ogDescription')} className="w-full p-3 border rounded-md" />
+  </div>
+  <div>
+    <label className="text-sm">OG Image File (Social Preview)</label>
+    <input type="file" onChange={handleOgImageChange} className="block w-full text-sm mb-2" />
+    {ogPreview && (
+      <div className="relative w-48 h-28 border rounded overflow-hidden">
+        <Image src={ogPreview} alt="OG Preview" fill className="object-cover" />
+      </div>
+    )}
+  </div>
+</div>
         </section>
 
         <button type="submit" className="w-full py-5 bg-blue-600 text-white text-xl font-bold rounded-xl hover:bg-blue-700 shadow-lg transform transition active:scale-95">
