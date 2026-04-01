@@ -7,7 +7,7 @@ import { getAllProperties, getAllLocations } from "@/lib/redux/actions/propertyA
 import { ChevronRight, MapPin, Search, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { GenerateOgMetadata } from "@/components/GenerateOgMetadata";
+
 
 
 
@@ -190,9 +190,7 @@ useEffect(() => {
 
 
 
-<div>
-  <GenerateOgMetadata />
-</div>
+
 
       {/* Header */}
       <header className="bg-white shadow-sm border-b  top-0 z-50">

@@ -94,11 +94,6 @@ type PropertyFormValues = Pick<
 >;
 
 
-
-
-
-
-
 const MySlugProperty = ({ slug }: { slug: string }) => {
   const dispatch = useAppDispatch();
    

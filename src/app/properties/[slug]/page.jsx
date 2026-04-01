@@ -1,29 +1,34 @@
-import MySlugProperty from "@/components/MySlugProperty";
-import axios from "axios";
-
 export async function generateMetadata({ params }) {
   const res = await fetch(
-    `https://api.ready2move.co.in/api/v1/properties/${params.slug}`
+    `https://api.ready2move.co.in/api/v1/properties/${params.slug}`,
+    { cache: "no-store" }
   );
+
   const projectData = await res.json();
+
   const title = projectData?.data?.title ?? "Project Preview";
-  const description = projectData?.data?.description ?? "Explore this project";
+  const description =
+    projectData?.data?.description ?? "Explore this project";
+
+  const ogImageUrl =
+    projectData?.data?.imageGallery?.[0]?.secure_url ||
+    "https://ready2move.co.in/RS.png";
+
   const pageUrl = `https://ready2move.co.in/properties/${params.slug}`;
-  const ogImageUrl = `${pageUrl}/opengraph-image`;
+
   return {
     title,
+    description,
     openGraph: {
       title,
       description,
       type: "website",
-      locale: "en_US",
       url: pageUrl,
       images: [
         {
           url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: title,
         },
       ],
     },
@@ -35,7 +40,6 @@ export async function generateMetadata({ params }) {
     },
   };
 }
-
 export default function Page({ params }) {
   return (
     <div className="mt-2">
