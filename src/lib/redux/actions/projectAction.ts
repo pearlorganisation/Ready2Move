@@ -120,6 +120,57 @@ if (ogImageFiles && ogImageFiles.length > 0) {
   }
 );
 
+// export const getAllProjects = createAsyncThunk(
+//   "get/allprojects",
+//   async (
+//     {
+//       page,
+//       limit,
+//       priceRange,
+//       areaRange,
+//       q,
+//       service,
+//       projectType,
+//     }: {
+//       page?: number;
+//       limit?: number;
+//       priceRange?: string;
+//       areaRange?: string;
+//       q?: string;
+//       service?: "RENT" | "SELL";
+//       projectType?: "RESIDENTIAL" | "COMMERCIAL";
+//     },
+//     { rejectWithValue }
+//   ) => {
+//     try {
+//       const config = {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       };
+
+//       const queryParams = new URLSearchParams();
+
+//       if (page) queryParams.append("page", page.toString());
+//       if (limit) queryParams.append("limit", limit.toString());
+//       if (priceRange) queryParams.append("priceRange", priceRange);
+//       if (areaRange) queryParams.append("areaRange", areaRange);
+//       if (q) queryParams.append("q", q);
+//       if (service) queryParams.append("service", service);
+//       if (projectType) queryParams.append("projectType", projectType);
+
+//       const response = await axiosInstance.get(
+//         `/api/v1/projects?${queryParams.toString()}`,
+//         config
+//       );
+
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
+
 export const getAllProjects = createAsyncThunk(
   "get/allprojects",
   async (
@@ -131,6 +182,7 @@ export const getAllProjects = createAsyncThunk(
       q,
       service,
       projectType,
+      locality, // 1. Add locality here
     }: {
       page?: number;
       limit?: number;
@@ -139,6 +191,7 @@ export const getAllProjects = createAsyncThunk(
       q?: string;
       service?: "RENT" | "SELL";
       projectType?: "RESIDENTIAL" | "COMMERCIAL";
+      locality?: string; // 2. Add to type definition
     },
     { rejectWithValue }
   ) => {
@@ -158,6 +211,9 @@ export const getAllProjects = createAsyncThunk(
       if (q) queryParams.append("q", q);
       if (service) queryParams.append("service", service);
       if (projectType) queryParams.append("projectType", projectType);
+      
+      // 3. Append locality to the URL
+      if (locality) queryParams.append("locality", locality); 
 
       const response = await axiosInstance.get(
         `/api/v1/projects?${queryParams.toString()}`,
@@ -170,6 +226,9 @@ export const getAllProjects = createAsyncThunk(
     }
   }
 );
+
+
+
 
 export const getAllSearchProjects = createAsyncThunk(
   "get/allsearchprojects",

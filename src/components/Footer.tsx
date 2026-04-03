@@ -62,32 +62,32 @@ const Footer = () => {
             <div className="flex space-x-4 mb-6">
 
   {/* Facebook */}
-  <Link href="https://facebook.com" target="_blank" className="hover:text-gray-300">
+  <Link href="https://www.facebook.com/ready2move.co.in" target="_blank" className="hover:text-gray-300">
     <Facebook className="w-5 h-5" />
   </Link>
 
   {/* YouTube */}
-  <Link href="https://youtube.com" target="_blank" className="hover:text-gray-300">
+  <Link href=" https://www.youtube.com/@ready2move.mumbai" target="_blank" className="hover:text-gray-300">
     <Youtube className="w-5 h-5" />
   </Link>
 
   {/* Instagram */}
-  <Link href="https://instagram.com" target="_blank" className="hover:text-gray-300">
+  <Link href=" https://www.instagram.com/ready2move.co.in/" target="_blank" className="hover:text-gray-300">
     <Instagram className="w-5 h-5" />
   </Link>
 
   {/* LinkedIn */}
-  <Link href="https://linkedin.com" target="_blank" className="hover:text-gray-300">
+  <Link href="https://linkedin.com/company/ready2move1/" target="_blank" className="hover:text-gray-300">
     <Linkedin className="w-5 h-5" />
   </Link>
 
   {/* Twitter */}
-  <Link href="https://twitter.com" target="_blank" className="hover:text-gray-300">
+  <Link href="https://x.com/ready2move_mbai" target="_blank" className="hover:text-gray-300">
     <Twitter className="w-5 h-5" />
   </Link>
 
   {/* Quora (custom text/icon) */}
- <Link href="https://quora.com" target="_blank" className="hover:text-gray-300">
+ <Link href="https://www.quora.com/profile/Ready2move" target="_blank" className="hover:text-gray-300">
   <FaQuora className="w-5 h-5" />
 </Link>
 
@@ -121,9 +121,12 @@ const Footer = () => {
     <ul className="space-y-3">
       {item.localities?.map((locality, index) => (
         <li key={index}> {/* Key must be on the <li>, not the <div> inside it */}
-          <Link href="#" className="hover:text-gray-300">
-            <div>{locality}</div>
-          </Link>
+        <Link
+  href={`/projects?locality=${locality}`}
+  className="hover:text-gray-300"
+>
+  <div>{locality}</div>
+</Link>
         </li>
       ))}
     </ul>

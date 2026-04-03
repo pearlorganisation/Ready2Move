@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import { getAllProjects } from "@/lib/redux/actions/projectAction";
-
+import { Suspense } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -13,6 +13,7 @@ import { useState, useRef, useEffect } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import { ChevronDown, X } from "lucide-react";
 import Pagination from "@/components/Pagination";
+import { useSearchParams } from "next/navigation";
 import {
   FaSearch,
   FaBed,
@@ -27,7 +28,7 @@ import {
   FaList,
 } from "react-icons/fa";
 
-const Page = () => {
+const ProjectsPageContent = () => {
   const dispatch = useAppDispatch();
   const { projectData, paginate } = useAppSelector((state) => state.projects);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -110,6 +111,8 @@ const Page = () => {
     setAppliedFilters(newFilters);
   };
 
+
+const locality = useSearchParams().get("locality");
   const parseInputValue = (value: string): number => {
     if (value.includes("Lacs")) {
       const num = Number.parseFloat(value.replace(" Lacs", ""));
@@ -382,39 +385,46 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    const filters: any = {
-      page: currentPage,
-      limit: 10,
-      q: debouncedQ,
-      service,
-      projectType,
-    };
-
-    if (isPriceChanged) {
-      filters.priceRange = `${debouncedPriceRange[0]},${debouncedPriceRange[1]}`;
-    }
-
-    if (isAreaChanged) {
-      filters.areaRange = `${debouncedAreaRange[0]},${debouncedAreaRange[1]}`;
-    }
-
-    dispatch(getAllProjects(filters));
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [
-    dispatch,
-    currentPage,
+ useEffect(() => {
+  const filters: any = {
+    page: currentPage,
+    limit: 10,
+    q: debouncedQ,
     service,
     projectType,
-    debouncedQ,
-    debouncedPriceRange,
-    debouncedAreaRange,
-    isPriceChanged,
-    isAreaChanged,
-  ]);
+  };
+
+  if (locality) {
+    filters.locality = locality;
+  }
+
+  if (isPriceChanged) {
+    filters.priceRange = `${debouncedPriceRange[0]},${debouncedPriceRange[1]}`;
+  }
+
+  if (isAreaChanged) {
+    filters.areaRange = `${debouncedAreaRange[0]},${debouncedAreaRange[1]}`;
+  }
+  console.log("Filters being sent:", filters);
+
+  dispatch(getAllProjects(filters));
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}, [
+  dispatch,
+  currentPage,
+  service,
+  projectType,
+  debouncedQ,
+  debouncedPriceRange,
+  debouncedAreaRange,
+  isPriceChanged,
+  isAreaChanged,
+  locality, // ✅ VERY IMPORTANT
+]);
 
   console.log(projectData, "projectData");
 
@@ -715,4 +725,16 @@ const Page = () => {
     </>
   );
 };
+
+
+// This is now your main entry point
+const Page = () => {
+  return (
+    // Suspense is required because you use useSearchParams() inside ProjectsPageContent
+    <Suspense fallback={<div className="p-10 text-center">Loading Projects...</div>}>
+      <ProjectsPageContent />
+    </Suspense>
+  );
+};
+
 export default Page;
