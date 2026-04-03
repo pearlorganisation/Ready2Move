@@ -130,6 +130,14 @@ const initialState: Project = {
       name: "",
       type: "",
     },
+    ogMetaField: {
+      ogTitle: "",
+      ogDescription: "",
+      ogImage: {
+        secure_url: "",
+        public_id: "",
+      },
+    },
     reraPossessionDate: "",
     aminities: [],
     bankOfApproval: [],
@@ -312,6 +320,14 @@ const createProjectSlice = createSlice({
             _id: "",
             name: "",
             type: "",
+          },
+          ogMetaField: {
+            ogTitle: "",
+            ogDescription: "",
+            ogImage: {
+              secure_url: "",
+              public_id: "",
+            },
           },
           reraPossessionDate: "",
           aminities: [],

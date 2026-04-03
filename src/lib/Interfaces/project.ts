@@ -46,10 +46,19 @@ export interface SingleProject {
   reraPossessionDate: string; // ISO date string
   availability: Availability;
   aminities: Amenity[];
+     ogMetaField: {
+    ogTitle: string;
+    ogDescription: string;
+    ogImage: {
+      secure_url: string;
+      public_id: string;
+    };
+  };
   bankOfApproval: BankApproval[];
   imageGallery: Image[];
   isFeatured: boolean;
   youtubeEmbedLink: string;
+  
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   __v: number;
