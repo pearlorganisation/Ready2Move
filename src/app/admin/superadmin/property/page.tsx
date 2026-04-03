@@ -16,6 +16,7 @@ import {
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
 import Propertylisting from "@/components/propertylist/page"
+import { getLocalities } from "@/lib/redux/actions/localityAction";
 
 
 // --- Added State & City Data ---
@@ -522,6 +523,20 @@ export default function PropertyForm() {
   const handleModalOpen = () => {
     setPropertyModal(true);
   };
+
+ 
+  const { localities } = useAppSelector((state) => state.locality); 
+
+  
+  
+  // ... existing selectors (featureData, userData)
+
+  useEffect(() => {
+    dispatch(getFeatures());
+    // 2. Fetch all localities (limit 1000 to ensure we get them all for the dropdown)
+    dispatch(getLocalities({ page: 1, limit: 1000 })); 
+  }, [dispatch]);
+
 
   const {
     register,
@@ -1100,17 +1115,18 @@ ogImage: null as unknown as FileList,
 
                           {/* Locality Section with Multi-Add */}
 {/* Locality Section with Multi-Add */}
+{/* Locality Section with Dropdown Selection */}
 <div className="space-y-3">
   <div className="flex justify-between items-center">
     <label className="block text-sm font-medium text-gray-700">
-      Localities / Landmarks
+      Select Localities
     </label>
     <button
       type="button"
       onClick={() => append({ name: "" })}
       className="inline-flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800"
     >
-      <Plus className="h-3 w-3 mr-1" /> Add More
+      <Plus className="h-3 w-3 mr-1" /> Add Another Locality
     </button>
   </div>
 
@@ -1118,21 +1134,41 @@ ogImage: null as unknown as FileList,
     {fields.map((field, index) => (
       <div key={field.id} className="flex gap-2 items-start">
         <div className="flex-1">
-          <CustomInput
-            id={`locality-${index}`}
-            placeholder="e.g. Near Station, Sector 5..."
-            // Fixed error access path
-            error={(errors.locality as any)?.[index]?.name?.message} 
-            {...register(`locality.${index}.name` as const, {
-              required: "Locality is required",
-            })}
+          <Controller
+            name={`locality.${index}.name` as const}
+            control={control}
+            rules={{ required: "Please select a locality" }}
+            render={({ field: dropdownField }) => (
+              <div className="space-y-1">
+                <select
+                  {...dropdownField}
+                  className={cn(
+                    "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white",
+                    (errors.locality as any)?.[index]?.name && "border-red-500"
+                  )}
+                >
+                  <option value="">-- Choose Locality --</option>
+                  {localities?.map((loc) => (
+                    <option key={loc._id} value={loc.locality}>
+                      {loc.locality}
+                    </option>
+                  ))}
+                </select>
+                {(errors.locality as any)?.[index]?.name && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {(errors.locality as any)[index].name.message}
+                  </p>
+                )}
+              </div>
+            )}
           />
         </div>
+        
         {fields.length > 1 && (
           <button
             type="button"
             onClick={() => remove(index)}
-            className="p-2.5 mt-0.5 text-red-500 hover:bg-red-50 rounded-md border border-gray-200"
+            className="p-2.5 text-red-500 hover:bg-red-50 rounded-md border border-gray-200"
           >
             <Trash2 className="h-4 w-4" />
           </button>

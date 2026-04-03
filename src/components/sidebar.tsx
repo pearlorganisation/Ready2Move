@@ -76,6 +76,11 @@ export function Sidebar() {
           icon={<BookOpenText  className="mr-2 h-4 w-4" />}
           label="Blogs"
         />
+          <SidebarLink
+          href="/admin/superadmin/locality"
+          icon={<BookOpenText  className="mr-2 h-4 w-4" />}
+          label="Locality"
+        />
       </nav>
       {/* Logout button at the bottom */}
       <button

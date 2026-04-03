@@ -13,6 +13,8 @@ import featuredReducer from "./slice/featuredListingsSlice";
 import blogsReducer from "./slice/blogSlice";
 import footerReducer from "./slice/footerSlice";
 import faqReducer from "./slice/FAQSlice";
+import localityReducer from "./slice/localitySlice"
+
 const rootReducer = combineReducers({
   auth: authReducer, // Add other reducers here
   otp: otpReducer,
@@ -27,7 +29,8 @@ const rootReducer = combineReducers({
   featured: featuredReducer,
   forgotpassword: forgotPasswordReducer,
     footer: footerReducer,
-    FAQ:faqReducer
+    FAQ: faqReducer,
+    locality: localityReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>; // Define RootState type
