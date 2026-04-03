@@ -30,6 +30,9 @@ export type ProjectFormInputs = {
   imageGallery?: File[];
   isFeatured?: boolean;
   youtubeEmbedLink?: string;
+    ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: FileList | any; 
 };
 type CreateProjectBuilderFormProps = {
   modalOpen: (value: boolean) => void;
