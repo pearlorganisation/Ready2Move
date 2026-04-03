@@ -1,3 +1,5 @@
+import MySlugProperty from "@/components/MySlugProperty";
+
 export async function generateMetadata({ params }) {
   const res = await fetch(
     `https://api.ready2move.co.in/api/v1/properties/${params.slug}`,

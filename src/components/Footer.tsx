@@ -112,41 +112,40 @@ const Footer = () => {
             </div>
 
             {/* Property In Maharashtra Column */}
-            <div>
-              {projectsCityWithLocality?.map((item, i) => (
-                <>
-                  <h3 className="text-lg font-semibold mb-4" key={i}>
-                    Project In {item.city}
-                  </h3>
-                  <ul className="space-y-3">
-                    {item.localities?.map((locality, i) => (
-                      <li>
-                        <Link href="#" className="hover:text-gray-300">
-                          <div key={i}>{locality}</div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ))}
-            </div>
+           {/* Change starting at line 115 */}
+{projectsCityWithLocality?.map((item, i) => (
+  <div key={i} className="mb-6"> {/* Key must be on the outermost element */}
+    <h3 className="text-lg font-semibold mb-4">
+      Project In {item.city}
+    </h3>
+    <ul className="space-y-3">
+      {item.localities?.map((locality, index) => (
+        <li key={index}> {/* Key must be on the <li>, not the <div> inside it */}
+          <Link href="#" className="hover:text-gray-300">
+            <div>{locality}</div>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+))}
 
             {/* Property In Gujarat Column */}
             <div>
-              {propertiesCityWithLocality?.map((item, i) => (
-                <>
-                  <h3 className="text-lg font-semibold mb-4" key={i}>
-                    Property In {item?.city}
-                  </h3>
-                  <ul>
-                    {item.localities.map((locality, i) => (
-                      <li className="hover:text-gray-300" key={i}>
-                        {locality}
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ))}
+            {propertiesCityWithLocality?.map((item, i) => (
+  <div key={i} className="mb-6"> {/* Key on the outermost element */}
+    <h3 className="text-lg font-semibold mb-4">
+      Property In {item?.city}
+    </h3>
+    <ul className="space-y-3">
+      {item.localities.map((locality, index) => (
+        <li className="hover:text-gray-300" key={index}> {/* Key on the <li> */}
+          {locality}
+        </li>
+      ))}
+    </ul>
+  </div>
+))}
             </div>
             <div>
               <QuickLinks />
