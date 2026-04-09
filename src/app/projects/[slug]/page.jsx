@@ -1,36 +1,55 @@
-// import type { Metadata } from 'next';
-// app/projects/[slug]/page.tsx
-
 import MySlugComp from "@/components/MySlugComp";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const res = await fetch(
-    `https://api.ready2move.co.in/api/v1/projects/${params?.slug}`
+    `https://api.ready2move.co.in/api/v1/projects/${params?.slug}`,
+    { cache: "no-store" }
   );
-  const projectData = await res.json(); // Renamed to avoid conflict with 'project' variable name if you declare one later
- 
-  const title = projectData?.data?.title ?? "Project Preview";
-  const description = projectData?.data?.description ?? "Explore this project";
-  const pageUrl = `https://ready2move.co.in/projects/${params?.slug}`; // The canonical URL of THIS page
-  const ogImageUrl = `${pageUrl}/opengraph-image`; // The URL for the OG image itself
- 
+
+  const projectData = await res.json();
+  const data = projectData?.data;
+
+  const ogData = data?.ogMetaField || {};
+
+  const title =
+    ogData?.ogTitle?.trim() || data?.title || "Project Preview";
+
+  const description =
+    ogData?.ogDescription?.trim() ||
+    data?.description ||
+    "Explore this project";
+
+  const ogImageUrl =
+    ogData?.ogImage?.secure_url ||
+    data?.imageGallery?.[0]?.secure_url ||
+    "https://ready2move.co.in/RS.png";
+
+  const pageUrl = `https://ready2move.co.in/projects/${params?.slug}`;
+
   return {
+    metadataBase: new URL("https://ready2move.co.in"),
+
     title,
+    description,
+
     openGraph: {
       title,
       description,
-      type: "website", // or 'article' if more appropriate
+      type: "website",
       locale: "en_US",
-      url: pageUrl, // **** THIS IS THE KEY TAG FOR THE LINK BACK ****
+      url: pageUrl,
       images: [
         {
-          url: ogImageUrl, // Correct: points to the image generation route
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: title,
         },
       ],
     },
+
     twitter: {
       card: "summary_large_image",
       title,
@@ -40,8 +59,8 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default async function ProjectDetails({ params }) {
-  const { slug } = await params;
+export default function ProjectDetails({ params }) {
+  const { slug } = params; 
 
   return (
     <div className="mt-2">
@@ -49,89 +68,3 @@ export default async function ProjectDetails({ params }) {
     </div>
   );
 }
-
-// export async function generateMetadata(params: {
-//   params: Promise<{ slug: string }>
-// }): Promise<Metadata> {
-//   // Extract slug the same way as in your page component
-//   const { slug } = await params.params;
-//   // console.log("the slug is", slug)
-//   try {
-//     const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
-//     // console.log("the res is", res)
-//     const project = (await res.json())?.data;
-
-//     console.log("the project image gallery is",project?.imageGallery?.[0]?.secure_url)
-//      return {
-//       title: project?.title || 'Project Details',
-//       description: project?.description || 'View project details on Ready2Move',
-//       openGraph: {
-//         title: project?.title || 'Ready2Move Project',
-//         description: project?.description || '',
-//         images:'https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg'
-//         // `${project?.imageGallery?.[0]?.secure_url}`
-//         ,
-//         url: `https://ready2move.co.in/projects/${slug}`,
-//         type: 'website',
-//         locale: 'en_US',
-//         siteName: 'Ready2Move',
-//       }
-//     };
-//   } catch (error) {
-//     return {
-//       title: 'Project Details',
-//       description: 'View project details on Ready2Move',
-//     };
-//   }
-// }
-
-// export async function generateMetadata(params: {
-//   params: Promise<{ slug: string }>
-// }): Promise<Metadata> {
-//   const { slug } = await params.params;
-
-//   try {
-//     const res = await fetch(`https://api.ready2move.co.in/api/v1/projects/${slug}`);
-//     const project = (await res.json())?.data;
-
-//     // Use first image from gallery or fallback
-//     const imageUrl = project?.imageGallery?.[0]?.secure_url ||
-//       'https://res.cloudinary.com/dcycgqmut/image/upload/v1745231815/R2M/Banner/l4rdswgpoagw4ligpmaw.jpg';
-
-//     return {
-//       title: project?.title || 'Project Details',
-//       description: project?.description || 'View project details on Ready2Move',
-//       metadataBase: new URL('https://ready2move.co.in'),
-//       openGraph: {
-//         title: project?.title || 'Ready2Move Project',
-//         description: project?.description || '',
-//         images: [
-//           {
-//             url: imageUrl,
-//             width: 1200,
-//             height: 630,
-//             alt: project?.title || 'Ready2Move Project Image',
-//           },
-//         ],
-//         url: `/projects/${slug}`,
-//         type: 'website',
-//         locale: 'en_US',
-//         siteName: 'Ready2Move',
-//       },
-//       twitter: {
-//         card: 'summary_large_image',
-//         title: project?.title || 'Ready2Move Project',
-//         description: project?.description || '',
-//         images: {
-//           url: imageUrl,
-//           alt: project?.title || 'Ready2Move Project Image',
-//         },
-//       },
-//     };
-//   } catch (error) {
-//     return {
-//       title: 'Project Details',
-//       description: 'View project details on Ready2Move',
-//     };
-//   }
-// }

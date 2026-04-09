@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
 
   const ogData = data?.ogMetaField || {};
 
-  // ✅ SAFE + CORRECT
+ 
   const title =
     ogData?.ogTitle?.trim() || data?.title || "Project Preview";
 
