@@ -41,7 +41,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProjectDetails({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
 
   return (
     <div className="mt-2">

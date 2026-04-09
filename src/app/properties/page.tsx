@@ -7,8 +7,8 @@ import { getAllProperties, getAllLocations } from "@/lib/redux/actions/propertyA
 import { ChevronRight, MapPin, Search, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-
-
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 
 
@@ -45,9 +45,14 @@ const PropertiesPage = () => {
   const [isLocationOpen, setIsLocationOpen] = useState(false);
 const locationRef = useRef<HTMLDivElement>(null);
 
-   useEffect(() => {
-  dispatch(getAllLocations());
-}, [dispatch]);
+
+
+const locality = useSearchParams().get("locality");
+
+
+//    useEffect(() => {
+//   dispatch(getAllLocations());
+// }, [dispatch]);
 
 const uniqueLocations = Array.from(new Set(allLocations?.map(l => l.fullLocation)))
   .map(full => allLocations.find(l => l.fullLocation === full));
@@ -82,6 +87,7 @@ useEffect(() => {
       propertyType: propertyType?.toUpperCase() as any,
       // 'q' is the query parameter used in your backend for searching
       q: debouncedSearch || undefined, 
+       locality: locality || undefined,
       priceRange: debouncedPriceRange,
       bedRooms: debouncedBedRoom,
       bathRooms: debouncedBathRoom,
@@ -92,7 +98,8 @@ useEffect(() => {
   currentPage,
   service,
   propertyType,
-  debouncedSearch, // Selection from dropdown OR typing in search bar triggers this
+  debouncedSearch,
+  locality, // Selection from dropdown OR typing in search bar triggers this
   debouncedPriceRange,
   debouncedBedRoom,
   debouncedBathRoom,
@@ -124,58 +131,58 @@ useEffect(() => {
     setActiveFilter("all");
   };
 
-  useEffect(() => {
-  dispatch(
-    getAllProperties({
-      page: currentPage,
-      limit: itemsPerPage,
-      service: service?.toUpperCase() as any,
-      propertyType: propertyType?.toUpperCase() as any,
-      // CHANGE HERE: Map the search query specifically to the location field
-      location: debouncedSearch || undefined, 
-      priceRange: debouncedPriceRange,
-      bedRooms: debouncedBedRoom,
-      bathRooms: debouncedBathRoom,
-    })
-  );
-}, [
-  dispatch,
-  currentPage,
-  service,
-  propertyType,
-  debouncedSearch, // This now triggers location-based search
-  debouncedPriceRange,
-  debouncedBedRoom,
-  debouncedBathRoom,
-]);
+//   useEffect(() => {
+//   dispatch(
+//     getAllProperties({
+//       page: currentPage,
+//       limit: itemsPerPage,
+//       service: service?.toUpperCase() as any,
+//       propertyType: propertyType?.toUpperCase() as any,
+//       // CHANGE HERE: Map the search query specifically to the location field
+//       location: debouncedSearch || undefined, 
+//       priceRange: debouncedPriceRange,
+//       bedRooms: debouncedBedRoom,
+//       bathRooms: debouncedBathRoom,
+//     })
+//   );
+// }, [
+//   dispatch,
+//   currentPage,
+//   service,
+//   propertyType,
+//   debouncedSearch, // This now triggers location-based search
+//   debouncedPriceRange,
+//   debouncedBedRoom,
+//   debouncedBathRoom,
+// ]);
 
 
   // Fetch properties
-  useEffect(() => {
-    dispatch(
-      getAllProperties({
-        page: currentPage,
-        limit: itemsPerPage,
-        service: service?.toUpperCase() as "RENT" | "BUY", // ✅ Fix here
-        propertyType: propertyType?.toUpperCase() as
-          | "RESIDENTIAL"
-          | "COMMERCIAL",
-        q: debouncedSearch || undefined,
-        priceRange: debouncedPriceRange,
-        bedRooms: debouncedBedRoom,
-        bathRooms: debouncedBathRoom,
-      })
-    );
-  }, [
-    dispatch,
-    currentPage,
-    service,
-    propertyType,
-    debouncedSearch,
-    debouncedPriceRange,
-    debouncedBedRoom,
-    debouncedBathRoom,
-  ]);
+  // useEffect(() => {
+  //   dispatch(
+  //     getAllProperties({
+  //       page: currentPage,
+  //       limit: itemsPerPage,
+  //       service: service?.toUpperCase() as "RENT" | "BUY", // ✅ Fix here
+  //       propertyType: propertyType?.toUpperCase() as
+  //         | "RESIDENTIAL"
+  //         | "COMMERCIAL",
+  //       q: debouncedSearch || undefined,
+  //       priceRange: debouncedPriceRange,
+  //       bedRooms: debouncedBedRoom,
+  //       bathRooms: debouncedBathRoom,
+  //     })
+  //   );
+  // }, [
+  //   dispatch,
+  //   currentPage,
+  //   service,
+  //   propertyType,
+  //   debouncedSearch,
+  //   debouncedPriceRange,
+  //   debouncedBedRoom,
+  //   debouncedBathRoom,
+  // ]);
 
   const filterOptions = [
     { id: "all", label: "All Properties", count: paginate?.total || 0 },

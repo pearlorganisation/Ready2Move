@@ -359,6 +359,7 @@ export const getAllProperties = createAsyncThunk(
       q,
       service,
       propertyType,
+       locality,
     }: {
       page: number;
       limit: number;
@@ -369,6 +370,7 @@ export const getAllProperties = createAsyncThunk(
       q?: string;
       service?: "RENT" | "BUY";
       propertyType?: "RESIDENTIAL" | "COMMERCIAL";
+       locality?: string;
     },
     { rejectWithValue }
   ) => {
@@ -390,6 +392,8 @@ export const getAllProperties = createAsyncThunk(
       if (q) queryParams.append("q", q);
       if (service) queryParams.append("service", service);
       if (propertyType) queryParams.append("propertyType", propertyType);
+
+       if (locality) queryParams.append("locality", locality); 
 
       const response = await axiosInstance.get(
         `/api/v1/properties?${queryParams.toString()}`,
@@ -416,6 +420,7 @@ export const getAllSearchedProperties = createAsyncThunk(
       q,
       service,
       propertyType,
+       locality,
     }: {
       page: number;
       limit: number;
@@ -427,6 +432,7 @@ export const getAllSearchedProperties = createAsyncThunk(
       q?: string;
       service?: "RENT" | "SELL";
       propertyType?: "RESIDENTIAL" | "COMMERCIAL";
+       locality?: string;
     },
     { rejectWithValue }
   ) => {
@@ -448,6 +454,8 @@ export const getAllSearchedProperties = createAsyncThunk(
       if (q) queryParams.append("q", q);
       if (service) queryParams.append("service", service);
       if (propertyType) queryParams.append("propertyType", propertyType);
+       if (locality) queryParams.append("locality", locality);
+
 
       const response = await axiosInstance.get(
         `/api/v1/properties/search?${queryParams.toString()}`,

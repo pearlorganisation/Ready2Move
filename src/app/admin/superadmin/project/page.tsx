@@ -12,6 +12,7 @@ import slugify from "slugify";
 import ProjectListing from "../projectlist/page";
 import { cn } from "@/lib/util/cn";
 import RoleRedirect from "@/components/RoleBasedComponent";
+import { getLocalities } from "@/lib/redux/actions/localityAction";
 
 export type ProjectFormInputs = {
   id: string;
@@ -128,6 +129,15 @@ const CreateProject = () => {
   ],
   };
 
+const { localities, isLoading: isLocalityLoading } = useAppSelector((state) => state.locality);
+
+
+
+
+
+
+
+
   const handleOpenAddProject = () => {
     setOpenAddProjectModal(!openAddProjectModal);
   };
@@ -162,9 +172,10 @@ const CreateProject = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch(getFeatures());
-  }, [dispatch]);
+ useEffect(() => {
+  dispatch(getFeatures());
+  dispatch(getLocalities({ page: 1, limit: 1000 })); 
+}, [dispatch]);
 
   const steps = [
     { id: "basic-details", title: "Basic Details", subtitle: "Add basic details" },
@@ -321,7 +332,20 @@ const CreateProject = () => {
                           <div className="space-y-4">
                             <div>
                               <label htmlFor="locality" className="block text-sm font-medium text-gray-700 mb-1">Locality</label>
-                              <input id="locality" className="w-full px-4 py-2 border border-gray-300 rounded-md" {...register("locality", { required: "Locality is required" })} />
+                             <select
+  id="locality"
+  className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+  {...register("locality", { required: "Locality is required" })}
+>
+  <option value="">Select Locality</option>
+  
+  {/* Check if localities is an array and map over it */}
+  {Array.isArray(localities) && localities.map((loc: any) => (
+    <option key={loc._id} value={loc.locality}>
+      {loc.locality}
+    </option>
+  ))}
+</select>
                               {errors.locality && <p className="text-red-500 text-xs mt-1">{errors.locality.message}</p>}
                             </div>
                             <div>

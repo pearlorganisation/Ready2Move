@@ -2,7 +2,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import Link from "next/link";
-// import { Play, Facebook, Twitter, Instagram, Phone, Mail, MapPin } from "lucide-react"
 import {
   ChevronDown,
   Facebook,
@@ -40,6 +39,12 @@ const Footer = () => {
     setIsLanguageOpen(!isLanguageOpen);
   };
 
+const LOCALITY_LIMIT = 5;
+const LIMITED_CITY_COUNT = 2;
+
+
+
+
   return (
     <div>
       <footer className="bg-black text-white py-12 px-6 md:px-12">
@@ -59,39 +64,61 @@ const Footer = () => {
                 empowering buyers to make informed decisions based on their
                 specific needs and preferences.
               </p>
-            <div className="flex space-x-4 mb-6">
+              <div className="flex space-x-4 mb-6">
+                {/* Facebook */}
+                <Link
+                  href="https://www.facebook.com/ready2move.co.in"
+                  target="_blank"
+                  className="hover:text-gray-300"
+                >
+                  <Facebook className="w-5 h-5" />
+                </Link>
 
-  {/* Facebook */}
-  <Link href="https://www.facebook.com/ready2move.co.in" target="_blank" className="hover:text-gray-300">
-    <Facebook className="w-5 h-5" />
-  </Link>
+                {/* YouTube */}
+                <Link
+                  href=" https://www.youtube.com/@ready2move.mumbai"
+                  target="_blank"
+                  className="hover:text-gray-300"
+                >
+                  <Youtube className="w-5 h-5" />
+                </Link>
 
-  {/* YouTube */}
-  <Link href=" https://www.youtube.com/@ready2move.mumbai" target="_blank" className="hover:text-gray-300">
-    <Youtube className="w-5 h-5" />
-  </Link>
+                {/* Instagram */}
+                <Link
+                  href=" https://www.instagram.com/ready2move.co.in/"
+                  target="_blank"
+                  className="hover:text-gray-300"
+                >
+                  <Instagram className="w-5 h-5" />
+                </Link>
 
-  {/* Instagram */}
-  <Link href=" https://www.instagram.com/ready2move.co.in/" target="_blank" className="hover:text-gray-300">
-    <Instagram className="w-5 h-5" />
-  </Link>
+                {/* LinkedIn */}
+                <Link
+                  href="https://linkedin.com/company/ready2move1/"
+                  target="_blank"
+                  className="hover:text-gray-300"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </Link>
 
-  {/* LinkedIn */}
-  <Link href="https://linkedin.com/company/ready2move1/" target="_blank" className="hover:text-gray-300">
-    <Linkedin className="w-5 h-5" />
-  </Link>
+                {/* Twitter */}
+                <Link
+                  href="https://x.com/ready2move_mbai"
+                  target="_blank"
+                  className="hover:text-gray-300"
+                >
+                  <Twitter className="w-5 h-5" />
+                </Link>
 
-  {/* Twitter */}
-  <Link href="https://x.com/ready2move_mbai" target="_blank" className="hover:text-gray-300">
-    <Twitter className="w-5 h-5" />
-  </Link>
-
-  {/* Quora (custom text/icon) */}
- <Link href="https://www.quora.com/profile/Ready2move" target="_blank" className="hover:text-gray-300">
-  <FaQuora className="w-5 h-5" />
-</Link>
-
-</div>
+                {/* Quora (custom text/icon) */}
+                <Link
+                  href="https://www.quora.com/profile/Ready2move"
+                  target="_blank"
+                  className="hover:text-gray-300"
+                >
+                  <FaQuora className="w-5 h-5" />
+                </Link>
+              </div>
               <div className="space-y-2">
                 <div className="flex items-start">
                   <Phone className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" />
@@ -112,44 +139,87 @@ const Footer = () => {
             </div>
 
             {/* Property In Maharashtra Column */}
-           {/* Change starting at line 115 */}
-{projectsCityWithLocality?.map((item, i) => (
-  <div key={i} className="mb-6"> {/* Key must be on the outermost element */}
-    <h3 className="text-lg font-semibold mb-4">
-      Project In {item.city}
-    </h3>
-    <ul className="space-y-3">
-      {item.localities?.map((locality, index) => (
-        <li key={index}> {/* Key must be on the <li>, not the <div> inside it */}
-        <Link
-  href={`/projects?locality=${locality}`}
-  className="hover:text-gray-300"
->
-  <div>{locality}</div>
-</Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-))}
-
-            {/* Property In Gujarat Column */}
+            {/* Change starting at line 115 */}
             <div>
-            {propertiesCityWithLocality?.map((item, i) => (
-  <div key={i} className="mb-6"> {/* Key on the outermost element */}
-    <h3 className="text-lg font-semibold mb-4">
-      Property In {item?.city}
-    </h3>
-    <ul className="space-y-3">
-      {item.localities.map((locality, index) => (
-        <li className="hover:text-gray-300" key={index}> {/* Key on the <li> */}
-          {locality}
-        </li>
-      ))}
-    </ul>
-  </div>
-))}
+             <div>
+  {projectsCityWithLocality
+    ?.slice(0, LIMITED_CITY_COUNT)
+    .map((item, i) => {
+      const uniqueLocalities = [
+        ...new Set(item.localities || []),
+      ].slice(0, LOCALITY_LIMIT);
+
+      return (
+        <div key={i} className="mb-6">
+          <h3 className="text-lg font-semibold mb-4">
+            Project In {item.city}
+          </h3>
+
+          <ul className="space-y-3">
+            {uniqueLocalities.map((locality, index) => (
+              <li key={index}>
+                <Link
+                  href={`/projects?locality=${locality}`}
+                  className="hover:text-gray-300"
+                >
+                  {locality}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Optional View More */}
+          {item.localities?.length > LOCALITY_LIMIT && (
+            <Link
+              href={`/projects?city=${item.city}`}
+              className="text-sm text-gray-400 hover:text-white"
+            >
+              View More →
+            </Link>
+          )}
+        </div>
+      );
+    })}
+</div>
             </div>
+
+           <div>
+  {propertiesCityWithLocality
+    ?.slice(0, LIMITED_CITY_COUNT)
+    .map((item, i) => {
+      const uniqueLocalities = [
+        ...new Set(item.localities || []),
+      ].slice(0, LOCALITY_LIMIT);
+
+      return (
+        <div key={i} className="mb-6">
+          <h3 className="text-lg font-semibold mb-4">
+            Property In {item.city}
+          </h3>
+
+          <ul className="space-y-3">
+            {uniqueLocalities.map((locality, index) => (
+              <li key={index}>
+                <Link href={`/properties?locality=${locality}`}>
+                  {locality}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {item.localities?.length > LOCALITY_LIMIT && (
+            <Link
+              href={`/properties?city=${item.city}`}
+              className="text-sm text-gray-400 hover:text-white"
+            >
+              View More →
+            </Link>
+          )}
+        </div>
+      );
+    })}
+</div>
+
             <div>
               <QuickLinks />
             </div>
@@ -216,94 +286,6 @@ const Footer = () => {
           </div>
         </div>
       </footer>
-
-      {/* <footer className="bg-[#FFF7E6] pt-8 pb-4 text-gray-700 text-sm">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1">
-            <p className="mb-4">
-              <span className="font-semibold">Ready2move.co.in</span> is a platform that prioritizes showcasing
-              properties that are either ready to move in (Ready2Move) or nearing possession, catering to individuals
-              seeking immediate occupancy.
-            </p>
-            <p className="mb-4">
-              Ready2move.co.in provides detailed project information, empowering buyers to make informed decisions based
-              on their specific needs and preferences.
-            </p>
-            <div className="flex space-x-4 mb-4">
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
-                <Play size={18} />
-              </Link>
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
-                <Facebook size={18} />
-              </Link>
-
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
-                <Twitter size={18} />
-              </Link>
-              <Link href="#" className="text-gray-600 hover:text-gray-900">
-                <Instagram size={18} />
-              </Link>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <Phone className="text-gray-600 mr-2" size={16} />
-                <span>+91 9545760001</span>
-              </div>
-              <div className="flex items-center">
-                <Mail className="text-gray-600 mr-2" size={16} />
-                <span>admin@ready2move.co.in</span>
-              </div>
-              <div className="flex items-center">
-                <MapPin className="text-gray-600 mr-2" size={16} />
-                <span>8, SM Residential Complex, Andheri East, Mumbai</span>
-              </div>
-            </div>
-          </div>
-          <div className="col-span-3 grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Property In Maharashtra</h3>
-              <p className="text-gray-600">Mumbai | Navi Mumbai | Thane | Pune | Palghar</p>
-              <h3 className="font-semibold text-gray-900 mt-4 mb-2">Property In UP</h3>
-              <p className="text-gray-600">Ayodhya | Lucknow | Varanasi</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Property In Gujarat</h3>
-              <p className="text-gray-600">Ahmedabad | Surat | Vadodara | Vapi</p>
-              <h3 className="font-semibold text-gray-900 mt-4 mb-2">Property In MP</h3>
-              <p className="text-gray-600">Jabalpur | Indore | Bhopal</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Property In Goa</h3>
-              <h3 className="font-semibold text-gray-900 mt-4 mb-2">Property In Chhattisgarh</h3>
-              <p className="text-gray-600">Raipur</p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-2">Property In Delhi</h3>
-              <h3 className="font-semibold text-gray-900 mt-4 mb-2">Property In Kerala</h3>
-              <p className="text-gray-600">Kochi</p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-6 pt-4 border-t border-gray-300 flex justify-center space-x-6">
-          <Link href="#" className="text-gray-600 hover:text-gray-900">Terms and Conditions</Link>
-          <Link href="#" className="text-gray-600 hover:text-gray-900">Privacy Policy</Link>
-        </div>
-        <div className="fixed bottom-6 right-6 flex flex-col space-y-3">
-          <div className="bg-green-500 text-white p-3 rounded-full shadow-lg">
-            <span className="absolute -top-2 -right-2 bg-red-500 text-xs text-white rounded-full px-2">1</span>
-            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-              <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"></path>
-            </svg>
-          </div>
-          <div className="bg-blue-500 text-white p-3 rounded-full shadow-lg">
-            <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-          </div>
-        </div>
-      </div>
-    </footer> */}
     </div>
   );
 };

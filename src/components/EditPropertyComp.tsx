@@ -7,8 +7,9 @@ import { getSingleProperty } from '@/lib/redux/actions/propertyAction';
 import { useRouter } from "next/navigation"; 
 import { getFeatures } from '@/lib/redux/actions/featuresAction';
 import Image from 'next/image';
+import { getLocalities } from "@/lib/redux/actions/localityAction";
 
-const EditProPertyComp = ({ slug }: { slug: string }) => {
+const EditPropertyComp = ({ slug }: { slug: string }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -35,6 +36,17 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
       bankOfApproval: []
     },
   });
+
+const { localities } = useAppSelector((state) => state.locality); 
+
+  useEffect(() => {
+    dispatch(getFeatures());
+    
+    dispatch(getLocalities({ page: 1, limit: 1000 })); 
+  }, [dispatch]);
+
+
+
 
   const { fields: localityFields, append: appendLocality, remove: removeLocality } = useFieldArray({ 
   control, 
@@ -130,6 +142,29 @@ const EditProPertyComp = ({ slug }: { slug: string }) => {
       setValue('otherFeatures', singlePropertyData.otherFeatures?.map((o: any) => o._id) || []);
     }
   }, [singlePropertyData, setValue]);
+
+  useEffect(() => {
+  if (
+    singlePropertyData &&
+    Array.isArray(singlePropertyData.locality) &&
+    localities &&
+    localities.length > 0
+  ) {
+    const matchedLocalities = singlePropertyData.locality.map((savedLoc) => {
+      const match = localities.find(
+        (loc) =>
+          loc.locality.trim().toLowerCase() ===
+          savedLoc.trim().toLowerCase()
+      );
+
+      return {
+        name: match ? match.locality : savedLoc,
+      };
+    });
+
+    setValue("locality", matchedLocalities);
+  }
+}, [singlePropertyData, localities, setValue]);
 
   const { fields: areaFields } = useFieldArray({ control, name: 'area' });
 
@@ -249,9 +284,8 @@ if (data.ogImage instanceof File) {
           <div><label className="text-sm font-medium">Flat/Apt No</label><input {...register('apartmentNo')} className="w-full p-3 border rounded-md" /></div>
          {/* --- SECTION 2: LOCATION --- */}
 <section className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-4 rounded-lg">
-  <h3 className="col-span-3 text-xl font-semibold text-blue-600 border-l-4 border-blue-600 pl-3">Location Details</h3>
-  <div><label className="text-sm font-medium">Apartment Name</label><input {...register('apartmentName')} className="w-full p-3 border rounded-md" /></div>
-  <div><label className="text-sm font-medium">Flat/Apt No</label><input {...register('apartmentNo')} className="w-full p-3 border rounded-md" /></div>
+ 
+ 
   
   {/* Multi-Locality Section */}
   <div className="col-span-3 space-y-3">
@@ -268,11 +302,18 @@ if (data.ogImage instanceof File) {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {localityFields.map((field, index) => (
         <div key={field.id} className="flex items-center space-x-2">
-          <input 
-            {...register(`locality.${index}.name`)} 
-            placeholder="e.g. Near Station"
-            className="w-full p-3 border rounded-md bg-white" 
-          />
+         <select
+  {...register(`locality.${index}.name`)}
+  className="w-full p-3 border rounded-md bg-white"
+>
+  <option value="">Select Locality</option>
+
+  {localities?.map((loc, i) => (
+    <option key={i} value={loc.locality}>
+      {loc.locality}
+    </option>
+  ))}
+</select>
           {localityFields.length > 1 && (
             <button 
               type="button" 
@@ -465,4 +506,4 @@ if (data.ogImage instanceof File) {
   );
 };
 
-export default EditProPertyComp;
+export default EditPropertyComp;
