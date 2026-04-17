@@ -17,6 +17,7 @@ export interface Project {
   slug: string;
   subTitle: string;
   description: string;
+   note: string;
   locality: string;
   city: string;
   state: string;
@@ -89,6 +90,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
         title: singleProjectData?.title,
         subTitle: singleProjectData?.subTitle,
         description: singleProjectData?.description,
+        note: singleProjectData?.note,
         locality: singleProjectData?.locality,
         city: singleProjectData?.city,
         state: singleProjectData?.state,
@@ -148,6 +150,7 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
       formData.append("title", data.title);
       formData.append("subTitle", data.subTitle);
       formData.append("description", data.description);
+      formData.append("note", data.note);
       formData.append("locality", data.locality);
       formData.append("city", data.city);
       formData.append("state", data.state);
@@ -403,6 +406,11 @@ const EditProjectComp = ({ slug }: { slug: string }) => {
           <input type="checkbox" {...register("isFeatured")} className="w-5 h-5" />
           <label className="text-sm text-gray-700">Mark as Featured Project</label>
         </div>
+ <div className="col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1"> Project Note</label>
+          <textarea {...register("note")} placeholder="Project Note" rows={4} className="w-full p-3 border rounded-md" />
+        </div>
+
 
         <div className="col-span-2">
           <button type="submit" className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-200">

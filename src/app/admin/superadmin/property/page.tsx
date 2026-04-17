@@ -3,10 +3,10 @@
 import React, { use, useEffect } from "react";
 
 import { useState, useRef } from "react";
-import { useForm, Controller, useFieldArray  } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { format } from "date-fns";
 import slugify from "slugify";
-import { CalendarIcon, Check,  Plus, Trash2  } from "lucide-react";
+import { CalendarIcon, Check, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import {
@@ -15,48 +15,81 @@ import {
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
-import Propertylisting from "@/components/propertylist/page"
+import Propertylisting from "@/components/propertylist/page";
 import { getLocalities } from "@/lib/redux/actions/localityAction";
-
 
 // --- Added State & City Data ---
 const STATE_CITY_DATA: Record<string, string[]> = {
   "Andaman and Nicobar Islands": ["Port Blair"],
-  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Tirupati"],
+  "Andhra Pradesh": [
+    "Visakhapatnam",
+    "Vijayawada",
+    "Guntur",
+    "Nellore",
+    "Tirupati",
+  ],
   "Arunachal Pradesh": ["Itanagar"],
-  "Assam": ["Guwahati", "Dibrugarh", "Silchar", "Jorhat"],
-  "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur"],
-  "Chandigarh": ["Chandigarh"],
-  "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba"],
+  Assam: ["Guwahati", "Dibrugarh", "Silchar", "Jorhat"],
+  Bihar: ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur"],
+  Chandigarh: ["Chandigarh"],
+  Chhattisgarh: ["Raipur", "Bhilai", "Bilaspur", "Korba"],
   "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Silvassa"],
-  "Delhi": ["New Delhi", "North Delhi", "South Delhi", "West Delhi", "East Delhi"],
-  "Goa": ["Panaji", "Margao", "Vasco da Gama"],
-  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
-  "Haryana": ["Gurugram", "Faridabad", "Panipat", "Ambala", "Panchkula"],
+  Delhi: [
+    "New Delhi",
+    "North Delhi",
+    "South Delhi",
+    "West Delhi",
+    "East Delhi",
+  ],
+  Goa: ["Panaji", "Margao", "Vasco da Gama"],
+  Gujarat: ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
+  Haryana: ["Gurugram", "Faridabad", "Panipat", "Ambala", "Panchkula"],
   "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"],
   "Jammu and Kashmir": ["Srinagar", "Jammu"],
-  "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
-  "Karnataka": ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru", "Belagavi"],
-  "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur"],
-  "Ladakh": ["Leh", "Kargil"],
-  "Lakshadweep": ["Kavaratti"],
+  Jharkhand: ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
+  Karnataka: ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru", "Belagavi"],
+  Kerala: ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur"],
+  Ladakh: ["Leh", "Kargil"],
+  Lakshadweep: ["Kavaratti"],
   "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain"],
-  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad", "Navi Mumbai"],
-  "Manipur": ["Imphal"],
-  "Meghalaya": ["Shillong"],
-  "Mizoram": ["Aizawl"],
-  "Nagaland": ["Kohima", "Dimapur"],
-  "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Sambalpur"],
-  "Puducherry": ["Puducherry"],
-  "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali"],
-  "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner"],
-  "Sikkim": ["Gangtok"],
-  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"],
-  "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Khammam"],
-  "Tripura": ["Agartala"],
-  "Uttar Pradesh": ["Lucknow", "Kanpur", "Noida", "Ghaziabad", "Agra", "Varanasi", "Meerut"],
-  "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani"],
-  "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri"]
+  Maharashtra: [
+    "Mumbai",
+    "Pune",
+    "Nagpur",
+    "Thane",
+    "Nashik",
+    "Aurangabad",
+    "Navi Mumbai",
+  ],
+  Manipur: ["Imphal"],
+  Meghalaya: ["Shillong"],
+  Mizoram: ["Aizawl"],
+  Nagaland: ["Kohima", "Dimapur"],
+  Odisha: ["Bhubaneswar", "Cuttack", "Rourkela", "Sambalpur"],
+  Puducherry: ["Puducherry"],
+  Punjab: ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali"],
+  Rajasthan: ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner"],
+  Sikkim: ["Gangtok"],
+  "Tamil Nadu": [
+    "Chennai",
+    "Coimbatore",
+    "Madurai",
+    "Tiruchirappalli",
+    "Salem",
+  ],
+  Telangana: ["Hyderabad", "Warangal", "Nizamabad", "Khammam"],
+  Tripura: ["Agartala"],
+  "Uttar Pradesh": [
+    "Lucknow",
+    "Kanpur",
+    "Noida",
+    "Ghaziabad",
+    "Agra",
+    "Varanasi",
+    "Meerut",
+  ],
+  Uttarakhand: ["Dehradun", "Haridwar", "Roorkee", "Haldwani"],
+  "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri"],
 };
 
 type FormData = {
@@ -67,7 +100,7 @@ type FormData = {
   service: "SELL" | "RENT";
   property: "RESIDENTIAL" | "COMMERCIAL";
   propertyType: string;
-
+  note: string;
   // Location Details
   apartmentName: string;
   apartmentNo: string;
@@ -104,8 +137,8 @@ type FormData = {
   ownership: string;
 
   // Pricing & Charges
-  brokeragepricingType: string,
-  brokeragepricingValue: number,
+  brokeragepricingType: string;
+  brokeragepricingValue: number;
   expectedPrice: number;
   isPriceNegotiable: boolean;
   isBrokerageCharge: boolean;
@@ -114,9 +147,9 @@ type FormData = {
   maintenanceFrequency: string;
 
   //OG Filed
-  ogTitle: string,
-  ogDescription: string,
-  ogImage: FileList,
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: FileList;
 
   // Financial & Legal
   bankOfApproval: string[];
@@ -524,19 +557,15 @@ export default function PropertyForm() {
     setPropertyModal(true);
   };
 
- 
-  const { localities } = useAppSelector((state) => state.locality); 
+  const { localities } = useAppSelector((state) => state.locality);
 
-  
-  
   // ... existing selectors (featureData, userData)
 
   useEffect(() => {
     dispatch(getFeatures());
     // 2. Fetch all localities (limit 1000 to ensure we get them all for the dropdown)
-    dispatch(getLocalities({ page: 1, limit: 1000 })); 
+    dispatch(getLocalities({ page: 1, limit: 1000 }));
   }, [dispatch]);
-
 
   const {
     register,
@@ -556,14 +585,14 @@ export default function PropertyForm() {
       property: "RESIDENTIAL",
       propertyType: "",
       ogTitle: "",
-ogDescription: "",
-ogImage: null as unknown as FileList,
+      ogDescription: "",
+      ogImage: null as unknown as FileList,
       apartmentName: "",
       apartmentNo: "",
       locality: [{ name: "" }],
       city: "",
       state: "",
-
+      note: "",
       area: [
         { name: "CARPET_AREA", area: 0, areaMeasurement: "SQ_FT" },
         { name: "BUILT_UP_AREA", area: 0, areaMeasurement: "SQ_FT" },
@@ -591,7 +620,7 @@ ogImage: null as unknown as FileList,
 
       brokeragepricingType: "",
       brokeragepricingValue: 0,
-      expectedPrice:0,
+      expectedPrice: 0,
       isPriceNegotiable: false,
       isBrokerageCharge: false,
       brokerage: 0,
@@ -613,9 +642,9 @@ ogImage: null as unknown as FileList,
     },
   });
   const { fields, append, remove } = useFieldArray({
-  control,
-  name: "locality",
-});
+    control,
+    name: "locality",
+  });
 
   const steps = [
     {
@@ -656,12 +685,10 @@ ogImage: null as unknown as FileList,
   ];
 
   // Watch form values for dynamic updates
-   const isBrokerageCharge = watch("isBrokerageCharge");
-   // Added watcher for state to drive city dropdown
-   const selectedState = watch("state");
+  const isBrokerageCharge = watch("isBrokerageCharge");
+  // Added watcher for state to drive city dropdown
+  const selectedState = watch("state");
 
-   
- 
   // Update slug when title changes
   const handleTitleChange = (value: string) => {
     setValue("title", value);
@@ -686,44 +713,44 @@ ogImage: null as unknown as FileList,
     if (currentStep > 0) setCurrentStep(currentStep - 1);
   };
 
- const onSubmit = (data: any) => {
-  // 1. Log to console to see exactly what is happening (Check your browser Inspect > Console)
-  console.log("Original data from form:", data.locality);
+  const onSubmit = (data: any) => {
+    // 1. Log to console to see exactly what is happening (Check your browser Inspect > Console)
+    console.log("Original data from form:", data.locality);
 
-  // 2. Transformation logic
-  const formattedLocality = data.locality
-    .map((item: any) => item.name)     // Step 1: Get strings ["a,b,c", "d"]
-    .filter((val: any) => val)         // Step 2: Remove null/undefined
-    .join(",")                         // Step 3: Combine all to "a,b,c,d"
-    .split(",")                        // Step 4: Split by comma to ["a", "b", "c", "d"]
-    .map((s: string) => s.trim())      // Step 5: Remove extra spaces
-    .filter((s: string) => s !== "");  // Step 6: Remove empty strings
+    // 2. Transformation logic
+    const formattedLocality = data.locality
+      .map((item: any) => item.name) // Step 1: Get strings ["a,b,c", "d"]
+      .filter((val: any) => val) // Step 2: Remove null/undefined
+      .join(",") // Step 3: Combine all to "a,b,c,d"
+      .split(",") // Step 4: Split by comma to ["a", "b", "c", "d"]
+      .map((s: string) => s.trim()) // Step 5: Remove extra spaces
+      .filter((s: string) => s !== ""); // Step 6: Remove empty strings
 
-  console.log("Locality after formatting:", formattedLocality);
+    console.log("Locality after formatting:", formattedLocality);
 
-  // 3. Construct the final object
-  const finalPayload = { 
-    ...data, 
-    locality: formattedLocality, // This ensures it is a clean array of separate strings
-    id: userData?._id 
+    // 3. Construct the final object
+    const finalPayload = {
+      ...data,
+      locality: formattedLocality, // This ensures it is a clean array of separate strings
+      id: userData?._id,
+    };
+
+    // 4. Send 'finalPayload' to your API, NOT 'data'
+    dispatch(createPropertyByAdmin({ userdata: finalPayload })).then((res) => {
+      if (res?.payload?.success === true) {
+        dispatch(
+          getAllProperties({
+            page: 1,
+            limit: 50,
+            priceRange: 0,
+            bedRooms: 0,
+            bathRooms: 0,
+          })
+        );
+        setPropertyModal(false);
+      }
+    });
   };
-
-  // 4. Send 'finalPayload' to your API, NOT 'data'
-  dispatch(createPropertyByAdmin({ userdata: finalPayload })).then((res) => {
-    if (res?.payload?.success === true) {
-      dispatch(
-        getAllProperties({
-          page: 1,
-          limit: 50,
-          priceRange: 0,
-          bedRooms: 0,
-          bathRooms: 0,
-        })
-      );
-      setPropertyModal(false);
-    }
-  });
-};
 
   useEffect(() => {
     dispatch(getFeatures());
@@ -742,7 +769,7 @@ ogImage: null as unknown as FileList,
         </button>
       </div>
       <div>
-        <Propertylisting from='ADMIN' />
+        <Propertylisting from="ADMIN" />
       </div>
       <div className="flex max-w-full">
         {OpenPropertyModal && (
@@ -1041,7 +1068,8 @@ ogImage: null as unknown as FileList,
                                   {...field}
                                   className={cn(
                                     "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white",
-                                    errors.state && "border-red-500 focus:ring-red-500"
+                                    errors.state &&
+                                      "border-red-500 focus:ring-red-500"
                                   )}
                                   onChange={(e) => {
                                     field.onChange(e.target.value);
@@ -1057,7 +1085,11 @@ ogImage: null as unknown as FileList,
                                 </select>
                               )}
                             />
-                            {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state.message}</p>}
+                            {errors.state && (
+                              <p className="text-red-500 text-xs mt-1">
+                                {errors.state.message}
+                              </p>
+                            )}
                           </div>
 
                           {/* City Dropdown */}
@@ -1075,20 +1107,29 @@ ogImage: null as unknown as FileList,
                                   disabled={!selectedState}
                                   className={cn(
                                     "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white",
-                                    errors.city && "border-red-500 focus:ring-red-500",
-                                    !selectedState && "bg-gray-100 cursor-not-allowed"
+                                    errors.city &&
+                                      "border-red-500 focus:ring-red-500",
+                                    !selectedState &&
+                                      "bg-gray-100 cursor-not-allowed"
                                   )}
                                 >
                                   <option value="">Select City</option>
-                                  {selectedState && STATE_CITY_DATA[selectedState]?.map((city) => (
-                                    <option key={city} value={city}>
-                                      {city}
-                                    </option>
-                                  ))}
+                                  {selectedState &&
+                                    STATE_CITY_DATA[selectedState]?.map(
+                                      (city) => (
+                                        <option key={city} value={city}>
+                                          {city}
+                                        </option>
+                                      )
+                                    )}
                                 </select>
                               )}
                             />
-                            {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>}
+                            {errors.city && (
+                              <p className="text-red-500 text-xs mt-1">
+                                {errors.city.message}
+                              </p>
+                            )}
                           </div>
 
                           <CustomInput
@@ -1111,72 +1152,86 @@ ogImage: null as unknown as FileList,
                             })}
                           />
 
-                          
-
                           {/* Locality Section with Multi-Add */}
-{/* Locality Section with Multi-Add */}
-{/* Locality Section with Dropdown Selection */}
-<div className="space-y-3">
-  <div className="flex justify-between items-center">
-    <label className="block text-sm font-medium text-gray-700">
-      Select Localities
-    </label>
-    <button
-      type="button"
-      onClick={() => append({ name: "" })}
-      className="inline-flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800"
-    >
-      <Plus className="h-3 w-3 mr-1" /> Add Another Locality
-    </button>
-  </div>
+                          {/* Locality Section with Multi-Add */}
+                          {/* Locality Section with Dropdown Selection */}
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                              <label className="block text-sm font-medium text-gray-700">
+                                Select Localities
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => append({ name: "" })}
+                                className="inline-flex items-center text-xs font-semibold text-blue-600 hover:text-blue-800"
+                              >
+                                <Plus className="h-3 w-3 mr-1" /> Add Another
+                                Locality
+                              </button>
+                            </div>
 
-  <div className="space-y-3">
-    {fields.map((field, index) => (
-      <div key={field.id} className="flex gap-2 items-start">
-        <div className="flex-1">
-          <Controller
-            name={`locality.${index}.name` as const}
-            control={control}
-            rules={{ required: "Please select a locality" }}
-            render={({ field: dropdownField }) => (
-              <div className="space-y-1">
-                <select
-                  {...dropdownField}
-                  className={cn(
-                    "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white",
-                    (errors.locality as any)?.[index]?.name && "border-red-500"
-                  )}
-                >
-                  <option value="">-- Choose Locality --</option>
-                  {localities?.map((loc) => (
-                    <option key={loc._id} value={loc.locality}>
-                      {loc.locality}
-                    </option>
-                  ))}
-                </select>
-                {(errors.locality as any)?.[index]?.name && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {(errors.locality as any)[index].name.message}
-                  </p>
-                )}
-              </div>
-            )}
-          />
-        </div>
-        
-        {fields.length > 1 && (
-          <button
-            type="button"
-            onClick={() => remove(index)}
-            className="p-2.5 text-red-500 hover:bg-red-50 rounded-md border border-gray-200"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        )}
-      </div>
-    ))}
-  </div>
-</div>
+                            <div className="space-y-3">
+                              {fields.map((field, index) => (
+                                <div
+                                  key={field.id}
+                                  className="flex gap-2 items-start"
+                                >
+                                  <div className="flex-1">
+                                    <Controller
+                                      name={`locality.${index}.name` as const}
+                                      control={control}
+                                      rules={{
+                                        required: "Please select a locality",
+                                      }}
+                                      render={({ field: dropdownField }) => (
+                                        <div className="space-y-1">
+                                          <select
+                                            {...dropdownField}
+                                            className={cn(
+                                              "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white",
+                                              (errors.locality as any)?.[index]
+                                                ?.name && "border-red-500"
+                                            )}
+                                          >
+                                            <option value="">
+                                              -- Choose Locality --
+                                            </option>
+                                            {localities?.map((loc) => (
+                                              <option
+                                                key={loc._id}
+                                                value={loc.locality}
+                                              >
+                                                {loc.locality}
+                                              </option>
+                                            ))}
+                                          </select>
+                                          {(errors.locality as any)?.[index]
+                                            ?.name && (
+                                            <p className="text-red-500 text-xs mt-1">
+                                              {
+                                                (errors.locality as any)[index]
+                                                  .name.message
+                                              }
+                                            </p>
+                                          )}
+                                        </div>
+                                      )}
+                                    />
+                                  </div>
+
+                                  {fields.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => remove(index)}
+                                      className="p-2.5 text-red-500 hover:bg-red-50 rounded-md border border-gray-200"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -1793,7 +1848,6 @@ ogImage: null as unknown as FileList,
                             </div>
                           </div>
 
-                          
                           <CustomInput
                             id="expectedPrice"
                             label="Expected Price"
@@ -1820,8 +1874,8 @@ ogImage: null as unknown as FileList,
                             })}
                           /> */}
 
-{/* Replace the manual select/input in Step 4 with this: */}
-{/* <div className="space-y-4">
+                          {/* Replace the manual select/input in Step 4 with this: */}
+                          {/* <div className="space-y-4">
   <div className="space-y-2">
     <label className="block text-sm font-medium text-gray-700">Expecting Price</label>
     <select
@@ -1907,38 +1961,48 @@ ogImage: null as unknown as FileList,
                             //     valueAsNumber: true,
                             //   })}
 
-                      
                             // />
 
-<div className="space-y-4">
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-gray-700">Brokerage Price</label>
-    <select
-      {...register("brokeragepricingType", { required: "Pricing type is required" })}
-      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
-    >
-      <option value="">Select Pricing Type</option>
-      <option value="PERCENTAGE">Percentage (%)</option>
-      <option value="MONTH_RENT">Month Rent</option>
-    </select>
-    {errors.brokeragepricingType && <p className="text-red-500 text-xs">{errors.brokeragepricingType.message}</p>}
-  </div>
+                            <div className="space-y-4">
+                              <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                  Brokerage Price
+                                </label>
+                                <select
+                                  {...register("brokeragepricingType", {
+                                    required: "Pricing type is required",
+                                  })}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+                                >
+                                  <option value="">Select Pricing Type</option>
+                                  <option value="PERCENTAGE">
+                                    Percentage (%)
+                                  </option>
+                                  <option value="MONTH_RENT">Month Rent</option>
+                                </select>
+                                {errors.brokeragepricingType && (
+                                  <p className="text-red-500 text-xs">
+                                    {errors.brokeragepricingType.message}
+                                  </p>
+                                )}
+                              </div>
 
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-gray-700">Brokerage Pricing Value</label>
-    <CustomInput
-      id="brokeragepricingValue"
-      type="number"
-      placeholder="Enter value"
-      error={errors.brokeragepricingValue?.message}
-      {...register("brokeragepricingValue", { 
-        required: "Value is required",
-        valueAsNumber: true 
-      })}
-    />
-  </div>
-</div>
-
+                              <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                  Brokerage Pricing Value
+                                </label>
+                                <CustomInput
+                                  id="brokeragepricingValue"
+                                  type="number"
+                                  placeholder="Enter value"
+                                  error={errors.brokeragepricingValue?.message}
+                                  {...register("brokeragepricingValue", {
+                                    required: "Value is required",
+                                    valueAsNumber: true,
+                                  })}
+                                />
+                              </div>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -2202,7 +2266,7 @@ ogImage: null as unknown as FileList,
                         </div>
                         <div className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">
-                            Featured Property 
+                            Featured Property
                           </label>
                           <Controller
                             name="isFeatured"
@@ -2253,7 +2317,7 @@ ogImage: null as unknown as FileList,
                                 field: { onChange, ref, ...fieldProps },
                               }) => (
                                 <>
-                                <input
+                                  <input
                                     type="file"
                                     id="imageGallery"
                                     multiple
@@ -2261,7 +2325,9 @@ ogImage: null as unknown as FileList,
                                     className="hidden"
                                     ref={fileInputRef}
                                     onChange={(e) => {
-                                      const files = Array.from(e.target.files ?? []);
+                                      const files = Array.from(
+                                        e.target.files ?? []
+                                      );
                                       onChange(files); // Update RHF state
                                       handleImageUpload(e); // Custom handler
                                     }}
@@ -2343,51 +2409,69 @@ ogImage: null as unknown as FileList,
                           )}
                         </div>
 
-
-                         
                         <div className="space-y-4">
-  <CustomInput
-    id="ogTitle"
-    label="OG Meta Title"
-    placeholder="Enter OG title"
-    error={errors.ogTitle?.message}
-    {...register("ogTitle", {
-      required: "OG title is required",
-    })}
-  />
-</div>
+                          <CustomInput
+                            id="ogTitle"
+                            label="OG Meta Title"
+                            placeholder="Enter OG title"
+                            error={errors.ogTitle?.message}
+                            {...register("ogTitle", {
+                              required: "OG title is required",
+                            })}
+                          />
+                        </div>
 
-<div className="space-y-4">
-  <CustomInput
-    id="ogDescription"
-    label="OG Meta Description"
-    placeholder="Enter OG description"
-    error={errors.ogDescription?.message}
-    {...register("ogDescription", {
-      required: "OG description is required",
-    })}
-  />
-</div>
+                        <div className="space-y-4">
+                          <CustomInput
+                            id="ogDescription"
+                            label="OG Meta Description"
+                            placeholder="Enter OG description"
+                            error={errors.ogDescription?.message}
+                            {...register("ogDescription", {
+                              required: "OG description is required",
+                            })}
+                          />
+                        </div>
 
-<div className="space-y-4">
-  <label className="block text-sm font-medium text-gray-700">OG Meta Image (WhatsApp/Social Sharing)</label>
-  <input
-    id="ogImage"
-    type="file"
-    accept="image/*"
-    className={cn(
-      "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm",
-      errors.ogImage && "border-red-500"
-    )}
-    {...register("ogImage", {
-      required: "OG image is required for social sharing",
-    })}
-  />
-  {errors.ogImage && <p className="text-red-500 text-xs">{errors.ogImage.message as string}</p>}
-</div>
+                        <div className="space-y-4">
+                          <label className="block text-sm font-medium text-gray-700">
+                            OG Meta Image (WhatsApp/Social Sharing)
+                          </label>
+                          <input
+                            id="ogImage"
+                            type="file"
+                            accept="image/*"
+                            className={cn(
+                              "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm",
+                              errors.ogImage && "border-red-500"
+                            )}
+                            {...register("ogImage", {
+                              required:
+                                "OG image is required for social sharing",
+                            })}
+                          />
+                          {errors.ogImage && (
+                            <p className="text-red-500 text-xs">
+                              {errors.ogImage.message as string}
+                            </p>
+                          )}
+                        </div>
+<div className="mt-5">
+                    <CustomTextarea
+                      id="note"
+                      label="Property Notes"
+                      placeholder="Enter Property Notes"
+                      className="min-h-[100px]"
+                      error={errors.note?.message}
+                      {...register("note", {
+                        required: "Notes are required",
+                      })}
+                    />
+                    </div>
 
                       </div>
                     )}
+
                   </div>
 
                   {/* Navigation */}
@@ -2406,9 +2490,9 @@ ogImage: null as unknown as FileList,
                         type="submit"
                         className="font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center transition-colors bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 px-4 py-2 text-sm"
                         onClick={async (e) => {
-                          const valid = await trigger(); 
+                          const valid = await trigger();
                           if (!valid) {
-                            e.preventDefault(); 
+                            e.preventDefault();
                           }
                         }}
                       >
@@ -2419,7 +2503,7 @@ ogImage: null as unknown as FileList,
                         type="button"
                         className="font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center transition-colors bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 px-4 py-2 text-sm"
                         onClick={async () => {
-                          const valid = await trigger(); 
+                          const valid = await trigger();
                           if (valid) {
                             handleNext();
                           }

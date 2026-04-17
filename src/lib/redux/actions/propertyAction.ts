@@ -62,6 +62,7 @@ interface UserData {
   locality?: string[]; 
   city?: string;
   state?: string;
+  note?: string;
   area?: AreaDetail[]; // Array of AreaDetail objects
   landArea?: LandAreaDetail; // LandAreaDetail object
   propertyFloor?: number;
@@ -125,7 +126,7 @@ export const createPropertyByAdmin = createAsyncThunk(
       formData.append("service", userdata?.service || "SELL");
       formData.append("property", userdata?.property || "RESIDENTIAL");
       formData.append("propertyType", userdata?.propertyType || "");
-
+      formData.append("note", userdata?.note || "");
       // ✅ Append Location Details
       formData.append("apartmentName", userdata?.apartmentName || "");
       formData.append("apartmentNo", userdata?.apartmentNo || "");

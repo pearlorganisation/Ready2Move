@@ -34,6 +34,7 @@ export interface SingleProject {
   slug: string;
   subTitle: string;
   description: string;
+  note: string;
   locality: string;
   city: string;
   state: string;

@@ -26,7 +26,7 @@ const EditPropertyComp = ({ slug }: { slug: string }) => {
     brokeragepricingValue: 0,
    
    
-    
+    note: "",
       priceRange: { min: 0, max: 0 },
        locality: [{ name: "" }],
       area: [],
@@ -74,7 +74,7 @@ const { localities } = useAppSelector((state) => state.locality);
       setValue('service', singlePropertyData.service || '');
       setValue('property', singlePropertyData.property || 'RESIDENTIAL');
       setValue('propertyType', singlePropertyData.propertyType?._id || "");
-
+      setValue('note', singlePropertyData.note || "");
      if (singlePropertyData?.ogMetaField) {
   setValue('ogTitle', singlePropertyData.ogMetaField.ogTitle || '');
   setValue('ogDescription', singlePropertyData.ogMetaField.ogDescription || '');
@@ -180,7 +180,7 @@ const { localities } = useAppSelector((state) => state.locality);
     
     // Simple strings and numbers
     const keys = [
-      'title', 'subTitle', 'description', 'service', 'property', 'propertyType',
+      'title', 'subTitle', 'description', 'note', 'service', 'property', 'propertyType',
       'apartmentName', 'apartmentNo',  'city', 'state', 'reraNumber',
       'reraPossessionDate', 'noOfBedrooms', 'noOfBathrooms', 'noOfBalconies',
       'parking', 'furnishing', 'entranceFacing', 'availability', 'propertyAge',
@@ -495,6 +495,13 @@ if (data.ogImage instanceof File) {
       </div>
     )}
   </div>
+
+<div className="mt-5">
+  <label className='text-sm '>Property Notes</label>
+  <textarea {...register('note')} rows={4} className="w-full p-3 border rounded-md" ></textarea>
+</div>
+
+
 </div>
         </section>
 

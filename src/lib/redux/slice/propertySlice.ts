@@ -27,6 +27,7 @@ export interface PropertyData {
   slug: string;
   subTitle: string;
   description: string;
+  note:string;
   service: string;
   property: string;
   propertyType: SimpleType;
@@ -80,6 +81,7 @@ export interface SearchedPropertyData {
   slug: string;
   subTitle: string;
   description: string;
+  note:string;
   service: string;
   property: string;
   propertyType: SimpleType;
@@ -164,6 +166,7 @@ export interface SingleProperty {
     min: number;
     max: number;
   };
+  note: string;
   reraNumber: string;
   reraPossessionDate: string;
   noOfBedrooms: number;
@@ -247,6 +250,7 @@ export const initialPropertyState: PropertyState = {
       name: "",
       type: "",
     },
+    note: "",
     apartmentName: "",
     apartmentNo: "",
     locality: [],
@@ -272,7 +276,7 @@ export const initialPropertyState: PropertyState = {
     brokerage: 0,
     bankOfApproval: [],
     aminities: [],
-   
+  
     waterSource: "",
     otherFeatures: [],
     propertyFlooring: "",
@@ -299,6 +303,7 @@ export const initialPropertyState: PropertyState = {
       name: "",
       type: "",
     },
+    note:"",
     apartmentName: "",
     apartmentNo: "",
     locality: [],
@@ -345,6 +350,7 @@ singlePropertyData: {
       name: "",
       type: "",
     },
+    note:"",
     apartmentName: "",
     apartmentNo: "",
     locality: [],

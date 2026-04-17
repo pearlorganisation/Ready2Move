@@ -21,6 +21,7 @@ export type ProjectFormInputs = {
   slug: string;
   subTitle: string;
   description: string;
+  note: string;
   locality: string;
   city: string;
   state: string;
@@ -116,7 +117,7 @@ const CreateProject = () => {
 
   const title = watch("title");
   const stepFields: Record<number, (keyof ProjectFormInputs)[]> = {
-    0: ["title", "slug", "subTitle", "description", "service", "projectType"],
+    0: ["title", "slug", "subTitle", "description","note", "service", "projectType"],
     1: ["locality", "city", "state"],
     2: ["areaRangeMin", "areaRangeMax", "reraNumber", "availability", "reraPossessionDate"],
     3: ["priceRangeMin", "priceRangeMax", "pricePerSqFt"],
@@ -528,6 +529,16 @@ const { localities, isLoading: isLocalityLoading } = useAppSelector((state) => s
                                 </div>
                               </div>
                             </div>
+
+
+<div>
+                              <label htmlFor="Project Note" className="block text-sm font-medium text-gray-700 mb-1">Project Note</label>
+                              <textarea id="note" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm min-h-[90px]" {...register("note", { required: "Project Note is required" })} />
+                              {errors.note && <p className="text-red-500 text-xs">{errors.note.message}</p>}
+                            </div>
+
+
+
                           </div>
                         </div>
                       )}

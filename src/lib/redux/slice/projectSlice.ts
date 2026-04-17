@@ -20,6 +20,7 @@ export interface ProjectData {
   slug: string;
   subTitle: string;
   description: string;
+  note:string;
   locality: string;
   city: string;
   state: string;
@@ -68,6 +69,7 @@ const initialState: Project = {
     slug: "",
     subTitle: "",
     description: "",
+    note: "",
     locality: "",
     city: "",
     state: "",
@@ -92,6 +94,7 @@ const initialState: Project = {
     slug: "",
     subTitle: "",
     description: "",
+    note: "",
     locality: "",
     city: "",
     state: "",
@@ -116,6 +119,7 @@ const initialState: Project = {
     slug: "",
     subTitle: "",
     description: "",
+    note: "",
     locality: "",
     city: "",
     state: "",
@@ -200,6 +204,7 @@ const createProjectSlice = createSlice({
           slug: "",
           subTitle: "",
           description: "",
+          note: "",
           locality: "",
           city: "",
           state: "",
@@ -252,6 +257,7 @@ const createProjectSlice = createSlice({
           slug: "",
           subTitle: "",
           description: "",
+          note: "",
           locality: "",
           city: "",
           state: "",
@@ -307,6 +313,7 @@ const createProjectSlice = createSlice({
           slug: "",
           subTitle: "",
           description: "",
+          note: "",
           locality: "",
           city: "",
           state: "",

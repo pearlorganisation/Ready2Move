@@ -32,6 +32,7 @@ export const createProjectsByBuilder = createAsyncThunk(
       formData.append("slug", userdata?.slug || "");
       formData.append("subTitle", userdata?.subTitle || "");
       formData.append("description", userdata?.description || "");
+      formData.append("note", userdata?.note || "");
       formData.append("locality", userdata?.locality || "");
       formData.append("city", userdata?.city || "");
       formData.append("state", userdata?.state || "");
