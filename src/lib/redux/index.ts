@@ -14,6 +14,7 @@ import blogsReducer from "./slice/blogSlice";
 import footerReducer from "./slice/footerSlice";
 import faqReducer from "./slice/FAQSlice";
 import localityReducer from "./slice/localitySlice"
+import ogReducer from "./slice/ogSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer, // Add other reducers here
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     footer: footerReducer,
     FAQ: faqReducer,
     locality: localityReducer,
+      og: ogReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>; // Define RootState type

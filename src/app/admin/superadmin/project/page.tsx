@@ -13,6 +13,102 @@ import ProjectListing from "../projectlist/page";
 import { cn } from "@/lib/util/cn";
 import RoleRedirect from "@/components/RoleBasedComponent";
 import { getLocalities } from "@/lib/redux/actions/localityAction";
+import { X, Trash2 } from "lucide-react";
+import { createOGField, fetchOGFields, updateOGField, deleteOGField } from "@/lib/redux/actions/ogAction";
+
+interface OgState {
+  ogType: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: File | null;
+}
+
+interface EditState {
+  id: string;
+  ogType: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: File | string | null;
+}
+
+
+
+const STATE_CITY_DATA: Record<string, string[]> = {
+  "Andaman and Nicobar Islands": ["Port Blair"],
+  "Andhra Pradesh": [
+    "Visakhapatnam",
+    "Vijayawada",
+    "Guntur",
+    "Nellore",
+    "Tirupati",
+  ],
+  "Arunachal Pradesh": ["Itanagar"],
+  Assam: ["Guwahati", "Dibrugarh", "Silchar", "Jorhat"],
+  Bihar: ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur"],
+  Chandigarh: ["Chandigarh"],
+  Chhattisgarh: ["Raipur", "Bhilai", "Bilaspur", "Korba"],
+  "Dadra and Nagar Haveli and Daman and Diu": ["Daman", "Silvassa"],
+  Delhi: [
+    "New Delhi",
+    "North Delhi",
+    "South Delhi",
+    "West Delhi",
+    "East Delhi",
+  ],
+  Goa: ["Panaji", "Margao", "Vasco da Gama"],
+  Gujarat: ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar"],
+  Haryana: ["Gurugram", "Faridabad", "Panipat", "Ambala", "Panchkula"],
+  "Himachal Pradesh": ["Shimla", "Manali", "Dharamshala"],
+  "Jammu and Kashmir": ["Srinagar", "Jammu"],
+  Jharkhand: ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro"],
+  Karnataka: ["Bengaluru", "Mysuru", "Hubballi", "Mangaluru", "Belagavi"],
+  Kerala: ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur"],
+  Ladakh: ["Leh", "Kargil"],
+  Lakshadweep: ["Kavaratti"],
+  "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain"],
+  Maharashtra: [
+    "Mumbai",
+    "Pune",
+    "Nagpur",
+    "Thane",
+    "Nashik",
+    "Aurangabad",
+    "Navi Mumbai",
+  ],
+  Manipur: ["Imphal"],
+  Meghalaya: ["Shillong"],
+  Mizoram: ["Aizawl"],
+  Nagaland: ["Kohima", "Dimapur"],
+  Odisha: ["Bhubaneswar", "Cuttack", "Rourkela", "Sambalpur"],
+  Puducherry: ["Puducherry"],
+  Punjab: ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali"],
+  Rajasthan: ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner"],
+  Sikkim: ["Gangtok"],
+  "Tamil Nadu": [
+    "Chennai",
+    "Coimbatore",
+    "Madurai",
+    "Tiruchirappalli",
+    "Salem",
+  ],
+  Telangana: ["Hyderabad", "Warangal", "Nizamabad", "Khammam"],
+  Tripura: ["Agartala"],
+  "Uttar Pradesh": [
+    "Lucknow",
+    "Kanpur",
+    "Noida",
+    "Ghaziabad",
+    "Agra",
+    "Varanasi",
+    "Meerut",
+  ],
+  Uttarakhand: ["Dehradun", "Haridwar", "Roorkee", "Haldwani"],
+  "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri"],
+};
+
+
+
+
 
 export type ProjectFormInputs = {
   id: string;
@@ -89,7 +185,7 @@ const CreateProject = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-
+const [openOGModel, setOpenOGModel] = useState(false);
   const { isSuccess, isLoading, isError, isProjectAdded } = useAppSelector((state) => state.projects);
   const [openAddProjectModal, setOpenAddProjectModal] = useState<boolean>(false);
   const {
@@ -106,7 +202,7 @@ const CreateProject = () => {
 
   const { featureData } = useAppSelector((state) => state.features);
   const { userData } = useAppSelector((state) => state.user);
-
+const { localities } = useAppSelector((state) => state.locality);
   const handleImagePreview = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files) as File[];
@@ -130,10 +226,72 @@ const CreateProject = () => {
   ],
   };
 
-const { localities, isLoading: isLocalityLoading } = useAppSelector((state) => state.locality);
+const { ogData, loading: ogLoading } = useAppSelector((state) => state.og);
+
+ const [ogFormData, setOgFormData] = useState<OgState>({
+    ogType: "project",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: null,
+  });
+
+  const [editData, setEditData] = useState<EditState>({
+    id: "",
+    ogType: "project",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: null,
+  });
 
 
 
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, mode: "create" | "edit") => {
+  const file = e.target.files ? e.target.files[0] : null;
+  if (!file) return;
+  if (mode === "create") setOgFormData({ ...ogFormData, ogImage: file });
+  else setEditData({ ...editData, ogImage: file });
+};
+
+
+const handleCreateOG = async () => {
+    const formData = new FormData();
+    formData.append("ogType", "project");
+    formData.append("ogTitle", ogFormData.ogTitle);
+    formData.append("ogDescription", ogFormData.ogDescription);
+    if (ogFormData.ogImage) formData.append("ogImage", ogFormData.ogImage);
+
+    const res = await dispatch(createOGField(formData));
+    if (createOGField.fulfilled.match(res)) {
+      alert("Created Successfully");
+      setOgFormData({ ogType: "project", ogTitle: "", ogDescription: "", ogImage: null });
+      dispatch(fetchOGFields());
+    }
+  };
+
+  const handleUpdate = async () => {
+    const formData = new FormData();
+    formData.append("ogType", editData.ogType);
+    formData.append("ogTitle", editData.ogTitle);
+    formData.append("ogDescription", editData.ogDescription);
+    if (editData.ogImage instanceof File) formData.append("ogImage", editData.ogImage);
+
+    const res = await dispatch(updateOGField({ id: editData.id, data: formData }));
+    if (updateOGField.fulfilled.match(res)) {
+      alert("Updated Successfully");
+      setEditData({ id: "", ogType: "project", ogTitle: "", ogDescription: "", ogImage: null });
+      dispatch(fetchOGFields());
+    }
+  };
+
+
+
+
+
+
+
+ const handleOGModelData = () => {
+  setOpenOGModel(true); // Matches the state defined at line 139
+};
 
 
 
@@ -173,6 +331,27 @@ const { localities, isLoading: isLocalityLoading } = useAppSelector((state) => s
     }
   };
 
+
+
+const handleEditClick = (item: any) => {
+  setEditData({
+    id: item._id,
+    ogType: item.ogType,
+    ogTitle: item.ogTitle,
+    ogDescription: item.ogDescription,
+    ogImage: item?.ogImage?.secure_url || null,
+  });
+};
+
+const handleDelete = async (id: string) => {
+  if (confirm("Are you sure?")) {
+    await dispatch(deleteOGField(id));
+    alert("Deleted successfully");
+  }
+};
+
+
+
  useEffect(() => {
   dispatch(getFeatures());
   dispatch(getLocalities({ page: 1, limit: 1000 })); 
@@ -206,12 +385,100 @@ const { localities, isLoading: isLocalityLoading } = useAppSelector((state) => s
             <div className="flex flex-row justify-between ">
               <div></div>
               <div>
+
+    <button
+          onClick={handleOGModelData}
+          className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
+        >
+          Add Meta Fields
+        </button>
+
+      {/* OG META DATA MODAL */}
+{openOGModel && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-[70] flex items-center justify-center p-4">
+    <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center p-5 border-b sticky top-0 bg-white">
+        <h2 className="text-2xl font-bold">OG Meta Management</h2>
+        <button onClick={() => setOpenOGModel(false)}><X className="h-6 w-6" /></button>
+      </div>
+
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* LEFT: FORM SECTION (Switch between Create and Edit) */}
+        <div className="bg-slate-50 p-6 rounded-lg border">
+          <h3 className="font-bold mb-4">{editData.id ? "Edit Record" : "Add New Meta"}</h3>
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="OG Title"
+              className="w-full border p-2 rounded"
+              value={editData.id ? editData.ogTitle : ogFormData.ogTitle}
+              onChange={(e) => editData.id 
+                ? setEditData({...editData, ogTitle: e.target.value}) 
+                : setOgFormData({...ogFormData, ogTitle: e.target.value})}
+            />
+            <textarea
+              placeholder="OG Description"
+              className="w-full border p-2 rounded"
+              value={editData.id ? editData.ogDescription : ogFormData.ogDescription}
+              onChange={(e) => editData.id 
+                ? setEditData({...editData, ogDescription: e.target.value}) 
+                : setOgFormData({...ogFormData, ogDescription: e.target.value})}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full border p-2 rounded bg-white"
+              onChange={(e) => handleFileChange(e, editData.id ? "edit" : "create")}
+            />
+            
+            <div className="flex gap-2">
+              {editData.id ? (
+                <>
+                  <button onClick={handleUpdate} className="bg-green-600 text-white px-4 py-2 rounded flex-1">Update</button>
+                  <button onClick={() => setEditData({id: "", ogType: "property", ogTitle: "", ogDescription: "", ogImage: null})} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                </>
+              ) : (
+                <button onClick={handleCreateOG} className="bg-blue-600 text-white px-4 py-2 rounded w-full">Save New</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: LIST SECTION */}
+        <div className="space-y-4">
+          <h3 className="font-bold">Existing Meta</h3>
+        {ogLoading ? <p>Loading...</p> : ogData?.filter((item: any) => item.ogType === "project").map((item: any) => (
+            <div key={item._id} className="border p-3 rounded bg-white flex gap-3 items-center">
+             <img
+  src={item?.ogImage?.secure_url}
+  className="w-12 h-12 object-cover rounded"
+/>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm truncate">{item.ogTitle}</p>
+                  <p className=" text-sm truncate">{item.ogDescription}</p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => handleEditClick(item)} className="text-blue-600 font-medium text-sm">Edit</button>
+                <button onClick={() => handleDelete(item._id)} className="text-red-600 font-medium text-sm">Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+)}      
+   
+
                 <button
                   className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition"
                   onClick={handleOpenAddProject}
                 >
-                  Add New Project
+                  Create Projects
                 </button>
+               
+
+        
               </div>
             </div>
           </div>
@@ -350,15 +617,50 @@ const { localities, isLoading: isLocalityLoading } = useAppSelector((state) => s
                               {errors.locality && <p className="text-red-500 text-xs mt-1">{errors.locality.message}</p>}
                             </div>
                             <div>
-                              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                              <input id="city" className="w-full px-4 py-2 border border-gray-300 rounded-md" {...register("city", { required: "City is required" })} />
-                              {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city.message}</p>}
-                            </div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    State
+  </label>
+
+  <select
+    {...register("state", { required: "State is required" })}
+    className={cn(
+      "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm",
+      errors.state && "border-red-500"
+    )}
+    onChange={(e) => {
+      setValue("state", e.target.value);
+      setValue("city", ""); // reset city
+    }}
+  >
+    <option value="">Select State</option>
+    {Object.keys(STATE_CITY_DATA).map((state) => (
+      <option key={state} value={state}>
+        {state}
+      </option>
+    ))}
+  </select>
+
+  {errors.state && (
+    <p className="text-red-500 text-xs mt-1">
+      {errors.state.message}
+    </p>
+  )}
+</div>
                             <div>
-                              <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                              <input id="state" className="w-full px-4 py-2 border border-gray-300 rounded-md" {...register("state", { required: "State is required" })} />
-                              {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state.message}</p>}
+                              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                             <select
+  {...register("city", { required: "City is required" })}
+  className="w-full px-4 py-2 border border-gray-300 rounded-md"
+>
+  <option value="">Select City</option>
+  {(STATE_CITY_DATA[watch("state")] || []).map((city) => (
+    <option key={city} value={city}>
+      {city}
+    </option>
+  ))}
+</select>
                             </div>
+                           
                           </div>
                         </div>
                       )}

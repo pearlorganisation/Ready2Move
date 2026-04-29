@@ -832,6 +832,7 @@ const MySlugProperty = ({ slug }: { slug: string }) => {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       ></iframe>
+                      
                     </div>
                   </div>
                 </div>

@@ -6,17 +6,41 @@ import { useState, useRef } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { format } from "date-fns";
 import slugify from "slugify";
-import { CalendarIcon, Check, Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Check, Plus, Trash2, X } from "lucide-react";
 import { cn } from "@/lib/util/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import {
   createPropertyByAdmin,
   getAllProperties,
+  
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
 import { useRouter } from "next/navigation"; // ✅ App Router
 import Propertylisting from "@/components/propertylist/page";
 import { getLocalities } from "@/lib/redux/actions/localityAction";
+import { fetchOGFields,  createOGField, deleteOGField, updateOGField } from "@/lib/redux/actions/ogAction";
+import { useSelector } from "react-redux";
+
+
+
+interface OgState {
+  ogType: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: File | null;
+}
+
+interface EditState {
+  id: string;
+  ogType: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: File | string | null; // string is for the existing URL
+}
+
+
+
+
 
 // --- Added State & City Data ---
 const STATE_CITY_DATA: Record<string, string[]> = {
@@ -91,6 +115,7 @@ const STATE_CITY_DATA: Record<string, string[]> = {
   Uttarakhand: ["Dehradun", "Haridwar", "Roorkee", "Haldwani"],
   "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri"],
 };
+
 
 type FormData = {
   title: string;
@@ -551,11 +576,191 @@ export default function PropertyForm() {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [customInputs, setCustomInputs] = useState<Record<string, boolean>>({});
+// const [editData, setEditData] = useState({
+//   id: "",
+//   ogType: "",
+//   ogTitle: "",
+//   ogDescription: "",
+//   ogImage: "",
+// });
+
+const [ogFormData, setOgFormData] = useState<OgState>({
+  ogType: "property",
+  ogTitle: "",
+  ogDescription: "",
+  ogImage: null,
+});
+
+const [editData, setEditData] = useState<EditState>({
+  id: "",
+  ogType: "property",
+  ogTitle: "",
+  ogDescription: "",
+  ogImage: null,
+});
+
 
   const [OpenPropertyModal, setPropertyModal] = useState<boolean>(false);
   const handleModalOpen = () => {
     setPropertyModal(true);
   };
+
+  const [OpenOGModel, setOGModel] = useState<boolean>(false)
+
+  const handleOGModelData = () => {
+    setOGModel(true);
+  }
+
+const { ogData, loading: ogLoading } = useAppSelector((state) => state.og);
+
+// const [ogFormData, setOgFormData] = useState({
+//   ogType: "property",
+//   ogTitle: "",
+//   ogDescription: "",
+//   ogImage: "",
+// });
+
+const handleOGChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  setOgFormData({
+    ...ogFormData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+// New state structure to handle both text and File objects
+// const [ogFormData, setOgFormData] = useState({
+//   ogType: "property",
+//   ogTitle: "",
+//   ogDescription: "",
+//   ogImage: null, // Store File object here
+// });
+
+// const [editData, setEditData] = useState({
+//   id: "",
+//   ogType: "property",
+//   ogTitle: "",
+//   ogDescription: "",
+//   ogImage: null, // Store File or URL string
+// });
+
+// Specific handler for file inputs
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, mode: "create" | "edit") => {
+  // Use optional chaining (?.) and check if files[0] exists
+  const file = e.target.files ? e.target.files[0] : null;
+  
+  if (!file) return;
+
+  if (mode === "create") {
+    setOgFormData({ ...ogFormData, ogImage: file });
+  } else {
+    setEditData({ ...editData, ogImage: file });
+  }
+};
+const handleCreateOG = async () => {
+  try {
+    const formData = new FormData();
+
+    formData.append("ogType", "property");
+    formData.append("ogTitle", ogFormData.ogTitle);
+    formData.append("ogDescription", ogFormData.ogDescription);
+
+    // append image file
+    if (ogFormData.ogImage) {
+      formData.append("ogImage", ogFormData.ogImage);
+    }
+
+    await dispatch(createOGField(formData));
+
+    alert("Created Successfully");
+
+    dispatch(fetchOGFields());
+
+    setOgFormData({
+      ogType: "property",
+      ogTitle: "",
+      ogDescription: "",
+      ogImage: null,
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+const handleEditClick = (item: any) => {
+  setEditData({
+    id: item._id,
+    ogType: item.ogType,
+    ogTitle: item.ogTitle,
+    ogDescription: item.ogDescription,
+    // Extract the URL from the nested object so the input shows it
+   ogImage: item?.ogImage?.secure_url || null, 
+  });
+};
+
+const handleUpdate = async () => {
+  try {
+    const formData = new FormData();
+
+    formData.append("ogType", editData.ogType);
+    formData.append("ogTitle", editData.ogTitle);
+    formData.append("ogDescription", editData.ogDescription);
+
+    // ONLY append ogImage if the user has selected a NEW file.
+    // If editData.ogImage is just a string (the old URL), do NOT append it.
+    if (editData.ogImage instanceof File) {
+      formData.append("ogImage", editData.ogImage);
+    }
+
+    const resultAction = await dispatch(
+      updateOGField({
+        id: editData.id,
+        data: formData, // Now only contains a file if it's a new one
+      })
+    );
+
+    if (updateOGField.fulfilled.match(resultAction)) {
+      alert("Updated Successfully");
+      dispatch(fetchOGFields());
+      setEditData({
+        id: "",
+        ogType: "property",
+        ogTitle: "",
+        ogDescription: "",
+        ogImage: null,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleEditChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  setEditData({
+    ...editData,
+    [e.target.name]: e.target.value,
+  });
+}
+
+
+
+
+const handleDelete = async (id: string) => {
+  try {
+    await dispatch(deleteOGField(id));
+
+    alert("Deleted Successfully");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const { localities } = useAppSelector((state) => state.locality);
 
@@ -563,6 +768,7 @@ export default function PropertyForm() {
 
   useEffect(() => {
     dispatch(getFeatures());
+     dispatch(fetchOGFields());
     // 2. Fetch all localities (limit 1000 to ensure we get them all for the dropdown)
     dispatch(getLocalities({ page: 1, limit: 1000 }));
   }, [dispatch]);
@@ -759,9 +965,90 @@ export default function PropertyForm() {
   return (
     <div className="flex flex-col justify-end mt-6 px-6">
       {/* Sidebar */}
-      <div></div>
-      <div className="flex  justify-end">
+     
+      <div className="flex  gap-5 justify-end">
         <button
+          onClick={handleOGModelData}
+          className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
+        >
+          Add Meta Fields
+        </button>
+
+{/* OG META DATA MODAL */}
+{OpenOGModel && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-[70] flex items-center justify-center p-4">
+    <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center p-5 border-b sticky top-0 bg-white">
+        <h2 className="text-2xl font-bold">OG Meta Management</h2>
+        <button onClick={() => setOGModel(false)}><X className="h-6 w-6" /></button>
+      </div>
+
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* LEFT: FORM SECTION (Switch between Create and Edit) */}
+        <div className="bg-slate-50 p-6 rounded-lg border">
+          <h3 className="font-bold mb-4">{editData.id ? "Edit Record" : "Add New Meta"}</h3>
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="OG Title"
+              className="w-full border p-2 rounded"
+              value={editData.id ? editData.ogTitle : ogFormData.ogTitle}
+              onChange={(e) => editData.id 
+                ? setEditData({...editData, ogTitle: e.target.value}) 
+                : setOgFormData({...ogFormData, ogTitle: e.target.value})}
+            />
+            <textarea
+              placeholder="OG Description"
+              className="w-full border p-2 rounded"
+              value={editData.id ? editData.ogDescription : ogFormData.ogDescription}
+              onChange={(e) => editData.id 
+                ? setEditData({...editData, ogDescription: e.target.value}) 
+                : setOgFormData({...ogFormData, ogDescription: e.target.value})}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              className="w-full border p-2 rounded bg-white"
+              onChange={(e) => handleFileChange(e, editData.id ? "edit" : "create")}
+            />
+            
+            <div className="flex gap-2">
+              {editData.id ? (
+                <>
+                  <button onClick={handleUpdate} className="bg-green-600 text-white px-4 py-2 rounded flex-1">Update</button>
+                  <button onClick={() => setEditData({id: "", ogType: "property", ogTitle: "", ogDescription: "", ogImage: null})} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
+                </>
+              ) : (
+                <button onClick={handleCreateOG} className="bg-blue-600 text-white px-4 py-2 rounded w-full">Save New</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: LIST SECTION */}
+        <div className="space-y-4">
+          <h3 className="font-bold">Existing Meta</h3>
+          {ogLoading ? <p>Loading...</p> : ogData?.map((item: any) => (
+            <div key={item._id} className="border p-3 rounded bg-white flex gap-3 items-center">
+             <img
+  src={item?.ogImage?.secure_url}
+  className="w-12 h-12 object-cover rounded"
+/>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm truncate">{item.ogTitle}</p>
+                  <p className=" text-sm truncate">{item.ogDescription}</p>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => handleEditClick(item)} className="text-blue-600 font-medium text-sm">Edit</button>
+                <button onClick={() => handleDelete(item._id)} className="text-red-600 font-medium text-sm">Delete</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+)}      <button
           onClick={handleModalOpen}
           className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition "
         >
