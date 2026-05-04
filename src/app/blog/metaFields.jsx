@@ -1,11 +1,12 @@
-import ProjectsPage from "./page";
+import BlogPage from "./page";
+
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   try {
     const res = await fetch(
-      "https://api.ready2move.co.in/api/v1/projects",
+      "https://api.ready2move.co.in/api/v1/blogs",
       {
         cache: "no-store",
       }
@@ -17,17 +18,17 @@ export async function generateMetadata() {
 
     const title =
       data?.ogTitle?.trim() ||
-      "Project Preview";
+      "Blog Preview";
 
     const description =
       data?.ogDescription?.trim() ||
-      "Explore these projects";
+      "Explore these Blogs";
 
     const ogImageUrl =
       data?.ogImage?.secure_url ||
       "https://ready2move.co.in/RS.png";
 
-    const pageUrl = "https://ready2move.co.in/projects";
+    const pageUrl = "https://ready2move.co.in/blogs";
 
     return {
       metadataBase: new URL("https://ready2move.co.in"),
@@ -57,8 +58,8 @@ export async function generateMetadata() {
     console.log(error);
 
     return {
-      title: "Properties",
-      description: "Explore properties",
+      title: "Blogs",
+      description: "Explore blogs",
     };
   }
 }
@@ -66,7 +67,7 @@ export async function generateMetadata() {
 export default function Page() {
   return (
     <div className="mt-2">
-      <PropertiesPage />
+      <BlogPage />
     </div>
   );
 }
