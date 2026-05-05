@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata() {
   try {
     const res = await fetch(
-      "https://api.ready2move.co.in/api/v1/meta/og",
+      "https://api.ready2move.co.in/api/v1/meta/all",
       {
         cache: "no-store",
       }
