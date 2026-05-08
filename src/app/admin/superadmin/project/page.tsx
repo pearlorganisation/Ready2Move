@@ -471,7 +471,7 @@ const handleDelete = async (id: string) => {
    
 
                 <button
-                  className="px-6 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition"
+                  className="px-6 ml-3 py-3 bg-white text-red-500 rounded-md font-semibold shadow-md hover:bg-red-100 transition"
                   onClick={handleOpenAddProject}
                 >
                   Create Projects

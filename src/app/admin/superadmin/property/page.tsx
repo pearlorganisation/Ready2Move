@@ -663,31 +663,39 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, mode: "create"
 const handleCreateOG = async () => {
   try {
     const formData = new FormData();
-
     formData.append("ogType", "property");
     formData.append("ogTitle", ogFormData.ogTitle);
     formData.append("ogDescription", ogFormData.ogDescription);
 
-    // append image file
     if (ogFormData.ogImage) {
       formData.append("ogImage", ogFormData.ogImage);
     }
 
-    await dispatch(createOGField(formData));
+    // 1. Capture the result of the dispatch
+    const resultAction = await dispatch(createOGField(formData));
 
-    alert("Created Successfully");
-
-    dispatch(fetchOGFields());
-
-    setOgFormData({
-      ogType: "property",
-      ogTitle: "",
-      ogDescription: "",
-      ogImage: null,
-    });
+    // 2. Check if the action was successful
+    if (createOGField.fulfilled.match(resultAction)) {
+      alert("Created Successfully");
+      
+      // Only reset and refresh if it actually worked
+      dispatch(fetchOGFields());
+      setOgFormData({
+        ogType: "property",
+        ogTitle: "",
+        ogDescription: "",
+        ogImage: null,
+      });
+    } else {
+      // 3. Extract and show the actual error message from the payload
+      const errorMessage = (resultAction.payload as any )?.message || "Failed to create record";
+      alert(`Error: ${errorMessage}`);
+    }
 
   } catch (error) {
-    console.log(error);
+    // This only catches logical crashes, not API failures
+    console.error("UI Logic Error:", error);
+    alert("An unexpected error occurred.");
   }
 };
 const handleEditClick = (item: any) => {
@@ -704,37 +712,28 @@ const handleEditClick = (item: any) => {
 const handleUpdate = async () => {
   try {
     const formData = new FormData();
-
     formData.append("ogType", editData.ogType);
     formData.append("ogTitle", editData.ogTitle);
     formData.append("ogDescription", editData.ogDescription);
 
-    // ONLY append ogImage if the user has selected a NEW file.
-    // If editData.ogImage is just a string (the old URL), do NOT append it.
     if (editData.ogImage instanceof File) {
       formData.append("ogImage", editData.ogImage);
     }
 
-    const resultAction = await dispatch(
-      updateOGField({
-        id: editData.id,
-        data: formData, // Now only contains a file if it's a new one
-      })
-    );
+    const resultAction = await dispatch(updateOGField({ id: editData.id, data: formData }));
 
+    // Check for fulfillment
     if (updateOGField.fulfilled.match(resultAction)) {
       alert("Updated Successfully");
       dispatch(fetchOGFields());
-      setEditData({
-        id: "",
-        ogType: "property",
-        ogTitle: "",
-        ogDescription: "",
-        ogImage: null,
-      });
+      setEditData({ id: "", ogType: "property", ogTitle: "", ogDescription: "", ogImage: null });
+    } else {
+      // Show the actual server error message
+      const errorMessage =  (resultAction.payload as any)?.message || "Failed to update record";
+      alert(`Update Failed: ${errorMessage}`);
     }
   } catch (error) {
-    console.log(error);
+    alert("An unexpected error occurred.");
   }
 };
 
@@ -1026,25 +1025,44 @@ const handleDelete = async (id: string) => {
         </div>
 
         {/* RIGHT: LIST SECTION */}
-        <div className="space-y-4">
-          <h3 className="font-bold">Existing Meta</h3>
-          {ogLoading ? <p>Loading...</p> : ogData?.map((item: any) => (
-            <div key={item._id} className="border p-3 rounded bg-white flex gap-3 items-center">
-             <img
-  src={item?.ogImage?.secure_url}
-  className="w-12 h-12 object-cover rounded"
-/>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm truncate">{item.ogTitle}</p>
-                  <p className=" text-sm truncate">{item.ogDescription}</p>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={() => handleEditClick(item)} className="text-blue-600 font-medium text-sm">Edit</button>
-                <button onClick={() => handleDelete(item._id)} className="text-red-600 font-medium text-sm">Delete</button>
-              </div>
-            </div>
-          ))}
+        {/* RIGHT: LIST SECTION */}
+<div className="space-y-4">
+  <h3 className="font-bold">Existing Meta</h3>
+  {ogLoading ? (
+    <p>Loading...</p>
+  ) : (
+    // Add the filter here to show only "property" types
+    ogData
+      ?.filter((item: any) => item.ogType === "property")
+      .map((item: any) => (
+        <div key={item._id} className="border p-3 rounded bg-white flex gap-3 items-center">
+          <img
+            src={item?.ogImage?.secure_url}
+            className="w-12 h-12 object-cover rounded"
+            alt=""
+          />
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-sm truncate">{item.ogTitle}</p>
+            <p className="text-sm truncate">{item.ogDescription}</p>
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => handleEditClick(item)} 
+              className="text-blue-600 font-medium text-sm"
+            >
+              Edit
+            </button>
+            <button 
+              onClick={() => handleDelete(item._id)} 
+              className="text-red-600 font-medium text-sm"
+            >
+              Delete
+            </button>
+          </div>
         </div>
+      ))
+  )}
+</div>
       </div>
     </div>
   </div>

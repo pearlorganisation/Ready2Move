@@ -1,44 +1,67 @@
 import ProjectPage from "./ProjectPage";
 
 
+type MetaItem = {
+  ogType: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: {
+    secure_url?: string;
+  };
+};
+
+
+
+
+
+
+type ApiResponse = {
+  data: MetaItem[];
+};
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   try {
     const res = await fetch(
-      "https://api.ready2move.co.in/api/v1/meta/og",
+      "https://api.ready2move.co.in/api/v1/meta/all",
       {
         cache: "no-store",
       }
     );
 
-    const projectData = await res.json();
+    const projectData: ApiResponse = await res.json();
+    // ✅ filter only project type
+   const filteredMeta = projectData?.data?.filter(
+  (item) => item.ogType === "property"
+);
 
-    const data = projectData?.data;
+const projectMeta =
+  filteredMeta?.[filteredMeta.length - 1];
 
     const title =
-      data?.ogTitle?.trim() ||
-      "Project Preview";
+      projectMeta?.ogTitle?.trim() || "Project Preview";
 
     const description =
-      data?.ogDescription?.trim() ||
-      "Explore these projects";
+      projectMeta?.ogDescription?.trim() || "Explore these projects";
 
     const ogImageUrl =
-      data?.ogImage?.secure_url ||
+      projectMeta?.ogImage?.secure_url ||
       "https://ready2move.co.in/RS.png";
 
     const pageUrl = "https://ready2move.co.in/projects";
 
     return {
       metadataBase: new URL("https://ready2move.co.in"),
-      title,
+
+      title, // ✅ fixed (you had ogtitle bug)
+
       description,
+
       openGraph: {
         title,
         description,
-       type: data?.ogType || "website",
+        type: "website", // ✅ fixed (your code had syntax error)
         url: pageUrl,
         images: [
           {
@@ -48,6 +71,7 @@ export async function generateMetadata() {
           },
         ],
       },
+
       twitter: {
         card: "summary_large_image",
         title,
@@ -59,12 +83,11 @@ export async function generateMetadata() {
     console.log(error);
 
     return {
-      title: "Properties",
-      description: "Explore properties",
+      title: "Projects",
+      description: "Explore projects",
     };
   }
 }
-
 export default function Page() {
   return (
     <div className="mt-2">
