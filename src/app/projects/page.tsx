@@ -32,12 +32,9 @@ export async function generateMetadata() {
 
     const projectData: ApiResponse = await res.json();
     // ✅ filter only project type
-   const filteredMeta = projectData?.data?.filter(
-  (item) => item.ogType === "property"
-);
-
-const projectMeta =
-  filteredMeta?.[filteredMeta.length - 1];
+    const projectMeta = projectData?.data?.find(
+      (item) => item.ogType === "project"
+    );
 
     const title =
       projectMeta?.ogTitle?.trim() || "Project Preview";
