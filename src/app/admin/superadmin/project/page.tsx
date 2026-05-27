@@ -227,6 +227,7 @@ const { localities } = useAppSelector((state) => state.locality);
   };
 
 const { ogData, loading: ogLoading } = useAppSelector((state) => state.og);
+const [isSaving, setIsSaving] = useState<boolean>(false);
 
  const [ogFormData, setOgFormData] = useState<OgState>({
     ogType: "project",
@@ -254,6 +255,8 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, mode: "create"
 
 
 const handleCreateOG = async () => {
+  try {
+    setIsSaving(true);
     const formData = new FormData();
     formData.append("ogType", "project");
     formData.append("ogTitle", ogFormData.ogTitle);
@@ -266,7 +269,12 @@ const handleCreateOG = async () => {
       setOgFormData({ ogType: "project", ogTitle: "", ogDescription: "", ogImage: null });
       dispatch(fetchOGFields());
     }
-  };
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   const handleUpdate = async () => {
     const formData = new FormData();
@@ -438,7 +446,7 @@ const handleDelete = async (id: string) => {
                   <button onClick={() => setEditData({id: "", ogType: "property", ogTitle: "", ogDescription: "", ogImage: null})} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
                 </>
               ) : (
-                <button onClick={handleCreateOG} className="bg-blue-600 text-white px-4 py-2 rounded w-full">Save New</button>
+                <button onClick={handleCreateOG} className="bg-blue-600 text-white px-4 py-2 rounded w-full"> {isSaving ? "Saving..." : "Save"}</button>
               )}
             </div>
           </div>

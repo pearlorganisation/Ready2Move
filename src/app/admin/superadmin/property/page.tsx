@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import {
   createPropertyByAdmin,
   getAllProperties,
+  generateDescription
   
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
@@ -568,6 +569,7 @@ const CustomPopover = ({
 
 export default function PropertyForm() {
   const dispatch = useAppDispatch();
+  const { isAiGenerating } = useAppSelector((state) => state.property);
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const { featureData } = useAppSelector((state) => state.features);
@@ -576,6 +578,7 @@ export default function PropertyForm() {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [customInputs, setCustomInputs] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 // const [editData, setEditData] = useState({
 //   id: "",
 //   ogType: "",
@@ -606,6 +609,7 @@ const [editData, setEditData] = useState<EditState>({
   };
 
   const [OpenOGModel, setOGModel] = useState<boolean>(false)
+  const [isOgActionLoading, setIsOgActionLoading] = useState(false);
 
   const handleOGModelData = () => {
     setOGModel(true);
@@ -661,6 +665,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, mode: "create"
   }
 };
 const handleCreateOG = async () => {
+  setIsOgActionLoading(true); 
   try {
     const formData = new FormData();
     formData.append("ogType", "property");
@@ -696,6 +701,9 @@ const handleCreateOG = async () => {
     // This only catches logical crashes, not API failures
     console.error("UI Logic Error:", error);
     alert("An unexpected error occurred.");
+  }
+   finally {
+    setIsOgActionLoading(false); // STOP LOADING
   }
 };
 const handleEditClick = (item: any) => {
@@ -762,6 +770,69 @@ const handleDelete = async (id: string) => {
 };
 
   const { localities } = useAppSelector((state) => state.locality);
+
+
+  // Helper to get names from Redux featureData instead of IDs
+const getFeatureName = (id: string) => {
+  if (!id) return "";
+  const allFeatures = featureData.flatMap((category) => category.features);
+  const match = allFeatures.find((f) => f._id === id);
+  return match ? match.name : id;
+};
+
+const handleAIGenerate = async () => {
+  const vals = watch(); // Get current state of all form fields
+
+  // 1. Prepare the full payload for the AI
+  // We use getFeatureName to convert MongoDB IDs into actual words (e.g., "64...1" -> "Vitrified Tiles")
+  const aiPayload = {
+    title: vals.title,
+    service: vals.service, // SELL or RENT
+    property: vals.property, // RESIDENTIAL or COMMERCIAL
+    propertyType: { name: getFeatureName(vals.propertyType) },
+    
+    // Format locality from [{name: "A"}, {name: "B"}] to ["A", "B"]
+    locality: vals.locality.map((l: any) => l.name).filter(Boolean),
+    city: vals.city,
+    state: vals.state,
+    
+    expectedPrice: vals.expectedPrice,
+    apartmentName: vals.apartmentName,
+    apartmentNo: vals.apartmentNo,
+    
+    noOfBedrooms: vals.noOfBedrooms,
+    noOfBathrooms: vals.noOfBathrooms,
+    noOfBalconies: vals.noOfBalconies,
+    
+    // Pass the area array directly as the backend handles its formatting
+    area: vals.area, 
+    
+    parking: { name: getFeatureName(vals.parking) },
+    furnishing: { name: getFeatureName(vals.furnishing) },
+    entranceFacing: { name: getFeatureName(vals.entranceFacing) },
+    propertyAge: { name: getFeatureName(vals.propertyAge) },
+    
+    // Convert arrays of IDs into arrays of Objects with names
+    aminities: vals.amenities.map(id => ({ name: getFeatureName(id) })),
+    waterSource: [{ name: getFeatureName(vals.waterSource) }],
+    otherFeatures: vals.otherFeatures.map(id => ({ name: getFeatureName(id) })),
+    propertyFlooring: { name: getFeatureName(vals.propertyFlooring) },
+    
+    note: vals.note
+  };
+
+  // 2. Dispatch the action with the complete data object
+  const resultAction = await dispatch(generateDescription(aiPayload as any));
+
+  // 3. Update the description field if successful
+  if (generateDescription.fulfilled.match(resultAction)) {
+    setValue("description", resultAction.payload.description, {
+      shouldValidate: true,
+    });
+  } else {
+    alert("AI generation failed. Make sure you have filled in the Title, Price, and Location steps first.");
+  }
+};
 
   // ... existing selectors (featureData, userData)
 
@@ -919,6 +990,7 @@ const handleDelete = async (id: string) => {
   };
 
   const onSubmit = (data: any) => {
+      setIsSubmitting(true);
     // 1. Log to console to see exactly what is happening (Check your browser Inspect > Console)
     console.log("Original data from form:", data.locality);
 
@@ -954,6 +1026,9 @@ const handleDelete = async (id: string) => {
         );
         setPropertyModal(false);
       }
+    })
+    .finally(() => {
+      setIsSubmitting(false); // Stop loading regardless of success/fail
     });
   };
 
@@ -1018,7 +1093,7 @@ const handleDelete = async (id: string) => {
                   <button onClick={() => setEditData({id: "", ogType: "property", ogTitle: "", ogDescription: "", ogImage: null})} className="bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>
                 </>
               ) : (
-                <button onClick={handleCreateOG} className="bg-blue-600 text-white px-4 py-2 rounded w-full">Save New</button>
+                <button onClick={handleCreateOG} className="bg-blue-600 text-white px-4 py-2 rounded w-full"> {isOgActionLoading ? "Saving..." : "Save New"}</button>
               )}
             </div>
           </div>
@@ -1079,49 +1154,49 @@ const handleDelete = async (id: string) => {
       <div className="flex max-w-full">
         {OpenPropertyModal && (
           <div className="flex flex-row w-full px-20 inset-0 fixed  bg-black bg-opacity-50  z-50 ">
-            <div className="w-64 bg-white border-r p-4 hidden md:block mt-6 rounded-md mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-slate-700">
-                  Add Property
-                </h2>
-                <button
-                  onClick={() => setPropertyModal(false)}
-                  className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200"
-                >
-                  Close
-                </button>
-              </div>
-              <div className="space-y-2 rounded-md  px-6 py-6">
-                {steps.map((step, index) => (
-                  <div
-                    key={step.id}
-                    className={`relative border-l-4 pb-6 ${
-                      index === steps.length - 1 ? "border-transparent" : ""
-                    } ${
-                      currentStep === index
-                        ? "border-blue-600"
-                        : "border-slate-200"
-                    }`}
-                  >
-                    <div
-                      className="ml-4 hover:bg-slate-100 p-2 rounded-md cursor-pointer"
-                      onClick={() => setCurrentStep(index)}
-                    >
-                      <h3
-                        className={`font-medium text-sm ${
-                          currentStep === index
-                            ? "text-blue-600"
-                            : "text-slate-500"
-                        }`}
-                      >
-                        {step.title}
-                      </h3>
-                      <p className="text-xs text-slate-400">{step.subtitle}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+           <div  className="w-64 bg-white border-r p-4 hidden md:block mt-6 rounded-md mb-4 max-h-[700px] overflow-y-auto">
+  <div className="flex bg-white justify-between items-center mb-4 sticky top-0 z-10">
+    <h2 className="text-lg font-semibold text-slate-700">
+      Add Property
+    </h2>
+    <button
+      onClick={() => setPropertyModal(false)}
+      className="text-sm px-3 py-1.5 text-red-500 border border-red-200 rounded-md hover:bg-red-50 transition-colors duration-200 bg-white"
+    >
+      Close
+    </button>
+  </div>
+  <div className="space-y-2 rounded-md px-6 py-6">
+    {steps.map((step, index) => (
+      <div
+        key={step.id}
+        className={`relative border-l-4 pb-6 ${
+          index === steps.length - 1 ? "border-transparent" : ""
+        } ${
+          currentStep === index
+            ? "border-blue-600"
+            : "border-slate-200"
+        }`}
+      >
+        <div
+          className="ml-4 hover:bg-slate-100 p-2 rounded-md cursor-pointer"
+          onClick={() => setCurrentStep(index)}
+        >
+          <h3
+            className={`font-medium text-sm ${
+              currentStep === index
+                ? "text-blue-600"
+                : "text-slate-500"
+            }`}
+          >
+            {step.title}
+          </h3>
+          <p className="text-xs text-slate-400">{step.subtitle}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
             {/* Mobile Steps Indicator */}
             <div className="md:hidden p-4 bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-10">
               <div className="flex justify-between items-center">
@@ -1203,16 +1278,18 @@ const handleDelete = async (id: string) => {
                           />
 
                           {/* Description */}
-                          <CustomTextarea
-                            id="description"
-                            label="Property Description"
-                            placeholder="Describe your property in detail"
-                            className="min-h-[100px]"
-                            error={errors.description?.message}
-                            {...register("description", {
-                              required: "Description is required",
+                          <div className="space-y-4">
+                          <CustomInput
+                            id="youtubeEmbedLink"
+                            label="YouTube Embed Link"
+                            placeholder="YouTube Link"
+                            error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
+                            {...register("youtubeEmbedLink", {
+                              required: "This field is required", // ✅ Required validation
                             })}
                           />
+                        </div>
+                          
                         </div>
 
                         {/* You’re looking to: SELL / RENT */}
@@ -2558,18 +2635,53 @@ const handleDelete = async (id: string) => {
                           </p>
                         </div>
 
-                        <div className="space-y-4">
-                          <CustomInput
-                            id="youtubeEmbedLink"
-                            label="YouTube Embed Link"
-                            placeholder="YouTube Link"
-                            error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
-                            {...register("youtubeEmbedLink", {
-                              required: "This field is required", // ✅ Required validation
-                            })}
-                          />
-                        </div>
-                        <div className="space-y-2">
+                        
+                        
+                        <div >
+                         {currentStep === 6 && (
+  <div className="space-y-6">
+    
+
+    <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+      <div className="flex justify-between items-center mb-4">
+        <label className="block text-sm font-bold text-blue-900">
+          ✨ AI Property Description
+        </label>
+        <button
+          type="button"
+          onClick={handleAIGenerate}
+          disabled={isAiGenerating}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 disabled:bg-blue-300 flex items-center gap-2 transition-all"
+        >
+          {isAiGenerating ? (
+            <>
+              <span className="animate-spin">⏳</span> Writing...
+            </>
+          ) : (
+            "Generate with AI"
+          )}
+        </button>
+      </div>
+
+      <CustomTextarea
+        id="description"
+        label="Description Content"
+        placeholder="AI will generate a description based on your previous steps..."
+        className="min-h-[150px] bg-white"
+        error={errors.description?.message}
+        {...register("description", {
+          required: "Description is required",
+        })}
+      />
+    </div>
+
+    {/* ... rest of your code (Image Gallery, OG Fields, etc) ... */}
+  </div>
+)}
+                          
+                          </div>
+
+                          <div className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">
                             Featured Property
                           </label>
@@ -2801,7 +2913,14 @@ const handleDelete = async (id: string) => {
                           }
                         }}
                       >
-                        Publish
+                      {isSubmitting ? (
+      <>
+        <span className="animate-spin mr-2">/</span> {/* Optional: Simple spinner character */}
+        Publishing...
+      </>
+    ) : (
+      "Publish"
+    )}
                       </button>
                     ) : (
                       <button
