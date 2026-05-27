@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/dispatchHook";
 import {
   createPropertyByAdmin,
   getAllProperties,
+  generateDescription
   
 } from "@/lib/redux/actions/propertyAction";
 import { getFeatures } from "@/lib/redux/actions/featuresAction";
@@ -568,6 +569,7 @@ const CustomPopover = ({
 
 export default function PropertyForm() {
   const dispatch = useAppDispatch();
+  const { isAiGenerating } = useAppSelector((state) => state.property);
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const { featureData } = useAppSelector((state) => state.features);
@@ -768,6 +770,69 @@ const handleDelete = async (id: string) => {
 };
 
   const { localities } = useAppSelector((state) => state.locality);
+
+
+  // Helper to get names from Redux featureData instead of IDs
+const getFeatureName = (id: string) => {
+  if (!id) return "";
+  const allFeatures = featureData.flatMap((category) => category.features);
+  const match = allFeatures.find((f) => f._id === id);
+  return match ? match.name : id;
+};
+
+const handleAIGenerate = async () => {
+  const vals = watch(); // Get current state of all form fields
+
+  // 1. Prepare the full payload for the AI
+  // We use getFeatureName to convert MongoDB IDs into actual words (e.g., "64...1" -> "Vitrified Tiles")
+  const aiPayload = {
+    title: vals.title,
+    service: vals.service, // SELL or RENT
+    property: vals.property, // RESIDENTIAL or COMMERCIAL
+    propertyType: { name: getFeatureName(vals.propertyType) },
+    
+    // Format locality from [{name: "A"}, {name: "B"}] to ["A", "B"]
+    locality: vals.locality.map((l: any) => l.name).filter(Boolean),
+    city: vals.city,
+    state: vals.state,
+    
+    expectedPrice: vals.expectedPrice,
+    apartmentName: vals.apartmentName,
+    apartmentNo: vals.apartmentNo,
+    
+    noOfBedrooms: vals.noOfBedrooms,
+    noOfBathrooms: vals.noOfBathrooms,
+    noOfBalconies: vals.noOfBalconies,
+    
+    // Pass the area array directly as the backend handles its formatting
+    area: vals.area, 
+    
+    parking: { name: getFeatureName(vals.parking) },
+    furnishing: { name: getFeatureName(vals.furnishing) },
+    entranceFacing: { name: getFeatureName(vals.entranceFacing) },
+    propertyAge: { name: getFeatureName(vals.propertyAge) },
+    
+    // Convert arrays of IDs into arrays of Objects with names
+    aminities: vals.amenities.map(id => ({ name: getFeatureName(id) })),
+    waterSource: [{ name: getFeatureName(vals.waterSource) }],
+    otherFeatures: vals.otherFeatures.map(id => ({ name: getFeatureName(id) })),
+    propertyFlooring: { name: getFeatureName(vals.propertyFlooring) },
+    
+    note: vals.note
+  };
+
+  // 2. Dispatch the action with the complete data object
+  const resultAction = await dispatch(generateDescription(aiPayload as any));
+
+  // 3. Update the description field if successful
+  if (generateDescription.fulfilled.match(resultAction)) {
+    setValue("description", resultAction.payload.description, {
+      shouldValidate: true,
+    });
+  } else {
+    alert("AI generation failed. Make sure you have filled in the Title, Price, and Location steps first.");
+  }
+};
 
   // ... existing selectors (featureData, userData)
 
@@ -1213,16 +1278,18 @@ const handleDelete = async (id: string) => {
                           />
 
                           {/* Description */}
-                          <CustomTextarea
-                            id="description"
-                            label="Property Description"
-                            placeholder="Describe your property in detail"
-                            className="min-h-[100px]"
-                            error={errors.description?.message}
-                            {...register("description", {
-                              required: "Description is required",
+                          <div className="space-y-4">
+                          <CustomInput
+                            id="youtubeEmbedLink"
+                            label="YouTube Embed Link"
+                            placeholder="YouTube Link"
+                            error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
+                            {...register("youtubeEmbedLink", {
+                              required: "This field is required", // ✅ Required validation
                             })}
                           />
+                        </div>
+                          
                         </div>
 
                         {/* You’re looking to: SELL / RENT */}
@@ -2568,18 +2635,56 @@ const handleDelete = async (id: string) => {
                           </p>
                         </div>
 
-                        <div className="space-y-4">
-                          <CustomInput
-                            id="youtubeEmbedLink"
-                            label="YouTube Embed Link"
-                            placeholder="YouTube Link"
-                            error={errors.youtubeEmbedLink?.message} // ✅ Pass the error to input
-                            {...register("youtubeEmbedLink", {
-                              required: "This field is required", // ✅ Required validation
-                            })}
-                          />
-                        </div>
-                        <div className="space-y-2">
+                        
+                        
+                        <div >
+                         {currentStep === 6 && (
+  <div className="space-y-6">
+    <div>
+      <h2 className="text-2xl font-semibold text-slate-800">Final Details</h2>
+      <p className="text-slate-500 text-sm">Review and finalize your listing</p>
+    </div>
+
+    <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+      <div className="flex justify-between items-center mb-4">
+        <label className="block text-sm font-bold text-blue-900">
+          ✨ AI Property Description
+        </label>
+        <button
+          type="button"
+          onClick={handleAIGenerate}
+          disabled={isAiGenerating}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 disabled:bg-blue-300 flex items-center gap-2 transition-all"
+        >
+          {isAiGenerating ? (
+            <>
+              <span className="animate-spin">⏳</span> Writing...
+            </>
+          ) : (
+            "Generate with AI"
+          )}
+        </button>
+      </div>
+
+      <CustomTextarea
+        id="description"
+        label="Description Content"
+        placeholder="AI will generate a description based on your previous steps..."
+        className="min-h-[150px] bg-white"
+        error={errors.description?.message}
+        {...register("description", {
+          required: "Description is required",
+        })}
+      />
+    </div>
+
+    {/* ... rest of your code (Image Gallery, OG Fields, etc) ... */}
+  </div>
+)}
+                          
+                          </div>
+
+                          <div className="space-y-2">
                           <label className="block text-sm font-medium text-gray-700">
                             Featured Property
                           </label>

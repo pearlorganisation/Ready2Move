@@ -522,3 +522,34 @@ export const getAllLocations = createAsyncThunk(
   }
 );
 
+
+// Define what data the AI needs (matches your backend's expectation)
+interface AIDescriptionPayload {
+  propertyType: string;
+  location: string;
+  price: string;
+  size: string;
+  amenities: string[];
+}
+
+export const generateDescription = createAsyncThunk(
+  "property/generateDescription",
+  // We accept the AI payload as the first argument
+  async (payload: AIDescriptionPayload, { rejectWithValue }) => {
+    try {
+      // ✅ We MUST pass the payload as the second argument to axios.post
+      const { data } = await axiosInstance.post(
+        "/api/v1/properties/generate-description",
+        payload
+      );
+      
+      // Expected response: { description: "The AI text..." }
+      return data; 
+    } catch (error: any) {
+      // ✅ Use rejectWithValue (not isRejectedWithValue)
+      return rejectWithValue(
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+);

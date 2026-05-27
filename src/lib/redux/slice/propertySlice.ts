@@ -4,7 +4,9 @@ import {
   getAllProperties,
   getAllSearchedProperties,
   getSingleProperty,
-  getAllLocations
+  getAllLocations,
+   generateDescription,
+
 } from "../actions/propertyAction";
 import { Paginate } from "@/lib/util/paginateInterface";
 import { SimpleType } from "@/lib/Interfaces/property";
@@ -220,7 +222,7 @@ export interface PropertyState {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
-
+  isAiGenerating: boolean; 
   searchedPropertyData: SearchedPropertyData;
   singlePropertyData: SingleProperty;
   allLocations: any[];
@@ -232,6 +234,7 @@ export interface PropertyState {
 
 export const initialPropertyState: PropertyState = {
   isLoading: false,
+  isAiGenerating: false,
   isSuccess: false,
   isError: false,
   allLocations: [],
@@ -502,8 +505,24 @@ const createPropertySlice = createSlice({
       .addCase(getAllLocations.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
+      })
+
+       .addCase(generateDescription.pending, (state) => {
+        state.isAiGenerating = true;
+        state.isError = false;
+      })
+      .addCase(generateDescription.fulfilled, (state, action) => {
+        state.isAiGenerating = false;
+        state.isSuccess = true;
+        // Note: You don't necessarily need to store the description in Redux 
+        // if you are using setValue() in the component, but it's good to clear errors.
+      })
+      .addCase(generateDescription.rejected, (state) => {
+        state.isAiGenerating = false;
+        state.isError = true;
       });
-      
+
+   
   },
 });
 
