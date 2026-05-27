@@ -2640,10 +2640,7 @@ const handleAIGenerate = async () => {
                         <div >
                          {currentStep === 6 && (
   <div className="space-y-6">
-    <div>
-      <h2 className="text-2xl font-semibold text-slate-800">Final Details</h2>
-      <p className="text-slate-500 text-sm">Review and finalize your listing</p>
-    </div>
+    
 
     <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
       <div className="flex justify-between items-center mb-4">
